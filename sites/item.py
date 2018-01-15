@@ -1,29 +1,30 @@
 
 class Item:
 
-    def __init__(self, response, name, settings):
-        self.name = name
+    def __init__(self, response, settings):
         self.settings = settings
         self.response = response
 
     def data(self):
-        fields = self.settings[self.name]['fields']
         data = {'url': self.response.url}
-        for key in fields.keys():
-            if 'fallback' not in key:
-                raw_text = self.response.xpath(
-                    fields[key]).extract_first()
-                key_fallback = fields.get('{}_fallback'.format(key), None)
-                if key_fallback:
-                    raw_text_fallback = self.response.xpath(
-                        key_fallback).extract_first()
-                else:
-                    raw_text_fallback = None
+        for key in self.settings.fields.keys():
+            clean_text = ''
+            for i, selector in enumerate(self.settings.fields[key]):
+                raw_text = self._raw_text(key, selector)
                 if raw_text:
-                    clean_text = raw_text.strip()
-                elif raw_text_fallback:
-                    clean_text = raw_text_fallback.strip()
-                else:
-                    clean_text = ''
-                data[key] = clean_text
+                    clean_text = raw_text
+                    i += 1
+                    break
+            data[key] = clean_text
+            data["{}_selector".format(key)] = i
         return data
+
+    def _raw_text(self, key, selector):
+        if '_css' in key:
+            # TODO: Temporary, to check the CSS selectors
+            #       which were provided by Mike. Up to this
+            #       point, these selectors seem inferior.
+            # return self.response.css(selector).extract_first()
+            return ' '.join(' '.join(self.response.css(selector).extract()).split())
+        # return self.response.xpath(selector).extract_first()
+        return ' '.join(' '.join(self.response.xpath(selector).extract()).split())

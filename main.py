@@ -3,10 +3,7 @@
 from settings import SETTINGS
 from sites.site import Site
 
-SITES = [
-    Site('Amazon', SETTINGS)
-    # Other sites go here...
-]
+SITES = [Site(name, SETTINGS) for name in SETTINGS['sites'].keys()]
 
 
 def main():
