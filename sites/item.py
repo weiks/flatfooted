@@ -24,7 +24,7 @@ class Item:
             # TODO: Temporary, to check the CSS selectors
             #       which were provided by Mike. Up to this
             #       point, these selectors seem inferior.
-            # return self.response.css(selector).extract_first()
-            return ' '.join(' '.join(self.response.css(selector).extract()).split())
-        # return self.response.xpath(selector).extract_first()
-        return ' '.join(' '.join(self.response.xpath(selector).extract()).split())
+            return ' '.join(' '.join(
+                self.response.css(selector).extract()).split())
+        return ' '.join(' '.join(
+            self.response.xpath(selector).extract()).split())
