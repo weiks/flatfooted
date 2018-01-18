@@ -17,6 +17,10 @@ class Settings:
         return self._name
 
     @property
+    def use_proxies(self):
+        return self.settings['use_proxies']
+
+    @property
     def timezone(self):
         return pytz.timezone(self.settings['timezone'])
 

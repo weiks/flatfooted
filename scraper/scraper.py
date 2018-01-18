@@ -31,15 +31,28 @@ class Scraper:
         `DOWNLOAD_DELAY` is in seconds, and is such that if
         `RANDOMIZE_DOWNLOAD_DELAY` is set to `True`, then the requests will
         happen between 0.5 * `DOWNLOAD_DELAY` and 1.5 * `DOWNLOAD_DELAY`.
+
+        `RETRY_TIMES` and `RETRY_HTTP_CODES` must be much more flexible if
+        proxies are being used because proxies can fail for a variety of
+        reasons, and we need to be able to adapt to that.
+
+        NOTE: Using proxies slows the process quite a bit.
         """
-        return {
-            'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)',
+        options = {
             'FEED_FORMAT': self.settings.results_file_type,
             'FEED_URI': self._file_name(now),
             'RANDOMIZE_DOWNLOAD_DELAY': True,
             'COOKIES_ENABLED': False,
             'DOWNLOAD_DELAY': 2
         }
+        if self.settings.use_proxies:
+            options['RETRY_TIMES'] = 10
+            options['RETRY_HTTP_CODES'] = [500, 503, 504, 400, 403, 404, 408]
+            options['DOWNLOADER_MIDDLEWARES'] = {
+                'scraper.middleware.ProxyMiddleware': 410,
+                'scraper.middleware.RandomUserAgentMiddleware': 400
+            }
+        return options
 
     def _file_name(self, now):
         return "outputs/%(name)s_{}.{}".format(

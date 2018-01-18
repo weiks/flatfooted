@@ -1,5 +1,6 @@
 
 SETTINGS = {
+    'use_proxies': True,
     'results_file_type': 'csv',
     'timezone': 'America/Mexico_City',
     'search_strings': {
