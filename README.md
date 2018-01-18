@@ -24,16 +24,16 @@
 
 ### Day 2
 
-| Status      | Task                                                 | Note |
-|-------------|------------------------------------------------------|------|
-| Done        | Fix Twisted Reactor bug when scraping multiple sites |      |
-| Done        | Test with two sites at the same time (use Staples)   |      |
-| Done        | Initial throttling mechanism                         |      |
-| Done        | Initial randomized proxy mechanism                   |      |
-| Done        | Initial randomize user-agent mechanism               |      |
-| Done        | Resarch best way to save results into database       |      |
-| In Progress | Save information for unhandled requests              |      |
-| In Progress | Update documentation                                 |      |
+| Status      | Task                                                 | Note                             |
+|-------------|------------------------------------------------------|----------------------------------|
+| Done        | Fix Twisted Reactor bug when scraping multiple sites |                                  |
+| Done        | Test with two sites at the same time (use Staples)   |                                  |
+| Done        | Initial throttling mechanism                         |                                  |
+| Done        | Initial randomized proxy mechanism                   |                                  |
+| Done        | Initial randomize user-agent mechanism               |                                  |
+| Done        | Resarch best way to save results into database       | Best done using `Item Pipelines` |
+| In Progress | Save information for unhandled requests              |                                  |
+| In Progress | Update documentation                                 |                                  |
 
 ### Day 3
 
