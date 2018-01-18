@@ -2,25 +2,27 @@
 import scrapy
 
 from utilities.inputs import SearchStringsCSV
+from utilities.select import select
 from .item import Item
 
 
 class Spider(scrapy.Spider):
 
-    name = 'flatfooted'
     custom_settings = {
         'AUTOTHROTTLE_ENABLED': True,
-        'LOG_LEVEL': 'WARNING'
+        'LOG_LEVEL': 'DEBUG'
     }
 
     def __init__(self, settings={}, **kwargs):
+        self.name = settings.name
         self.site_settings = settings
         self.start_urls = self._start_urls()
         super().__init__(**kwargs)
 
     def parse(self, response):
+        key = self.site_settings.first_item_selectors_key
         for i, selector in enumerate(self.site_settings.first_item_selectors):
-            first_item = response.xpath(selector).extract_first()
+            first_item = select(response, key, selector).extract_first()
             if first_item:
                 yield response.follow(first_item, self._parse_item)
                 break
@@ -35,6 +37,4 @@ class Spider(scrapy.Spider):
         ]
 
     def _search_strings(self):
-        # To test specific search strings, put them here:
-        # return ["3 IN ONE 120039", "3M 2.00E 97", "3M 02554",]
         return SearchStringsCSV(self.site_settings).search_strings()

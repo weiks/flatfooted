@@ -1,15 +1,13 @@
 
 # from utilities.scheduler import Scheduler
+from scraper.scraper import Scraper
 from settings import SETTINGS
-from sites.site import Site
-
-SITES = [Site(name, SETTINGS) for name in SETTINGS['sites'].keys()]
 
 
 def main():
     print("[+] Ready...")
-    for site in SITES:
-        site.scrape()
+    scraper = Scraper(SETTINGS)
+    scraper.start()
 
     # When implementing scheduled scraping, this code will
     # come in handy. The implementation is practically
@@ -20,7 +18,7 @@ def main():
     # for site in SITES:
     #     scheduler.add_job(
     #         site.scrape(async=True),
-    #         "cron", hour="*/1", timezone="America/Mexico_City")
+    #         "cron", day="*/1", timezone="America/Mexico_City")
     # scheduler.start()
 
 

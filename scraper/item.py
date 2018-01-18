@@ -1,4 +1,7 @@
 
+from utilities.select import select
+
+
 class Item:
 
     def __init__(self, response, settings):
@@ -20,11 +23,5 @@ class Item:
         return data
 
     def _raw_text(self, key, selector):
-        if '_css' in key:
-            # TODO: Temporary, to check the CSS selectors
-            #       which were provided by Mike. Up to this
-            #       point, these selectors seem inferior.
-            return ' '.join(' '.join(
-                self.response.css(selector).extract()).split())
-        return ' '.join(' '.join(
-            self.response.xpath(selector).extract()).split())
+        texts_list = select(self.response, key, selector).extract()
+        return ' '.join(' '.join(texts_list).split()) if texts_list else []
