@@ -24,20 +24,23 @@
 
 ### Day 2
 
-| Status      | Task                                                 | Note                             |
-|-------------|------------------------------------------------------|----------------------------------|
-| Done        | Fix Twisted Reactor bug when scraping multiple sites |                                  |
-| Done        | Test with two sites at the same time (use Staples)   |                                  |
-| Done        | Initial throttling mechanism                         |                                  |
-| Done        | Initial randomized proxy mechanism                   |                                  |
-| Done        | Initial randomize user-agent mechanism               |                                  |
-| Done        | Resarch best way to save results into database       | Best done using `Item Pipelines` |
-| In Progress | Save information for unhandled requests              |                                  |
-| In Progress | Update documentation                                 |                                  |
+| Status      | Task                                                 | Note                                   |
+|-------------|------------------------------------------------------|----------------------------------------|
+| Done        | Fix Twisted Reactor bug when scraping multiple sites |                                        |
+| Done        | Test with two sites at the same time (use Staples)   |                                        |
+| Done        | Initial throttling mechanism                         |                                        |
+| Done        | Initial randomized proxy mechanism                   |                                        |
+| Done        | Initial randomize user-agent mechanism               |                                        |
+| Done        | Resarch best way to save results into database       | Best done using `Item Pipelines`       |
+| In Progress | Update documentation                                 |                                        |
+| In Progress | Save information for unhandled requests              | Include in same file (post-processing) |
+| Pending     | Retrive fresh proxy list from API                    | Must be US based proxies               |
+| Pending     | Handle 429 (and possibly) other response codes       |                                        |
+| Pending     | Include search string in results to correlate        |                                        |
 
 ### Day 3
 
-| Status       | Task                              | Note                     |
-|--------------|-----------------------------------|--------------------------|
-| To be agreed | Save results into database        | Which database?          |
-| To be agreed | Retrive fresh proxy list from API | Must be US based proxies |
+| Status       | Task                       | Note                                   |
+|--------------|----------------------------|----------------------------------------|
+| To be agreed | Save results into database | Which database? In instance or remote? |
+|              |                            |                                        |
