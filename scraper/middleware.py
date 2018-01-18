@@ -15,7 +15,8 @@ class ProxyMiddleware:
         #
         # To check that effectively each request is being issued with a
         # different proxy and user-agent header, uncomment the following:
-        # from pprint import pprint
-        # print('1' * 50)
-        # pprint(request.__dict__)
-        # print('1' * 50)
+        #
+        from pprint import pprint
+        print('1' * 50)
+        pprint(request.__dict__)
+        print('1' * 50)
