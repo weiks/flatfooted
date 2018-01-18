@@ -43,7 +43,7 @@ class Scraper:
             'FEED_URI': self._file_name(now),
             'RANDOMIZE_DOWNLOAD_DELAY': True,
             'COOKIES_ENABLED': False,
-            'DOWNLOAD_DELAY': 2
+            'DOWNLOAD_DELAY': 0
         }
         if self.settings.use_proxies:
             options['RETRY_TIMES'] = 10

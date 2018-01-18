@@ -14,7 +14,7 @@ from .item import Item
 class Spider(scrapy.Spider):
 
     custom_settings = {
-        'AUTOTHROTTLE_ENABLED': True,
+        'AUTOTHROTTLE_ENABLED': False,
         'LOG_LEVEL': 'DEBUG'
     }
 
@@ -72,6 +72,6 @@ class Spider(scrapy.Spider):
             error = 'DNS Lookup Error'
         elif response.check(TimeoutError, TCPTimedOutError):
             error = 'TCP Timeout Error'
-        self.failed_urls.append([response.value.response.url, error])
+        self.failed_urls.append([response.url, error])
         self.logger.error(error)
         print('*' * 50)
