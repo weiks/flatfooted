@@ -72,6 +72,9 @@ SETTINGS = {
                 'ships_from': [
                     '//*[@id="getPrice"]/div[1]/div[2]/div/div/div[1]/div[1]/div[1]/div/div[2]/div[2]/div[4]/div[2]/div//text()'
                 ],
+                'model': [
+                    '//*[@id="mainNgApp"]/div/div[2]/div/div[1]/div/ul/li[2]/span//text()'
+                ]
             }
         }
     }
