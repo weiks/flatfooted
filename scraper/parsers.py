@@ -10,10 +10,11 @@ class Parser:
 
     url_type = None
 
-    def __init__(self, response, settings, error):
+    def __init__(self, response, settings, search_string, error):
+        self.search_string = search_string
+        self.should_parse = False
         self.settings = settings
         self.response = response
-        self.should_parse = False
         self.error = error
         if error:
             self.url = response.request.url
@@ -36,6 +37,7 @@ class Parser:
         return {
             'url': self.url,
             'url_type': self.url_type,
+            'search_string': self.search_string,
             'response_status': self.response_status
         }
 
@@ -49,9 +51,9 @@ class Parser:
 
 class Item(Parser):
 
-    def __init__(self, response, settings, error=False):
+    def __init__(self, response, settings, search_string, error=False):
         self.url_type = 'Item'
-        super().__init__(response, settings, error)
+        super().__init__(response, settings, search_string, error)
 
     def data(self):
         data = self._initial_data()
@@ -76,10 +78,11 @@ class Item(Parser):
 
 class Search(Parser):
 
-    def __init__(self, response, settings, returned_results, error=False):
+    def __init__(self, response, settings,
+                 returned_results, search_string, error=False):
         self.url_type = 'Search'
         self.returned_results = returned_results
-        super().__init__(response, settings, error)
+        super().__init__(response, settings, search_string, error)
 
     def data(self):
         data = self._initial_data()
