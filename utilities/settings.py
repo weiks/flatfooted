@@ -17,8 +17,12 @@ class Settings:
         return self._name
 
     @property
-    def use_proxies(self):
-        return self.settings['use_proxies']
+    def random_proxies(self):
+        return self.settings['random_proxies']
+
+    @property
+    def random_user_agents(self):
+        return self.settings['random_user_agents']
 
     @property
     def timezone(self):

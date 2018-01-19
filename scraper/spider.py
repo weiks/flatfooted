@@ -1,25 +1,21 @@
 
-import pandas
 import scrapy
-
-from twisted.internet.error import TimeoutError, TCPTimedOutError
-from scrapy.spidermiddlewares.httperror import HttpError
-from twisted.internet.error import DNSLookupError
 
 from utilities.inputs import SearchStringsCSV
 from utilities.select import select
-from .item import Item
+from .parsers import Item, Search
 
 
 class Spider(scrapy.Spider):
 
     custom_settings = {
-        'AUTOTHROTTLE_ENABLED': False,
+        'AUTOTHROTTLE_TARGET_CONCURRENCY': 0.2,
+        'CONCURRENT_REQUESTS_PER_DOMAIN': 5,
+        'AUTOTHROTTLE_ENABLED': True,
         'LOG_LEVEL': 'DEBUG'
     }
 
     def __init__(self, settings={}, **kwargs):
-        self.failed_urls = []
         self.name = settings.name
         self.site_settings = settings
         self.start_urls = self._start_urls()
@@ -29,30 +25,38 @@ class Spider(scrapy.Spider):
         for url in self.start_urls:
             yield scrapy.Request(
                 url,
-                callback=self.parse,
-                errback=self._handle_error,
-                dont_filter=True
+                callback=self._parse_searches,
+                errback=self._parse_search_error
             )
 
-    def parse(self, response):
+    def _parse_searches(self, response):
         key = self.site_settings.first_item_selectors_key
+        returned_results = False
         for i, selector in enumerate(self.site_settings.first_item_selectors):
             first_item = select(response, key, selector).extract_first()
             if first_item:
-                yield response.follow(first_item, self._parse_item)
+                returned_results = True
+                yield response.follow(
+                    first_item,
+                    callback=self._parse_item,
+                    errback=self._parse_item_error
+                )
                 break
-
-    def handle_spider_closed(self, spider, reason):
-        print('!' * 50)
-        print(self.failed_urls)
-        print('!' * 50)
-        # TODO: Move into it's own class
-        data = pandas.DataFrame(self.failed_urls)
-        f = "outputs/{}_{}_errors.{}".format(self.name, "0000-00-00", "csv")
-        data.to_csv(f, columns=["url", "error"])
+        yield self._parse_search(response, returned_results)
 
     def _parse_item(self, response):
         yield Item(response, self.site_settings).data()
+
+    def _parse_search(self, response, returned_results):
+        return Search(response, self.site_settings, returned_results).data()
+
+    def _parse_item_error(self, response):
+        # self.logger.error(repr(response))
+        yield Item(response, self.site_settings, error=True).data()
+
+    def _parse_search_error(self, response):
+        # self.logger.error(repr(response))
+        return Search(response, self.site_settings, error=True).data()
 
     def _start_urls(self):
         return [
@@ -62,16 +66,3 @@ class Spider(scrapy.Spider):
 
     def _search_strings(self):
         return SearchStringsCSV(self.site_settings).search_strings()
-
-    def _handle_error(self, response):
-        print('*' * 50)
-        self.logger.error(repr(response))
-        if response.check(HttpError):
-            error = 'HTTP Error {}'.format(response.status)
-        elif response.check(DNSLookupError):
-            error = 'DNS Lookup Error'
-        elif response.check(TimeoutError, TCPTimedOutError):
-            error = 'TCP Timeout Error'
-        self.failed_urls.append([response.url, error])
-        self.logger.error(error)
-        print('*' * 50)

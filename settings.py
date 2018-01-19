@@ -1,12 +1,13 @@
 
 SETTINGS = {
-    'use_proxies': True,
-    'results_file_type': 'csv',
+    'random_proxies': False,
+    'random_user_agents': True,
+    'results_file_type': 'json',
     'timezone': 'America/Mexico_City',
     'search_strings': {
         'file': 'inputs/search-strings.csv',
         'variable': 'String',
-        'sample': 5
+        'sample': None
     },
     'required_fields': [
         'name',
@@ -54,8 +55,6 @@ SETTINGS = {
             'search': {
                 'query': 'https://www.staples.com/{0}/directory_{0}?',
                 'first_item_css': [
-                    # Not able to use XPATH selector because of the dynamic
-                    # allocation of IDs that Staples is using for the results
                     'div.product-info > a::attr(href)'
                 ]
             },

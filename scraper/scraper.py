@@ -1,4 +1,5 @@
 
+import pandas
 import datetime
 
 from scrapy.crawler import CrawlerProcess
@@ -19,9 +20,16 @@ class Scraper:
     def start(self):
         self.process.start()
 
+    def json_to_csv(self):
+        for name in self.settings.names:
+            csv_name = self._file_with_name(name, self.now, 'csv')
+            json_name = self._file_with_name(name, self.now)
+            results = pandas.read_json(json_name)
+            results.to_csv(csv_name, index=False)
+
     def _setup_process(self):
-        now = datetime.datetime.now(self.settings.timezone)
-        self.process = CrawlerProcess(self._crawler_options(now))
+        self.now = datetime.datetime.now(self.settings.timezone)
+        self.process = CrawlerProcess(self._crawler_options(self.now))
         for site in self.sites:
             self.process.crawl(Spider, settings=site.settings)
 
@@ -38,22 +46,27 @@ class Scraper:
 
         NOTE: Using proxies slows the process quite a bit.
         """
+        m = 'DOWNLOADER_MIDDLEWARES'
         options = {
             'FEED_FORMAT': self.settings.results_file_type,
             'FEED_URI': self._file_name(now),
             'RANDOMIZE_DOWNLOAD_DELAY': True,
             'COOKIES_ENABLED': False,
-            'DOWNLOAD_DELAY': 0
+            'DOWNLOAD_DELAY': 0,
+            m: {}
         }
-        if self.settings.use_proxies:
+        if self.settings.random_proxies:
             options['RETRY_TIMES'] = 10
             options['RETRY_HTTP_CODES'] = [500, 503, 504, 400, 403, 404, 408]
-            options['DOWNLOADER_MIDDLEWARES'] = {
-                'scraper.middleware.ProxyMiddleware': 410,
-                'scraper.middleware.RandomUserAgentMiddleware': 400
-            }
+            options[m]['scraper.middleware.ProxyMiddleware'] = 410
+        if self.settings.random_user_agents:
+            options[m]['scraper.middleware.RandomUserAgentMiddleware'] = 400
         return options
 
-    def _file_name(self, now):
-        return "outputs/%(name)s_{}.{}".format(
-            now.strftime(TS_FORMAT), self.settings.results_file_type)
+    def _file_with_name(self, name, now, ext=None):
+        return self._file_name(now, ext).replace("%(name)s", name)
+
+    def _file_name(self, now, ext=None):
+        if ext is None:
+            ext = self.settings.results_file_type
+        return "outputs/%(name)s_{}.{}".format(now.strftime(TS_FORMAT), ext)
