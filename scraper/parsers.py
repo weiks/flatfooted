@@ -69,7 +69,8 @@ class Item(Parser):
                         clean_text = raw_text
                         i += 1
                         break
-                data[key] = clean_text
+                data[key] = (
+                    clean_text.encode("ascii", errors="ignore").decode())
                 data["{}_selector".format(key)] = i
         if self.error:
             print('!' * 100)
