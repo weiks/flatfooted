@@ -2,7 +2,9 @@
 import random
 import pprint
 
-from .constants import USER_AGENTS, PROXIES
+from proxies.proxies import Proxies
+
+from .constants import USER_AGENTS
 
 
 class RandomUserAgentMiddleware:
@@ -11,8 +13,12 @@ class RandomUserAgentMiddleware:
 
 
 class ProxyMiddleware:
+
+    def __init__(self):
+        self.proxies = Proxies().fresh_list()
+
     def process_request(self, request, spider):
-        request.meta['proxy'] = random.choice(PROXIES)
+        request.meta['proxy'] = random.choice(self.proxies)
         print('-' * 50)
         pprint.pprint(request.__dict__)
         print('-' * 50)

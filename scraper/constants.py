@@ -89,37 +89,3 @@ SAFARI_UAs = [
 ]
 
 USER_AGENTS = CHROME_UAs + FIREFOX_UAs + SAFARI_UAs
-
-#
-# LIST WAS LAST UPDATED: 2018-01-18-02-45 CDT
-#
-# TODO: To avoid having to update this list manually, we should look into using
-# an API to retrieve fresh proxies everytime the scraper is executed.
-#
-# TODO: It may be the case that some of these proxies are outside of the US, so
-# the results will reflect that (specially in the case of Amazon). We must
-# restrict the list to proxies in the US.
-#
-
-PROXIES = [
-    'http://76.72.93.151:80',
-    'http://35.160.123.235:3128',
-    'http://98.124.121.102:53281',
-    'http://138.68.187.140:8118',
-    'http://54.211.32.166:3128',
-    'http://18.218.46.158:80',
-    'http://45.77.200.77:8080',
-    'http://54.183.58.31:80',
-    'http://45.63.52.75:808',
-    'http://45.77.191.37:3128',
-    'http://47.206.51.67:8080',
-    'http://192.157.192.223:3128',
-    'http://35.229.35.6:8080',
-    'http://138.68.187.1:8118',
-    'http://45.32.195.95:8118',
-    'http://107.172.97.147:8888',
-    'http://54.152.46.128:80',
-    'http://45.77.188.142:3128',
-    'http://35.196.179.164:8080',
-    'http://208.113.133.68:9000'
-]
