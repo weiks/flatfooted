@@ -86,7 +86,35 @@ The results will be in the `outputs/` directory.
 - [X] Include `search_string` to correlate results
 - [X] Save information for unhandled requests
 - [X] Update documentation
-- [ ] Retrieve fresh proxy list from API
+- [X] Remove non-ASCII characters that affect data post-processing
+- [X] Retrieve fresh proxy list from API
   - Postponed due to requirement of only 5,000 / items / site / day
     - Currently testing if throttling is enough for this
     - If throttling is not enough, we can look again into proxies
+  - Was actually implemented because the Staples site eturned HTTP status codes
+    that indicated that, even though we're connecting only once every 2 or 3
+    seconds, they detected it was the same IP and blocked us.
+  - Note to implement this another scraper was created to retrieve live proxy
+    data from ProxyDB. It was necessary because we need the "latest" proxies
+    known to be within the US and which allow for HTTPS due to the
+    automatic-redirection towards HTTPS (making HTTP proxies useless) mechanism
+    implemented in Amazon and Staples.
+    - This new scraper was implemente differently, it uses Selenium beacuse we
+      need to execute JavaScript code which is used to obfuscate the proxy IPs
+      and ports (to avoid people doing what we did, but that didn't stop us ;).
+    - To be able to do this, we need to install Chromium and use the
+      `chromedriver` included in the `utilities/` directory.
+
+## Current Status
+
+Two tests are being executed right now. I'm running the scrapper in the Amazon
+instance provided (using `tmux`), to test the difference in results between
+using and not using proxies. I'm looking for differences in execution time and
+actual data scraped.
+
+The tests were started around 4:30 AM (CDT). The earlier one uses proxies, while
+the latter one doesn't. I'm mentioning this in case Mike decides to run more
+processes and we don't get confused with the data files.
+
+IMPORTANT: Mike, please don't use the `tmux` sessions, as I need those to verify
+the time taken for each test.
