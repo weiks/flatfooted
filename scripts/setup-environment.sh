@@ -6,5 +6,5 @@
 #       and create a Python 3 environment.
 #
 sudo apt-get update
-sudo apt-get install python-pip libssl-dev -y
-sudo pip install -r requirements.txt
+sudo apt-get install python-pip3 libssl-dev -y
+sudo pip3 install -r requirements.txt
