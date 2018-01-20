@@ -50,9 +50,7 @@ class Scraper:
         options = {
             'FEED_FORMAT': self.settings.results_file_type,
             'FEED_URI': self._file_name(now),
-            'RANDOMIZE_DOWNLOAD_DELAY': True,
             'COOKIES_ENABLED': False,
-            'DOWNLOAD_DELAY': 0,
             m: {}
         }
         if self.settings.random_proxies:
