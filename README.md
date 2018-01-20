@@ -102,6 +102,7 @@ The results will be in the `outputs/` directory.
 - [ ] Look errors in the request-response cycle (3 out of 322 missing searches
   for Amazon)
   - Compare input/output differences to detect these cases
+- [ ] Re-test 7 failed search cases with 2 new XPATHs for Amazon
 
 ## Current Status
 
