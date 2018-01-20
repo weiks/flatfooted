@@ -50,31 +50,34 @@ SETTINGS = {
                     '//*[@id="olp_feature_div"]//text()'
                 ],
             }
-        },
-        'Staples': {
-            'search': {
-                'query': 'https://www.staples.com/{0}/directory_{0}?',
-                'first_item_css': [
-                    'div.product-info > a::attr(href)'
-                ]
-            },
-            'fields': {
-                'name': [
-                    '//*[@id="mainNgApp"]/div/div[2]/div/div[1]/h1//text()'
-                ],
-                'price': [
-                    '//*[@id="getPrice"]/div[1]/div[2]/div/div/div[1]/div[1]/div[1]/div/div[1]/div[2]/div[1]/div[1]/span//text()'
-                ],
-                'availability': [
-                    '//*[@id="getPrice"]/div[1]/div[2]/div/div/div[1]/div[2]/div[2]/div/div/div/div/div/div//text()',
-                ],
-                'ships_from': [
-                    '//*[@id="getPrice"]/div[1]/div[2]/div/div/div[1]/div[1]/div[1]/div/div[2]/div[2]/div[4]/div[2]/div//text()'
-                ],
-                'model': [
-                    '//*[@id="mainNgApp"]/div/div[2]/div/div[1]/div/ul/li[2]/span//text()'
-                ]
-            }
         }
+        # 'Staples': {
+        #     'search': {
+        #         'query': 'https://www.staples.com/{0}/directory_{0}?',
+        #         'first_item_css': [
+        #             'div.product-info > a::attr(href)'
+        #         ]
+        #     },
+        #     'fields': {
+        #         'name': [
+        #             '//*[@id="mainNgApp"]/div/div[2]/div/div[1]/h1//text()'
+        #         ],
+        #         'price': [
+        #             # '//*[@id="getPrice"]/div[1]/div[2]//text()',
+        #             '//*[@id="getPrice"]/div[1]/div[2]/div[2]/div/div[1]/div[1]/div[1]/div/div[1]/div[2]/div[1]/div[1]/span//text()',
+        #             '//*[@id="getPrice"]/div[1]/div[2]/div[2]/div/div[3]/div[1]/div/div[1]/div[2]/div[1]/div[1]/span//text()',
+        #             '//*[@id="getPrice"]/div[1]/div[2]/div/div/div[1]/div[1]/div[1]/div/div[1]/div[2]/div[1]/div[1]/span//text()'
+        #         ],
+        #         'availability': [
+        #             '//*[@id="getPrice"]/div[1]/div[2]/div/div/div[1]/div[2]/div[2]/div/div/div/div/div/div//text()',
+        #         ],
+        #         'ships_from': [
+        #             '//*[@id="getPrice"]/div[1]/div[2]/div/div/div[1]/div[1]/div[1]/div/div[2]/div[2]/div[4]/div[2]/div//text()'
+        #         ],
+        #         'model': [
+        #             '//*[@id="mainNgApp"]/div/div[2]/div/div[1]/div/ul/li[2]/span//text()'
+        #         ]
+        #     }
+        # }
     }
 }
