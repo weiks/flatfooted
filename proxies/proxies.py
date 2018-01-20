@@ -3,8 +3,10 @@ import os
 
 from selenium import webdriver
 
+from proxies.constants import PROXIES
 
-class Proxies:
+
+class RealTimeProxies:
 
     """Get a US HTTPS proxies list in real-time
 
@@ -30,7 +32,7 @@ class Proxies:
             chrome_options=options
         )
 
-    def fresh_list(self):
+    def list(self):
         print('-' * 100)
         print('GETTING FRESH LIST OF PROXIES...')
         self.driver.get(self.url)
@@ -44,3 +46,18 @@ class Proxies:
         print(proxies)
         print('-' * 100)
         return proxies
+
+
+class PredefinedProxies:
+
+    """Use a predefined set of proxies
+
+    These were taken from https://blazingseollc.com/ through their
+    SEMI-DEDICATED offering.
+    """
+
+    def __init__(self):
+        self.proxies = PROXIES
+
+    def list(self):
+        return self.proxies
