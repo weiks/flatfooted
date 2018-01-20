@@ -54,7 +54,7 @@ class Scraper:
             m: {}
         }
         if self.settings.random_proxies:
-            options['RETRY_TIMES'] = 10
+            options['RETRY_TIMES'] = 3
             options['RETRY_HTTP_CODES'] = [500, 503, 504, 400, 403, 404, 408]
             options[m]['scraper.middleware.ProxyMiddleware'] = 410
         if self.settings.random_user_agents:

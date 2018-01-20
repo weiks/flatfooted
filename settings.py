@@ -1,6 +1,6 @@
 
 SETTINGS = {
-    'random_proxies': False,
+    'random_proxies': True,
     'random_user_agents': True,
     'results_file_type': 'json',
     'timezone': 'America/Mexico_City',
