@@ -14,15 +14,6 @@ Python 3 packages. To do so, you may simply execute:
 $ bash setup-environment.sh
 ```
 
-If that doesn't work automatically, you can execute:
-
-```
-$ sudo apt-get update
-$ sudo apt-get install python3-pip libssl-dev -y
-$ sudo pip3 install --upgrade pip
-$ sudo pip3 install -r requirements.txt
-```
-
 ### Settings
 
 The `/settings.py` file (not to be confused with `utilities/settings.py`),
