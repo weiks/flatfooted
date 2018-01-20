@@ -53,7 +53,7 @@ The results will be in the `outputs/` directory.
 
 ## Tasks
 
-### Day 1
+### Phase 1
 
 - [X] Join site and spreadsheet search strings
 - [X] Test CSS selectors from `amzn` file
@@ -64,7 +64,7 @@ The results will be in the `outputs/` directory.
 - [ ] Environment installlation scripts for Ubuntu 16
   - Must be tested at least once by Mike
 
-### Day 2
+### Phase 2
 
 - [X] Fix Twisted Reactor bug when scraping multiple sites
 - [X] Test with two sites at the same time (use Staples)
@@ -95,6 +95,13 @@ The results will be in the `outputs/` directory.
       and ports (to avoid people doing what we did, but that didn't stop us ;).
     - To be able to do this, we need to install Chromium and use the
       `chromedriver` included in the `utilities/` directory.
+
+### Phase 3
+
+- [ ] Save raw HTML to re-scrape it if necessary without re-crawling
+- [ ] Look errors in the request-response cycle (3 out of 322 missing searches
+  for Amazon)
+  - Compare input/output differences to detect these cases
 
 ## Current Status
 
