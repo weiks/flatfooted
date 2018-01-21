@@ -55,30 +55,30 @@ The results will be in the `outputs/` directory.
 
 ### Phase 1
 
-- [X] Join site and spreadsheet search strings
-- [X] Test CSS selectors from `amzn` file
-- [X] Removed 1,240 duplicates between site and spreaddsheet data
-- [X] General search capability search-to-new-results-page
-- [X] Test general search capability for Amazon
-- [X] Use first-result mechanim to retrieve relevant item
+- [x] Join site and spreadsheet search strings
+- [x] Test CSS selectors from `amzn` file
+- [x] Removed 1,240 duplicates between site and spreaddsheet data
+- [x] General search capability search-to-new-results-page
+- [x] Test general search capability for Amazon
+- [x] Use first-result mechanim to retrieve relevant item
 - [ ] Environment installlation scripts for Ubuntu 16
   - Must be tested at least once by Mike
 
 ### Phase 2
 
-- [X] Fix Twisted Reactor bug when scraping multiple sites
-- [X] Test with two sites at the same time (use Staples)
-- [X] Initial throttling mechanism
-- [X] Initial randomized proxy mechanism
-- [X] Initial randomize user-agent mechanism
-- [X] Resarch best way to save results into database
+- [x] Fix Twisted Reactor bug when scraping multiple sites
+- [x] Test with two sites at the same time (use Staples)
+- [x] Initial throttling mechanism
+- [x] Initial randomized proxy mechanism
+- [x] Initial randomize user-agent mechanism
+- [x] Resarch best way to save results into database
   - Best done with `Item Pipelines`
-- [X] Handle 429 (and possibly) other response codes
-- [X] Include `search_string` to correlate results
-- [X] Save information for unhandled requests
-- [X] Update documentation
-- [X] Remove non-ASCII characters that affect data post-processing
-- [X] Retrieve fresh proxy list from API
+- [x] Handle 429 (and possibly) other response codes
+- [x] Include `search_string` to correlate results
+- [x] Save information for unhandled requests
+- [x] Update documentation
+- [x] Remove non-ASCII characters that affect data post-processing
+- [x] Retrieve fresh proxy list from API
   - Postponed due to requirement of only 5,000 / items / site / day
     - Currently testing if throttling is enough for this
     - If throttling is not enough, we can look again into proxies
@@ -98,25 +98,36 @@ The results will be in the `outputs/` directory.
 
 ### Phase 3
 
-- [ ] Save raw HTML to re-scrape it if necessary without re-crawling
-- [ ] Look errors in the request-response cycle (3 out of 322 missing searches
-  for Amazon)
-  - Compare input/output differences to detect these cases
-- [ ] Re-test 7 failed search cases with 2 new XPATHs for Amazon
-
-## Current Status
-
-Two tests are being executed right now. I'm running the scrapper in the Amazon
-instance provided (using `tmux`), to test the difference in results between
-using and not using proxies. I'm looking for differences in execution time and
-actual data scraped.
-
-The tests were started around 4:30 AM (CDT). The earlier one uses proxies, while
-the latter one doesn't. I'm mentioning this in case Mike decides to run more
-processes and we don't get confused with the data files.
-
-IMPORTANT: Mike, please don't use the `tmux` sessions, as I need those to verify
-the time taken for each test.
+- [x] Integrate "sale price" into "price" field
+- [x] Separate field for "Currently unavailable"
+- [x] Save raw HTML to re-scrape it if necessary without re-crawling
+  - For example, an item which was search for on Amazon at a certain date, and
+    with `search_string == RKLCDBKT`, is saved as:
+    `outputs/html/Amazon_2018-01-21-02-32_RKLCDBKT.html`
+- [x] Look errors in the request-response cycle
+  - When comparing number of lines in input file vs number of products in
+    outputs file, we find that 3 out of 322 missing searches for Amazon.
+  - The prolem was that the `Peachtree null` was repeated 3 times (4 in total)
+    as a `search_string`, so these were the three extra observations that my
+    code ignores because it treats them as duplicates of previous requests. This
+    is to avoid unnecessary multiple requests, and that's the reason for the
+    difference, not that we did not execute them or that they got an error I was
+    not catching.
+    - NOTE: If you look into full observations, they were actually different
+      because the `SKU` variables was different for them, but the `String`
+      variable (which is what I'm using to search sites) was the same. If we
+      want to actually make them different, the `SKU` information should go
+      inside the `String` information also.
+- [x] Re-test 7 failed search cases with 2 new XPATHs for Amazon
+  - Turns out that the correct number of searches that failed (meaning that they
+    do return results, but the scraper did not detect them and marked them as
+    not returning any results), was 12. These search terms are saved in the
+    `inputs/search-strings-re-tests.csv` file.
+  - New XPATHs have been integrated, and I've re-ordered them to make sure we go
+    from specific to general, and thus are able to get "special" cases before
+    they are "obscured" using a more "general" XPATH.
+  - The last results show that we are now able to get all results correctly, as
+    well as the information for the corresponding products.
 
 ## Item analysis for Amazon
 
@@ -136,7 +147,7 @@ The reasons are for not getting results are:
 |               1 | It's a movie (type 1)          | Yes          | Extra XPATHs (Amazon Video, Blu-ray, DVD)                                                       | ?          |                                   |
 |               1 | It's a movie (type 2)          | Yes          | Extra XPATH                                                                                     | ?          |                                   |
 |               1 | It's a music CD                | Yes          | Extra XPATH                                                                                     | ?          |                                   |
-|               1 | Standard product page          | Yes          | Extra XPATH                                                                                     | ?          |                                   |
+|               1 | Standard product page          | Yes          | Extra XPATH                                                                                     | ?          | Should've been scraped            |
 
 ### "Currently unavailable"
 
