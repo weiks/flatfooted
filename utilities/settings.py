@@ -25,6 +25,10 @@ class Settings:
         return self.settings['random_user_agents']
 
     @property
+    def save_raw_html(self):
+        return self.settings['save_raw_html']
+
+    @property
     def timezone(self):
         return pytz.timezone(self.settings['timezone'])
 

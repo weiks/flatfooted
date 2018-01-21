@@ -31,7 +31,7 @@ class Scraper:
         self.now = datetime.datetime.now(self.settings.timezone)
         self.process = CrawlerProcess(self._crawler_options(self.now))
         for site in self.sites:
-            self.process.crawl(Spider, settings=site.settings)
+            self.process.crawl(Spider, settings=site.settings, now=self.now)
 
     def _crawler_options(self, now):
         """Return crrawlwer options
