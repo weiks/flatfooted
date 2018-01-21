@@ -1,6 +1,5 @@
 
 SETTINGS = {
-    'random_proxies': True,
     'save_raw_html': True,
     'random_proxies': False,
     'random_user_agents': True,
@@ -21,7 +20,10 @@ SETTINGS = {
                 'query': 'https://www.amazon.com/s/?field-keywords={}',
                 'first_item': [
                     '//*[@id="result_0"]/div/div[3]/div[1]/a/@href',
-                    '//*[@id="result_0"]/div/div/div/div[2]/div[1]/div[1]/a/@href'
+                    '//*[@id="result_0"]/div/div[2]/div/div[2]/div[2]/div[1]/a/@href',
+                    '//*[@id="result_0"]/div/div/div/div[2]/div[2]/div[1]/a/@href',
+                    '//*[@id="result_0"]/div/div/div/div[2]/div[1]/div[1]/a/@href',
+                    '//*[@id="result_0"]/div/div/div/div[2]/div[1]/div/a/@href'
                 ]
             },
             'fields': {
@@ -37,7 +39,8 @@ SETTINGS = {
                     '//*[@id="bylineInfo"]//@href'
                 ],
                 'price': [
-                    '//*[@id="priceblock_ourprice"]//text()'
+                    '//*[@id="priceblock_ourprice"]//text()',   # Regular price
+                    '//*[@id="priceblock_saleprice"]//text()'   # Sale price
                 ],
                 'availability': [
                     '//*[@id="availability"]//text()'
@@ -50,7 +53,7 @@ SETTINGS = {
                 ],
                 'n_resellers': [
                     '//*[@id="olp_feature_div"]//text()'
-                ],
+                ]
             }
         }
         # 'Staples': {
