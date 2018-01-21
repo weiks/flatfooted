@@ -104,7 +104,7 @@ The results will be in the `outputs/` directory.
   - For example, an item which was search for on Amazon at a certain date, and
     with `search_string == RKLCDBKT`, is saved as:
     `outputs/html/Amazon_2018-01-21-02-32_RKLCDBKT.html`
-- [x] Look errors in the request-response cycle
+- [x] Look for errors in the request-response cycle
   - When comparing number of lines in input file vs number of products in
     outputs file, we find that 3 out of 322 missing searches for Amazon.
   - The prolem was that the `Peachtree null` was repeated 3 times (4 in total)
