@@ -5,7 +5,7 @@ SETTINGS = {
     'results_file_type': 'json',
     'timezone': 'America/Mexico_City',
     'search_strings': {
-        'file': 'inputs/search-strings.csv',
+        'file': 'inputs/search-strings-re-test.csv',
         'variable': 'String',
         'sample': None
     },
