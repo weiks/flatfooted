@@ -9,10 +9,9 @@ full_file_name <- function(file) {
     paste(OUTPUTS_DIRECTORY, file, sep = "")
 }
 
-load_site_data <- function(site) {
+load_site_data <- function() {
     print("Loading CSV files...")
     files <- list.files(OUTPUTS_DIRECTORY, pattern = "*.csv")
-    filter <- site %in% files
     data <- NULL
     for (file in files) {
         full_file_name <- full_file_name(file)
@@ -30,9 +29,7 @@ load_site_data <- function(site) {
 #       but this is how you can load it.
 #
 
-site <- "Amazon"
+data <- load_site_data()
 
-amazon <- load_site_data(site)
-
-str(amazon)
-head(amazon)
+str(data)
+head(data)
