@@ -4,6 +4,7 @@ from utilities.select import select
 from twisted.internet.error import TimeoutError, TCPTimedOutError
 from scrapy.spidermiddlewares.httperror import HttpError
 from twisted.internet.error import DNSLookupError
+from utilities.constants import TS_FORMAT
 
 
 class Parser:
@@ -34,14 +35,16 @@ class Parser:
 
     def _initial_data(self):
         if self.error:
-            search_string = self.response.value.response.meta['search_string']
+            meta_data = self.response.value.response.meta
         else:
-            search_string = self.response.meta['search_string']
+            meta_data = self.response.meta
         return {
             'url': self.url,
             'url_type': self.url_type,
             'response_status': self.response_status,
-            'search_string': search_string
+            'search_string': meta_data['search_string'],
+            'site_name': meta_data['site_name'],
+            'timestamp': meta_data['timestamp'].strftime(TS_FORMAT)
         }
 
     def data(self):
