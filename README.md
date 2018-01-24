@@ -136,34 +136,31 @@ The results will be in the `outputs/` directory.
 - [x] Insert metadata (`site_name` and `timestamp`) into results
 - [ ] Keep track of "0 results" in the Amazon data
 - [ ] JOIN by `search_string` in post-processing script
-
-- TODO: We should standarize all variable names (avoids variables unnecessarily
-  spreading when loading data frames in R due to variable name uniqueness).
-- TODO: Update site names to the ones Mike wants as values in data frame
-
-From 15 sites:
-
-- 14 were unique
-- 2 require JavaScript
-- 3 require input/data
-- 2 require double-hops
-- 7 were actually tested
-- 3 worked fine so far
+  - Need to separate URLs into "search URL" and "product URL"
+- [ ] Binary variable for each site to indicate if "results page" should be
+  using to retrieve product data, instead of hoping into "product page"
 
 #### Group 1
 
-- [ ] `GWW`   https://www.grainger.com/search?searchQuery=pen
+- [ ] `Zoro` https://www.zoro.com/search?q=pen
   - Tested: No: Requires JavaScript
-- [ ] `Zoro`  https://www.zoro.com/search?q=pen
+  - Seems that JavaScript is only required to load the site, after that,
+    standard techniques apply as they normally would.
+- [ ] `GWW` https://www.grainger.com/search?searchQuery=pen
   - Tested: No: Requires JavaScript
+  - Seems that JavaScript is required to actually interact with the site and get
+    the data we are looking for. This can be a bit tricky, but will explore it
+    later.
+  - The JavaScript interaction may be bypassed if we are able to use an
+    identifier from the `Zoro` data, and use that as the search string. This
+    will bypass a "results page" and go straight to "product page".
 
 #### Group 2
 
-- [x] `cdw`   https://www.cdw.com/shop/search/result.aspx?b=pen
+- [x] `cdw` https://www.cdw.com/shop/search/result.aspx?b=pen
   - Tested: Yes
-  - Need to identify `product_link`, `ship`, and `ship2` on page
-  - Explain reason why "CDW Part" is included in text but "Mfg. Part" is not
-- [ ] `cnxn`  https://www.connection.com/IPA/Shop/Product/Search?term=pen
+  - Need to identify `ship`, and `ship2` on page
+- [ ] `cnxn` https://www.connection.com/IPA/Shop/Product/Search?term=pen
   - Tested: Yes
   - I'm getting a lot of 404 (Not Found) and 302 (Moved)
     - It seems that when an product is not found, they return a 404 instead of
@@ -175,52 +172,70 @@ From 15 sites:
       automatically redirected to the product page (with a 302), and that is
       messing up the mechanism. Need to look into this further. This definitely
       needs to be fixed.
-  - Need to identify `product_link`, `brand`, `cnxn_no`, `mfg_no`, and `ship` on
-    page
-- [ ] `tecd`  https://shop.techdata.com/searchall?kw=pen
-  - Tested: No: Needs sign-in
-- [ ] `nsit`  https://www.insight.com/en_US/search.html?q=pen
-  - Tested: No: Needs ZIP
+  - Need to identify `brand`, `cnxn_no`, `mfg_no`, and `ship` on page
+- [ ] `tecd` https://shop.techdata.com/searchall?kw=pen
+  - Tested: Yes
+  - "Product page" needs sign-in account
+  - How to proceed:
+    - Retrieve data from "search page"
+- [ ] `nsit` https://www.insight.com/en_US/search.html?q=pen
+  - Tested: Yes
+  - Sometimes price is held back behind a "Estimate the total price of this
+    item" button. However, it's not working because even if we put a valid ZIP
+    code, the price comes as "$0", and we need to call their number to get a
+    price. These cases will be marked as not having a price. Other cases, were
+    price does appear, just proceed normally.
 
 #### Group 3
 
-- [x] `fast`  https://www.fastenal.com/products?term=pen
+- [x] `fast` https://www.fastenal.com/products?term=pen
   - Tested: Yes
   - There's a "first item" per category and then there's a table. I'm
-    using the table results. Is this ok?
-  - There are various types of prices mixed ("wholesale", "online", "unit", and
-    maybe others). I'm trying to get all of them.
+    using the table results. Is this ok? Answer: Yes
+  - There are various types of prices mixed ("wholesale", "online", "unit",
+    and maybe others). I'm trying to get all of them.
   - Some URLs returned by the site are using the `;` character in the URL
     and that's causing some fields to move in the spreadsheet.
   - There are no identifiers in the first/main table, so the fields can move
     around without ourselves knowing apriori where they will be. We need some
     kind of dynamic parsing for this (check each field until we find the word
     "Manufacturer" in one of the cells, and use the appropriate value)
-- [ ] `AZO`   https://www.autozone.com/searchresult?searchText=pen
+    - How to proceed: save all the data in the table as a single string.
+- [ ] `AZO` https://www.autozone.com/searchresult?searchText=pen
   - Tested: No: Double-hop and asks for ZIP
+  - Marked as: Exploratory work (defered)
 
 #### Group 4
 
 - [x] `BUNZL` https://www.bunzlpd.com/catalogsearch/result/?q=pen
   - Tested: Yes
-  - Need to identify `min_price`, `regular_price`, and `shipping` on page
-- [ ] `pcmi`  https://www.insight.com/en_US/search.html?q=pen
-  - Tested: No: Repeated URL with `nsit` site
-- [ ] `MSM`   https://www.mscdirect.com/browse/tn/?searchterm=pen
-  - Tested: No: Double-hop
-- [ ] `hdss`  https://hdsupplysolutions.com/shop/SearchDisplay?searchTerm=pen
+  - Need to identify `min_price`, and `shipping` on page
+- [ ] `pcmi` http://www.tigerdirect.com/applications/SearchTools/search.asp?keywords=pen
   - Tested: Yes
+- [ ] `MSM` https://www.mscdirect.com/browse/tn/?searchterm=pen
+  - Tested: Yes
+  - This site has a double-hop for search (categories/search results/product)
+    - How to proceed:
+      - If it goes to "categories" mark it as not having results
+      - If it goes to "research results" proceed normally
+      - If it goes into "product" proceed normally
+        - This can be tricky, I need to find a reliable way to identify
+          whether we are in a "product" or "search" page
+- [ ] `hdss` https://hdsupplysolutions.com/shop/SearchDisplay?searchTerm=pen
+  - Tested: Yes
+  - Marked as: Exploratory work (defered)
   - Not getting search results with the inputs we're using. Not sure if this is
     a problem with my code or if it's something else. Need to look into this
     futher.
   - Need to identify `price_tier` and `priceq` on page
   - `instock` button requires site account for checking
   - `shipping_details` has various fields, trying to get all of them
-- [ ] `esnd`  http://biggestbook.com/ui/catalog.html#/search?keyword=pen
+- [ ] `esnd` http://biggestbook.com/ui/catalog.html#/search?keyword=pen
   - Tested: Yes
+  - Marked as: Exploratory work (defered)
   - This is giving me problems (duplicated URLs), I need to look into this
     further, but I think it could be the reserved symbol `#`.
-  - Need fields specification for this sitea
+  - Need fields specification for this site.
 
 ## Item analysis for Amazon
 
