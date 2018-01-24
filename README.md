@@ -133,6 +133,8 @@ The results will be in the `outputs/` directory.
 
 ### Phase 4
 
+- [x] Insert metadata (`site_name` and `timestamp`) into results
+
 - TODO: We should standarize all variable names (avoids variables unnecessarily
   spreading when loading data frames in R due to variable name uniqueness).
 - TODO: Update site names to the ones Mike wants as values in data frame
