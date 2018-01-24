@@ -31,7 +31,11 @@ class Spider(scrapy.Spider):
                 combination['url'],
                 callback=self._parse_searches,
                 errback=self._parse_search_error,
-                meta={'search_string': combination['search_string']}
+                meta={
+                    'search_string': combination['search_string'],
+                    'site_name': self.name,
+                    'timestamp': self.now
+                }
             )
 
     def _parse_searches(self, response):
@@ -46,7 +50,11 @@ class Spider(scrapy.Spider):
                     first_item,
                     callback=self._parse_item,
                     errback=self._parse_item_error,
-                    meta={'search_string': response.meta['search_string']}
+                    meta={
+                        'search_string': response.meta['search_string'],
+                        'site_name': response.meta['site_name'],
+                        'timestamp': response.meta['timestamp']
+                    }
                 )
                 break
         yield self._parse_search(response, returned_results)
@@ -80,8 +88,8 @@ class Spider(scrapy.Spider):
         return SearchStringsCSV(self.site_settings).search_strings()
 
     def _save_raw_html(self, response):
-        search_string = response.meta['search_string']
         if self.site_settings.save_raw_html and hasattr(response, "body"):
+            search_string = response.meta.get('search_string', False)
             with open(self._raw_html_file_name(search_string), 'w+b') as f:
                 f.write(response.body)
 
