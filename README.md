@@ -104,6 +104,8 @@ The results will be in the `outputs/` directory.
   - For example, an item which was search for on Amazon at a certain date, and
     with `search_string == RKLCDBKT`, is saved as:
     `outputs/html/Amazon_2018-01-21-02-32_RKLCDBKT.html`
+  - If no HTML was saved for a response, it was because of a failure and we
+    should further look into it.
 - [x] Look for errors in the request-response cycle
   - When comparing number of lines in input file vs number of products in
     outputs file, we find that 3 out of 322 missing searches for Amazon.
@@ -128,6 +130,93 @@ The results will be in the `outputs/` directory.
     they are "obscured" using a more "general" XPATH.
   - The last results show that we are now able to get all results correctly, as
     well as the information for the corresponding products.
+
+### Phase 4
+
+- TODO: We should standarize all variable names (avoids variables unnecessarily
+  spreading when loading data frames in R due to variable name uniqueness).
+- TODO: Update site names to the ones Mike wants as values in data frame
+
+From 15 sites:
+
+- 14 were unique
+- 2 require JavaScript
+- 3 require input/data
+- 2 require double-hops
+- 7 were actually tested
+- 3 worked fine so far
+
+#### Group 1
+
+- [ ] `GWW`   https://www.grainger.com/search?searchQuery=pen
+  - Tested: No: Requires JavaScript
+- [ ] `Zoro`  https://www.zoro.com/search?q=pen
+  - Tested: No: Requires JavaScript
+
+#### Group 2
+
+- [x] `cdw`   https://www.cdw.com/shop/search/result.aspx?b=pen
+  - Tested: Yes
+  - Need to identify `product_link`, `ship`, and `ship2` on page
+  - Explain reason why "CDW Part" is included in text but "Mfg. Part" is not
+- [ ] `cnxn`  https://www.connection.com/IPA/Shop/Product/Search?term=pen
+  - Tested: Yes
+  - I'm getting a lot of 404 (Not Found) and 302 (Moved)
+    - It seems that when an product is not found, they return a 404 instead of
+      simply returning a 200. They are using HTML status code incorrectly. It
+      doesn't affect functionality, but leaves 404's in the spreadsheet instead
+      of leaving a 200 with a "research without results" indicator. Should we
+      fix this?
+    - When a result is actually returned (maybe when it's the only one), we're
+      automatically redirected to the product page (with a 302), and that is
+      messing up the mechanism. Need to look into this further. This definitely
+      needs to be fixed.
+  - Need to identify `product_link`, `brand`, `cnxn_no`, `mfg_no`, and `ship` on
+    page
+- [ ] `tecd`  https://shop.techdata.com/searchall?kw=pen
+  - Tested: No: Needs sign-in
+- [ ] `nsit`  https://www.insight.com/en_US/search.html?q=pen
+  - Tested: No: Needs ZIP
+
+#### Group 3
+
+- [x] `fast`  https://www.fastenal.com/products?term=pen
+  - Tested: Yes
+  - There's a "first item" per category and then there's a table. I'm
+    using the table results. Is this ok?
+  - There are various types of prices mixed ("wholesale", "online", "unit", and
+    maybe others). I'm trying to get all of them.
+  - Some URLs returned by the site are using the `;` character in the URL
+    and that's causing some fields to move in the spreadsheet.
+  - There are no identifiers in the first/main table, so the fields can move
+    around without ourselves knowing apriori where they will be. We need some
+    kind of dynamic parsing for this (check each field until we find the word
+    "Manufacturer" in one of the cells, and use the appropriate value)
+- [ ] `AZO`   https://www.autozone.com/searchresult?searchText=pen
+  - Tested: No: Double-hop and asks for ZIP
+
+#### Group 4
+
+- [x] `BUNZL` https://www.bunzlpd.com/catalogsearch/result/?q=pen
+  - Tested: Yes
+  - Need to identify `min_price`, `regular_price`, and `shipping` on page
+- [ ] `pcmi`  https://www.insight.com/en_US/search.html?q=pen
+  - Tested: No: Repeated URL with `nsit` site
+- [ ] `MSM`   https://www.mscdirect.com/browse/tn/?searchterm=pen
+  - Tested: No: Double-hop
+- [ ] `hdss`  https://hdsupplysolutions.com/shop/SearchDisplay?searchTerm=pen
+  - Tested: Yes
+  - Not getting search results with the inputs we're using. Not sure if this is
+    a problem with my code or if it's something else. Need to look into this
+    futher.
+  - Need to identify `price_tier` and `priceq` on page
+  - `instock` button requires site account for checking
+  - `shipping_details` has various fields, trying to get all of them
+- [ ] `esnd`  http://biggestbook.com/ui/catalog.html#/search?keyword=pen
+  - Tested: Yes
+  - This is giving me problems (duplicated URLs), I need to look into this
+    further, but I think it could be the reserved symbol `#`.
+  - Need fields specification for this sitea
 
 ## Item analysis for Amazon
 
@@ -203,3 +292,1559 @@ The reasons are for not getting results are:
 ### "Temporarily out of stock"
 
 1. https://www.amazon.com/TownSteel-FME-4000-Frequency-Instantly/dp/B00YM75SJK/ref=sr_1_fkmr0_1/143-9413147-6558936?ie=UTF8&qid=1516475587&sr=8-1-fkmr0&keywords=TOWNSTEEL+FME+2030+RFID+G+626
+
+
+## What should be scraped
+
+## 1 AZO
+
+{
+	"_id": "azo",
+	"startUrl": [
+		"http://weiksner.com/amzn/azo.php"
+	],
+	"selectors": [
+		{
+			"parentSelectors": [
+				"_root"
+			],
+			"type": "SelectorElement",
+			"multiple": true,
+			"id": "table",
+			"selector": "table",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "site",
+			"selector": "td:nth-of-type(1)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "date",
+			"selector": "td:nth-of-type(2)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorLink",
+			"multiple": false,
+			"id": "sku",
+			"selector": "a",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "product",
+			"selector": "div.grid-19 h3.simple",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "part_no",
+			"selector": "span.part-number span",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "price",
+			"selector": "td.price span:nth-of-type(2)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "in_stock",
+			"selector": "div.button-bar-msg-in-stock",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorLink",
+			"multiple": false,
+			"id": "cat1",
+			"selector": "ul.inline.breadcrumb li:nth-of-type(2) a",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorLink",
+			"multiple": false,
+			"id": "cat2",
+			"selector": "ul.inline.breadcrumb li:nth-of-type(3) a",
+			"delay": ""
+		}
+	]
+}
+## 2 BUNZL
+
+{
+	"_id": "bunzl",
+	"startUrl": [
+		"http://weiksner.com/amzn/scrape/bunzl/index.php"
+	],
+	"selectors": [
+		{
+			"parentSelectors": [
+				"_root"
+			],
+			"type": "SelectorElement",
+			"multiple": true,
+			"id": "table",
+			"selector": "table",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "site",
+			"selector": "td:nth-of-type(1)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "date",
+			"selector": "td:nth-of-type(2)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorLink",
+			"multiple": false,
+			"id": "search",
+			"selector": "a",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"search"
+			],
+			"type": "SelectorElement",
+			"multiple": true,
+			"id": "results",
+			"selector": "div.product-details",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"results"
+			],
+			"type": "SelectorLink",
+			"multiple": false,
+			"id": "product",
+			"selector": "a.product-name",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"results"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "min price",
+			"selector": "a.minimal-price-link span.price",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"results"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "regular price",
+			"selector": "span.regular-price span.price",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "item #",
+			"selector": "p.product-ids",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "shipping",
+			"selector": "p.availability span",
+			"regex": "",
+			"delay": ""
+		}
+	]
+}
+
+## 3 CDW
+
+{
+	"_id": "cdw-tech",
+	"startUrl": [
+		"http://weiksner.com/amzn/techdist/cdw.php"
+	],
+	"selectors": [
+		{
+			"parentSelectors": [
+				"_root"
+			],
+			"type": "SelectorElement",
+			"multiple": true,
+			"id": "table",
+			"selector": "table",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple":s false,
+			"id": "sku",
+			"selector": "td:nth-of-type(1)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "site",
+			"selector": "td:nth-of-type(3)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "date",
+			"selector": "td:nth-of-type(4)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorLink",
+			"multiple": false,
+			"id": "product-link",
+			"selector": "a",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product-link"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "product",
+			"selector": "span.fn",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product-link"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "price",
+			"selector": "div.productRight span.selected-price span:nth-of-type(2)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product-link"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "mfg #",
+			"selector": "span.mpn",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product-link"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "cdw #",
+			"selector": "span.part-number:nth-of-type(3)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product-link"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "ship",
+			"selector": "div.short-message-block span.message",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product-link"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "ship2",
+			"selector": "div.long-message-block span.message",
+			"regex": "",
+			"delay": ""
+		}
+	]
+}
+
+## 4 CNXN
+
+{
+	"_id": "cnxn",
+	"startUrl": [
+		"http://weiksner.com/amzn/techdist/cnxn.php"
+	],
+	"selectors": [
+		{
+			"parentSelectors": [
+				"_root"
+			],
+			"type": "SelectorElement",
+			"multiple": true,
+			"id": "table",
+			"selector": "table",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "sku",
+			"selector": "td:nth-of-type(1)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "site",
+			"selector": "td:nth-of-type(3)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "date",
+			"selector": "td:nth-of-type(4)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorLink",
+			"multiple": false,
+			"id": "product-link",
+			"selector": "a",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product-link"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "product",
+			"selector": "h1.pagetitle",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product-link"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "brand",
+			"selector": "div.col-xs-12 div.col-lg-12 a",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product-link"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "cnxn #",
+			"selector": "span#productSku",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product-link"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "mfg #",
+			"selector": "span#productManufacturerPartNumber",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product-link"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "ship",
+			"selector": "span#productEstimatedShipping",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product-link"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "price",
+			"selector": "span.priceDisplay",
+			"regex": "",
+			"delay": ""
+		}
+	]
+}
+
+## 5 FAST
+
+{
+	"startUrl": [
+		"http://weiksner.com/amzn/price/fast.php"
+	],
+	"selectors": [
+		{
+			"parentSelectors": [
+				"_root"
+			],
+			"type": "SelectorElement",
+			"multiple": true,
+			"id": "table",
+			"selector": "table",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "site",
+			"selector": "td:nth-of-type(1)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "date",
+			"selector": "td:nth-of-type(2)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorLink",
+			"multiple": false,
+			"id": "sku",
+			"selector": "a",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "product",
+			"selector": "div.info--description",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "price",
+			"selector": "div.whole__sale--label",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "brand",
+			"selector": "div.general-info--value span",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "fast part no",
+			"selector": "tr:contains('Fastenal Part No. (SKU)') div.general-info--value",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "unspsc",
+			"selector": "a.popup",
+			"regex": "",
+			"delay": ""
+		}
+	],
+	"_id": "fast-price"
+}
+
+## 6 GWW
+
+{
+	"selectors": [
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "product",
+			"selector": "h1.productName",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "price",
+			"selector": "span.gcprice-value",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "per",
+			"selector": "span.gcprice-unit",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "shipping",
+			"selector": "span.rta-message-confirmation",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "item_id",
+			"selector": "div.head-container li:nth-of-type(1) span",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "mfr_id",
+			"selector": "div.head-container li:nth-of-type(2) span",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "unspsc",
+			"selector": "li#unspc span",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "brand",
+			"selector": "a.brand",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "drop ship",
+			"selector": "span.rta-message-error",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"_root"
+			],
+			"type": "SelectorElement",
+			"multiple": true,
+			"id": "table",
+			"selector": "table",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "site",
+			"selector": "td:nth-of-type(1)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "date",
+			"selector": "td:nth-of-type(2)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorLink",
+			"multiple": false,
+			"id": "sku",
+			"selector": "a",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "get-this-price",
+			"selector": "div.gcprice p.gcprice span:nth-of-type(2)",
+			"regex": "",
+			"delay": ""
+		}
+	],
+	"startUrl": [
+		"http://weiksner.com/amzn/grainger200.php"
+	],
+	"_id": "grainger-200"
+}
+
+## 7 HDSS
+
+{
+	"startUrl": [
+		"http://weiksner.com/amzn/hdss.php"
+	],
+	"selectors": [
+		{
+			"parentSelectors": [
+				"_root"
+			],
+			"type": "SelectorElement",
+			"multiple": true,
+			"id": "table",
+			"selector": "table",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "site",
+			"selector": "td:nth-of-type(1)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "date",
+			"selector": "td:nth-of-type(2)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorLink",
+			"multiple": false,
+			"id": "sku",
+			"selector": "a",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "product",
+			"selector": "h1.space-bottom",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "instock",
+			"selector": "div.form-inline div strong",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "unspsc",
+			"selector": "tr:contains('UNSPSC') td:nth-of-type(2)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "brand",
+			"selector": "tr:contains('Brand') td:nth-of-type(2)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "part-no",
+			"selector": "tr:contains('Manufacturer Part Number') td:nth-of-type(2)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "Shipping details",
+			"selector": "div.span7 div.well",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorElement",
+			"multiple": true,
+			"id": "price-tier",
+			"selector": "li div.row-fluid",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"price-tier"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "quantity",
+			"selector": "div.span5",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"price-tier"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "priceq",
+			"selector": "div.span7",
+			"regex": "",
+			"delay": ""
+		}
+	],
+	"_id": "hdss"
+}
+
+## 8 NSIT
+
+{
+	"startUrl": [
+		"http://weiksner.com/amzn/techdist/nsit.php"
+	],
+	"selectors": [
+		{
+			"parentSelectors": [
+				"_root"
+			],
+			"type": "SelectorElement",
+			"multiple": true,
+			"id": "table",
+			"selector": "table",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "sku",
+			"selector": "td:nth-of-type(1)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "site",
+			"selector": "td:nth-of-type(3)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "date",
+			"selector": "td:nth-of-type(4)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorLink",
+			"multiple": false,
+			"id": "product-link",
+			"selector": "a",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product-link"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "product",
+			"selector": "h1 a",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product-link"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "mfg #",
+			"selector": "div.prod-description-bottom td:nth-of-type(2)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product-link"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "insight #",
+			"selector": "div.prod-description-bottom td:nth-of-type(1)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product-link"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "avail",
+			"selector": "p.prod-stock span.js-prod-available",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product-link"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "instock",
+			"selector": "p.prod-stock",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product-link"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "price",
+			"selector": "div.columns p.prod-price",
+			"regex": "",
+			"delay": ""
+		}
+	],
+	"_id": "nsit"
+}
+
+## 9 TECD
+
+{
+	"startUrl": [
+		"http://weiksner.com/amzn/techdist/tecd.php"
+	],
+	"selectors": [
+		{
+			"parentSelectors": [
+				"_root"
+			],
+			"type": "SelectorElement",
+			"multiple": true,
+			"id": "table",
+			"selector": "table",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "sku",
+			"selector": "td:nth-of-type(1)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "site",
+			"selector": "td:nth-of-type(3)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "date",
+			"selector": "td:nth-of-type(4)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorLink",
+			"multiple": false,
+			"id": "product-link",
+			"selector": "a",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product-link"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "product",
+			"selector": "a.productDetailsLink",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product-link"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "msrp",
+			"selector": "div.priceDisplay span",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product-link"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "mfr #",
+			"selector": "div.productCodes div:nth-of-type(2) span.darkTxt",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product-link"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "tecd #",
+			"selector": "div.productCodes div:nth-of-type(1) span.darkTxt",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product-link"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "status",
+			"selector": "div.StatusMSRPavail",
+			"regex": "",
+			"delay": ""
+		}
+	],
+	"_id": "tecd-tech"
+}
+
+## 10 PMCI
+
+{
+	"startUrl": [
+		"http://weiksner.com/amzn/techdist/tecd.php"
+	],
+	"selectors": [
+		{
+			"parentSelectors": [
+				"_root"
+			],
+			"type": "SelectorElement",
+			"multiple": true,
+			"id": "table",
+			"selector": "table",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "sku",
+			"selector": "td:nth-of-type(1)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "site",
+			"selector": "td:nth-of-type(3)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "date",
+			"selector": "td:nth-of-type(4)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorLink",
+			"multiple": false,
+			"id": "product-link",
+			"selector": "a",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product-link"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "product",
+			"selector": "a.productDetailsLink",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product-link"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "msrp",
+			"selector": "div.priceDisplay span",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product-link"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "mfr #",
+			"selector": "div.productCodes div:nth-of-type(2) span.darkTxt",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product-link"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "tecd #",
+			"selector": "div.productCodes div:nth-of-type(1) span.darkTxt",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"product-link"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "status",
+			"selector": "div.StatusMSRPavail",
+			"regex": "",
+			"delay": ""
+		}
+	],
+	"_id": "tecd-tech"
+}
+
+## 11 Zoro
+
+{
+	"selectors": [
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "in_stock",
+			"selector": "span.avl-in-stock",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "product",
+			"selector": "h1.productName",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "price",
+			"selector": "h3.main-heading-font span:nth-of-type(2)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "zoro_id",
+			"selector": "div.brand span:nth-of-type(2)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "mfr_id",
+			"selector": "span:nth-of-type(4)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "shipping time",
+			"selector": "div.ships-from-lead-time",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"_root"
+			],
+			"type": "SelectorElement",
+			"multiple": true,
+			"id": "table",
+			"selector": "table",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "site",
+			"selector": "td:nth-of-type(1)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "date",
+			"selector": "td:nth-of-type(2)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorLink",
+			"multiple": false,
+			"id": "sku",
+			"selector": "a",
+			"delay": ""
+		}
+	],
+	"startUrl": [
+		"http://weiksner.com/amzn/zoro.php"
+	],
+	"_id": "zoro-all"
+}
+
+## 12 MSM
+
+{
+	"_id": "msm-sample",
+	"startUrl": [
+		"http://weiksner.com/amzn/msm-sample.php"
+	],
+	"selectors": [
+		{
+			"parentSelectors": [
+				"_root"
+			],
+			"type": "SelectorElement",
+			"multiple": true,
+			"id": "table",
+			"selector": "table",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorLink",
+			"multiple": false,
+			"id": "sku",
+			"selector": "a",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "date",
+			"selector": "td:nth-of-type(2)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"table"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "site",
+			"selector": "td:nth-of-type(1)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorLink",
+			"multiple": false,
+			"id": "Product",
+			"selector": "h1",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "brand",
+			"selector": "div.col-xs-4 div.pdp-spec-row:nth-of-type(3) div.pdp-spec-value",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "msc part #",
+			"selector": "div.col-xs-4 div.pdp-spec-row:nth-of-type(4) div.pdp-spec-value",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "upc #",
+			"selector": "div.pdp-spec-row:nth-of-type(5) div.pdp-spec-value",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "cat 1",
+			"selector": "div.row div.row div.col-xs-9 a:nth-of-type(2)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "cat 2",
+			"selector": "div.col-xs-9 a:nth-of-type(3)",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "price",
+			"selector": "span.atc-pdpPrice",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "in stock",
+			"selector": "div.pdp-stock strong",
+			"regex": "",
+			"delay": ""
+		},
+		{
+			"parentSelectors": [
+				"sku"
+			],
+			"type": "SelectorText",
+			"multiple": false,
+			"id": "mfr #",
+			"selector": "div.col-xs-4 div.pdp-spec-row:nth-of-type(5) div.pdp-spec-value",
+			"regex": "",
+			"delay": ""
+		}
+	]
+}
