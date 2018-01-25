@@ -1,10 +1,11 @@
 
+from pprint import pprint
+
 from utilities.select import select
 
 from twisted.internet.error import TimeoutError, TCPTimedOutError
 from scrapy.spidermiddlewares.httperror import HttpError
 from twisted.internet.error import DNSLookupError
-from utilities.constants import TS_FORMAT
 
 
 class Parser:
@@ -28,27 +29,39 @@ class Parser:
             else:
                 raise ValueError("Is there a missing case?")
         else:
+            self.should_parse = True
             self.url = response.url
             self.response_status = 'HTTP {}'.format(
                 self.response.status)
-            self.should_parse = True
+
+    def data(self):
+        data = self._initial_data()
+        if self.should_parse:
+            for key in self.fields:
+                text = ''
+                for i, selector in enumerate(self.fields[key]):
+                    raw_text = self._raw_text(key, selector)
+                    if raw_text:
+                        text = raw_text
+                        i += 1
+                        break
+                clean_text = text.encode("ascii", errors="ignore").decode()
+                data[key] = clean_text
+                data["{}_selector".format(key)] = i
+        if self.error:
+            print('!' * 100)
+            pprint(data)
+            print('!' * 100)
+        return data
 
     def _initial_data(self):
         if self.error:
-            meta_data = self.response.value.response.meta
+            data = self.response.value.response.meta['custom_variables']
         else:
-            meta_data = self.response.meta
-        return {
-            'url': self.url,
-            'url_type': self.url_type,
-            'response_status': self.response_status,
-            'search_string': meta_data['search_string'],
-            'site_name': meta_data['site_name'],
-            'timestamp': meta_data['timestamp'].strftime(TS_FORMAT)
-        }
-
-    def data(self):
-        raise ValueError("Method must be defined by subclass")
+            data = self.response.meta['custom_variables']
+        data[self.response_status_variable] = self.response_status
+        data[self.url_variable] = self.url
+        return data
 
     def _raw_text(self, key, selector):
         texts_list = select(self.response, key, selector).extract()
@@ -58,39 +71,17 @@ class Parser:
 class Item(Parser):
 
     def __init__(self, response, settings, error=False):
-        self.url_type = 'Item'
+        self.url_variable = 'url_item'
+        self.response_status_variable = 'response_status_item'
+        self.fields = settings.item_fields
         super().__init__(response, settings, error)
-
-    def data(self):
-        data = self._initial_data()
-        if self.should_parse:
-            for key in self.settings.fields.keys():
-                clean_text = ''
-                for i, selector in enumerate(self.settings.fields[key]):
-                    raw_text = self._raw_text(key, selector)
-                    if raw_text:
-                        clean_text = raw_text
-                        i += 1
-                        break
-                data[key] = (
-                    clean_text.encode("ascii", errors="ignore").decode())
-                data["{}_selector".format(key)] = i
-        if self.error:
-            print('!' * 100)
-            from pprint import pprint
-            pprint(data)
-            print('!' * 100)
-        return data
 
 
 class Search(Parser):
 
     def __init__(self, response, settings, returned_results=None, error=False):
-        self.url_type = 'Search'
+        self.url_variable = 'url_search'
+        self.response_status_variable = 'response_status_search'
         self.returned_results = returned_results
+        self.fields = settings.search_fields
         super().__init__(response, settings, error)
-
-    def data(self):
-        data = self._initial_data()
-        data['search_returned_results'] = self.returned_results
-        return data

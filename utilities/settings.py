@@ -33,12 +33,16 @@ class Settings:
         return pytz.timezone(self.settings['timezone'])
 
     @property
-    def fields(self):
-        return self._site_settings['fields']
+    def search_fields(self):
+        return self._site_settings['search']['fields']
 
     @property
-    def field_keys(self):
-        return list(self._site_settings['fields'].keys())
+    def item_fields(self):
+        return self._site_settings['item']['fields']
+
+    @property
+    def item_field_keys(self):
+        return list(self._site_settings['item']['fields'].keys())
 
     @property
     def required_fields(self):
