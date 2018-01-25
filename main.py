@@ -8,7 +8,6 @@ def main():
     print("[+] Ready...")
     scraper = Scraper(SETTINGS)
     scraper.start()
-    scraper.json_to_csv()
 
     # When implementing scheduled scraping, this code will
     # come in handy. The implementation is practically

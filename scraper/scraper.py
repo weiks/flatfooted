@@ -1,8 +1,9 @@
 
 import pandas
-import datetime
 
+from datetime import datetime
 from scrapy.crawler import CrawlerProcess
+
 from utilities.constants import TS_FORMAT
 from utilities.settings import Settings
 
@@ -19,21 +20,37 @@ class Scraper:
 
     def start(self):
         self.process.start()
+        self._json_to_csv()
 
-    def json_to_csv(self):
+    def _json_to_csv(self):
         for name in self.settings.names:
-            csv_name = self._file_with_name(name, self.now, 'csv')
-            json_name = self._file_with_name(name, self.now)
-            results = pandas.read_json(json_name)
-            results.to_csv(csv_name, index=False)
+            csv_name = self._file_with_name(name, 'csv')
+            json_name = self._file_with_name(name)
+            data = pandas.read_json(json_name)
+            results = self._postprocess_dataframe(data)
+            results.to_csv(csv_name)
+
+    def _postprocess_dataframe(self, data):
+        searches = (
+            data[data['url_item'].isnull()]
+            .set_index('search_string')
+            .dropna(axis='columns', how='all')
+        )
+        items = (
+            data[data['url_search'].isnull()]
+            .set_index('search_string')
+            .dropna(axis='columns', how='all')
+        )
+        results = searches.join(items, how='outer', rsuffix='_delete')
+        return results[[c for c in results.columns if '_delete' not in c]]
 
     def _setup_process(self):
-        self.now = datetime.datetime.now(self.settings.timezone)
-        self.process = CrawlerProcess(self._crawler_options(self.now))
+        self.now = datetime.now(self.settings.timezone).strftime(TS_FORMAT)
+        self.process = CrawlerProcess(self._crawler_options())
         for site in self.sites:
             self.process.crawl(Spider, settings=site.settings, now=self.now)
 
-    def _crawler_options(self, now):
+    def _crawler_options(self):
         """Return crrawlwer options
 
         `DOWNLOAD_DELAY` is in seconds, and is such that if
@@ -49,7 +66,7 @@ class Scraper:
         m = 'DOWNLOADER_MIDDLEWARES'
         options = {
             'FEED_FORMAT': self.settings.results_file_type,
-            'FEED_URI': self._file_name(now),
+            'FEED_URI': self._file_name(),
             'COOKIES_ENABLED': False,
             m: {}
         }
@@ -61,10 +78,10 @@ class Scraper:
             options[m]['scraper.middleware.RandomUserAgentMiddleware'] = 400
         return options
 
-    def _file_with_name(self, name, now, ext=None):
-        return self._file_name(now, ext).replace("%(name)s", name)
+    def _file_with_name(self, name, ext=None):
+        return self._file_name(ext).replace("%(name)s", name)
 
-    def _file_name(self, now, ext=None):
+    def _file_name(self, ext=None):
         if ext is None:
             ext = self.settings.results_file_type
-        return "outputs/%(name)s_{}.{}".format(now.strftime(TS_FORMAT), ext)
+        return "outputs/%(name)s_{}.{}".format(self.now, ext)

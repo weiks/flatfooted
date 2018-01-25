@@ -2,7 +2,6 @@
 import scrapy
 
 from utilities.inputs import SearchStringsCSV
-from utilities.constants import TS_FORMAT
 from utilities.select import select
 from .parsers import Item, Search
 
@@ -32,9 +31,11 @@ class Spider(scrapy.Spider):
                 callback=self._parse_searches,
                 errback=self._parse_search_error,
                 meta={
-                    'search_string': combination['search_string'],
-                    'site_name': self.name,
-                    'timestamp': self.now
+                    'custom_variables': {
+                        'search_string': combination['search_string'],
+                        'site_name': self.name,
+                        'timestamp': self.now
+                    }
                 }
             )
 
@@ -46,18 +47,24 @@ class Spider(scrapy.Spider):
             first_item = select(response, key, selector).extract_first()
             if first_item:
                 returned_results = True
+                meta = response.meta['custom_variables']
                 yield response.follow(
                     first_item,
                     callback=self._parse_item,
                     errback=self._parse_item_error,
                     meta={
-                        'search_string': response.meta['search_string'],
-                        'site_name': response.meta['site_name'],
-                        'timestamp': response.meta['timestamp']
+                        'custom_variables': {
+                            'search_string': meta['search_string'],
+                            'site_name': meta['site_name'],
+                            'timestamp': meta['timestamp']
+                        }
                     }
                 )
                 break
-        yield self._parse_search(response, returned_results)
+        response.meta['custom_variables'].update({
+            'returned_results': returned_results
+        })
+        yield self._parse_search(response)
 
     def _parse_item(self, response):
         self._save_raw_html(response)
@@ -67,9 +74,9 @@ class Spider(scrapy.Spider):
         self._save_raw_html(response)
         yield Item(response, self.site_settings, error=True).data()
 
-    def _parse_search(self, response, returned_results):
+    def _parse_search(self, response):
         self._save_raw_html(response)
-        return Search(response, self.site_settings, returned_results).data()
+        return Search(response, self.site_settings).data()
 
     def _parse_search_error(self, response):
         self._save_raw_html(response)
@@ -95,4 +102,4 @@ class Spider(scrapy.Spider):
 
     def _raw_html_file_name(self, search_string):
         return 'outputs/html/{}_{}_{}.html'.format(
-            self.name, self.now.strftime(TS_FORMAT), search_string)
+            self.name, self.now, search_string)
