@@ -65,14 +65,17 @@ class Scraper:
 
         NOTE: Using proxies slows the process quite a bit.
         """
-        m = 'DOWNLOADER_MIDDLEWARES'
         options = {
             'FEED_FORMAT': self.settings.results_file_type,
             'FEED_URI': self._file_name(),
             'COOKIES_ENABLED': False,
             'LOG_LEVEL': 'DEBUG',
-            m: {}
+            'DOWNLOADER_MIDDLEWARES': {
+                'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
+                'scraper.middleware.CustomRetryMiddleware': 550
+            }
         }
+        m = 'DOWNLOADER_MIDDLEWARES'
         if self.settings.random_proxies:
             options['RETRY_TIMES'] = 3
             options['RETRY_HTTP_CODES'] = [500, 503, 504, 400, 403, 404, 408]

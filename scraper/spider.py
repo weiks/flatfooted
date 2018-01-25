@@ -32,6 +32,9 @@ class Spider(scrapy.Spider):
                 callback=self._parse_searches,
                 errback=self._parse_search_error,
                 meta={
+                    'type': 'search',
+                    'site_name': self.name,
+                    'site_settings': self.site_settings,
                     'custom_variables': {
                         'search_string': combination['search_string'],
                         'site_name': self.name,
@@ -54,6 +57,9 @@ class Spider(scrapy.Spider):
                     callback=self._parse_item,
                     errback=self._parse_item_error,
                     meta={
+                        'type': 'item',
+                        'site_name': self.name,
+                        'site_settings': self.site_settings,
                         'custom_variables': {
                             'search_string': meta['search_string'],
                             'site_name': meta['site_name'],
