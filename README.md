@@ -138,17 +138,18 @@ The results will be in the `outputs/` directory.
 - [x] JOIN by `search_string` in post-processing script
   - Need to separate URLs into "search URL" and "item URL", as well as
     HTTP status codes for searches and items
-- [ ] Binary variable for each site to indicate if "results page" should be
-  using to retrieve item data, instead of hoping into "item page"
+- [ ] Optionally retrieve item data directly from results page
+- [ ] Optionally specify that an auto-redirect into item is expected
+- [ ] Deal with JavaScript enabled sites
 
 #### Group 1
 
 - [ ] `Zoro` https://www.zoro.com/search?q=pen
-  - Tested: No: Requires JavaScript
+  - Test: No: Requires JavaScript
   - Seems that JavaScript is only required to load the site, after that,
     standard techniques apply as they normally would.
 - [ ] `GWW` https://www.grainger.com/search?searchQuery=pen
-  - Tested: No: Requires JavaScript
+  - Test: No: Requires JavaScript
   - Seems that JavaScript is required to actually interact with the site and get
     the data we are looking for. This can be a bit tricky, but will explore it
     later.
@@ -159,10 +160,11 @@ The results will be in the `outputs/` directory.
 #### Group 2
 
 - [x] `cdw` https://www.cdw.com/shop/search/result.aspx?b=pen
-  - Tested: Yes
+  - **DONE**
+  - Test: Yes
   - Need to identify `ship`, and `ship2` on page
 - [ ] `cnxn` https://www.connection.com/IPA/Shop/Product/Search?term=pen
-  - Tested: Yes
+  - Test: Yes
   - I'm getting a lot of 404 (Not Found) and 302 (Moved)
     - It seems that when an item is not found, they return a 404 instead of
       simply returning a 200. They are using HTML status code incorrectly. It
@@ -175,12 +177,12 @@ The results will be in the `outputs/` directory.
       needs to be fixed.
   - Need to identify `brand`, `cnxn_no`, `mfg_no`, and `ship` on page
 - [ ] `tecd` https://shop.techdata.com/searchall?kw=pen
-  - Tested: Yes
+  - Test: Yes
   - "Item page" needs sign-in account
   - How to proceed:
     - Retrieve data from "search page"
 - [ ] `nsit` https://www.insight.com/en_US/search.html?q=pen
-  - Tested: Yes
+  - Test: No: Requires JavaScript
   - Sometimes price is held back behind a "Estimate the total price of this
     item" button. However, it's not working because even if we put a valid ZIP
     code, the price comes as "$0", and we need to call their number to get a
@@ -190,7 +192,8 @@ The results will be in the `outputs/` directory.
 #### Group 3
 
 - [x] `fast` https://www.fastenal.com/products?term=pen
-  - Tested: Yes
+  - **DONE**
+  - Test: Yes
   - There's a "first item" per category and then there's a table. I'm
     using the table results. Is this ok? Answer: Yes
   - There are various types of prices mixed ("wholesale", "online", "unit",
@@ -203,18 +206,20 @@ The results will be in the `outputs/` directory.
     "Manufacturer" in one of the cells, and use the appropriate value)
     - How to proceed: save all the data in the table as a single string.
 - [ ] `AZO` https://www.autozone.com/searchresult?searchText=pen
-  - Tested: No: Double-hop and asks for ZIP
+  - Test: No: Double-hop and asks for ZIP
   - Marked as: Exploratory work (defered)
 
 #### Group 4
 
 - [x] `BUNZL` https://www.bunzlpd.com/catalogsearch/result/?q=pen
-  - Tested: Yes
+  - **DONE**
+  - Test: Yes
   - Need to identify `min_price`, and `shipping` on page
-- [ ] `pcmi` http://www.tigerdirect.com/applications/SearchTools/search.asp?keywords=pen
-  - Tested: Yes
+- [x] `pcmi` http://www.tigerdirect.com/applications/SearchTools/search.asp?keywords=pen
+  - **DONE**
+  - Test: Yes
 - [ ] `MSM` https://www.mscdirect.com/browse/tn/?searchterm=pen
-  - Tested: Yes
+  - Test: Yes
   - This site has a double-hop for search (categories/search results/item)
     - How to proceed:
       - If it goes to "categories" mark it as not having results
@@ -222,9 +227,9 @@ The results will be in the `outputs/` directory.
       - If it goes into "item" proceed normally
         - This can be tricky, I need to find a reliable way to identify
           whether we are in a "item" or "search" page
-- [ ] `hdss` https://hdsupplysolutions.com/shop/SearchDisplay?searchTerm=pen
-  - Tested: Yes
-  - Marked as: Exploratory work (defered)
+- [x] `hdss` https://hdsupplysolutions.com/shop/SearchDisplay?searchTerm=pen
+  - **DONE**
+  - Test: Yes
   - Not getting search results with the inputs we're using. Not sure if this is
     a problem with my code or if it's something else. Need to look into this
     futher.
@@ -232,8 +237,7 @@ The results will be in the `outputs/` directory.
   - `instock` button requires site account for checking
   - `shipping_details` has various fields, trying to get all of them
 - [ ] `esnd` http://biggestbook.com/ui/catalog.html#/search?keyword=pen
-  - Tested: Yes
-  - Marked as: Exploratory work (defered)
+  - Test: No: Requires JavaScript
   - This is giving me problems (duplicated URLs), I need to look into this
     further, but I think it could be the reserved symbol `#`.
   - Need fields specification for this site.
