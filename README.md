@@ -1,5 +1,5 @@
 
-# Product Scraper
+# Item Scraper
 
 - Omar Trejo
 - January, 2018
@@ -107,7 +107,7 @@ The results will be in the `outputs/` directory.
   - If no HTML was saved for a response, it was because of a failure and we
     should further look into it.
 - [x] Look for errors in the request-response cycle
-  - When comparing number of lines in input file vs number of products in
+  - When comparing number of lines in input file vs number of items in
     outputs file, we find that 3 out of 322 missing searches for Amazon.
   - The prolem was that the `Peachtree null` was repeated 3 times (4 in total)
     as a `search_string`, so these were the three extra observations that my
@@ -129,7 +129,7 @@ The results will be in the `outputs/` directory.
     from specific to general, and thus are able to get "special" cases before
     they are "obscured" using a more "general" XPATH.
   - The last results show that we are now able to get all results correctly, as
-    well as the information for the corresponding products.
+    well as the information for the corresponding items.
 
 ### Phase 4
 
@@ -138,7 +138,7 @@ The results will be in the `outputs/` directory.
 - [ ] JOIN by `search_string` in post-processing script
   - Need to separate URLs into "search URL" and "product URL"
 - [ ] Binary variable for each site to indicate if "results page" should be
-  using to retrieve product data, instead of hoping into "product page"
+  using to retrieve item data, instead of hoping into "item page"
 
 #### Group 1
 
@@ -153,7 +153,7 @@ The results will be in the `outputs/` directory.
     later.
   - The JavaScript interaction may be bypassed if we are able to use an
     identifier from the `Zoro` data, and use that as the search string. This
-    will bypass a "results page" and go straight to "product page".
+    will bypass a "results page" and go straight to "item page".
 
 #### Group 2
 
@@ -163,19 +163,19 @@ The results will be in the `outputs/` directory.
 - [ ] `cnxn` https://www.connection.com/IPA/Shop/Product/Search?term=pen
   - Tested: Yes
   - I'm getting a lot of 404 (Not Found) and 302 (Moved)
-    - It seems that when an product is not found, they return a 404 instead of
+    - It seems that when an item is not found, they return a 404 instead of
       simply returning a 200. They are using HTML status code incorrectly. It
       doesn't affect functionality, but leaves 404's in the spreadsheet instead
       of leaving a 200 with a "research without results" indicator. Should we
       fix this?
     - When a result is actually returned (maybe when it's the only one), we're
-      automatically redirected to the product page (with a 302), and that is
+      automatically redirected to the item page (with a 302), and that is
       messing up the mechanism. Need to look into this further. This definitely
       needs to be fixed.
   - Need to identify `brand`, `cnxn_no`, `mfg_no`, and `ship` on page
 - [ ] `tecd` https://shop.techdata.com/searchall?kw=pen
   - Tested: Yes
-  - "Product page" needs sign-in account
+  - "Item page" needs sign-in account
   - How to proceed:
     - Retrieve data from "search page"
 - [ ] `nsit` https://www.insight.com/en_US/search.html?q=pen
@@ -214,13 +214,13 @@ The results will be in the `outputs/` directory.
   - Tested: Yes
 - [ ] `MSM` https://www.mscdirect.com/browse/tn/?searchterm=pen
   - Tested: Yes
-  - This site has a double-hop for search (categories/search results/product)
+  - This site has a double-hop for search (categories/search results/item)
     - How to proceed:
       - If it goes to "categories" mark it as not having results
       - If it goes to "research results" proceed normally
-      - If it goes into "product" proceed normally
+      - If it goes into "item" proceed normally
         - This can be tricky, I need to find a reliable way to identify
-          whether we are in a "product" or "search" page
+          whether we are in a "item" or "search" page
 - [ ] `hdss` https://hdsupplysolutions.com/shop/SearchDisplay?searchTerm=pen
   - Tested: Yes
   - Marked as: Exploratory work (defered)
@@ -255,7 +255,7 @@ The reasons are for not getting results are:
 |               1 | It's a movie (type 1)          | Yes          | Extra XPATHs (Amazon Video, Blu-ray, DVD)                                                       | ?          |                                   |
 |               1 | It's a movie (type 2)          | Yes          | Extra XPATH                                                                                     | ?          |                                   |
 |               1 | It's a music CD                | Yes          | Extra XPATH                                                                                     | ?          |                                   |
-|               1 | Standard product page          | Yes          | Extra XPATH                                                                                     | ?          | Should've been scraped            |
+|               1 | Standard item page             | Yes          | Extra XPATH                                                                                     | ?          | Should've been scraped            |
 
 ### "Currently unavailable"
 
@@ -304,7 +304,7 @@ The reasons are for not getting results are:
 
 1. https://www.amazon.com/Colors-Explicit-Beck/dp/B074X1FFZ1/ref=sr_1_fkmr0_1/143-1828333-6030567?ie=UTF8&qid=1516474618&sr=8-1-fkmr0&keywords=BECK+330043407
 
-### Standard product page
+### Standard item page
 
 1. https://www.amazon.com/SAF3275BL-Safco-Onyx-Hospitality-Organizer/dp/B00N3BDZ46/ref=sr_1_1/139-1952273-7032932?ie=UTF8&qid=1516475435&sr=8-1&keywords=SAF3275BL
 
