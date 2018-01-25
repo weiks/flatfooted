@@ -134,9 +134,10 @@ The results will be in the `outputs/` directory.
 ### Phase 4
 
 - [x] Insert metadata (`site_name` and `timestamp`) into results
-- [ ] Keep track of "0 results" in the Amazon data
-- [ ] JOIN by `search_string` in post-processing script
-  - Need to separate URLs into "search URL" and "product URL"
+- [x] Keep track of "0 results" in the Amazon data
+- [x] JOIN by `search_string` in post-processing script
+  - Need to separate URLs into "search URL" and "item URL", as well as
+    HTTP status codes for searches and items
 - [ ] Binary variable for each site to indicate if "results page" should be
   using to retrieve item data, instead of hoping into "item page"
 
