@@ -1,6 +1,6 @@
 
 SETTINGS = {
-    'save_raw_html': False,
+    'save_html': True,
     'random_proxies': False,
     'random_user_agents': True,
     'results_file_type': 'json',

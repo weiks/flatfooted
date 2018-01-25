@@ -24,7 +24,7 @@ class Scraper:
 
     def _json_to_csv(self):
         for name in self.settings.names:
-            csv_name = self._file_with_name(name, 'csv')
+            csv_name = self._file_with_name(name, ext='csv')
             json_name = self._file_with_name(name)
             data = pandas.read_json(json_name)
             results = self._postprocess_dataframe(data)
@@ -70,6 +70,7 @@ class Scraper:
             'FEED_FORMAT': self.settings.results_file_type,
             'FEED_URI': self._file_name(),
             'COOKIES_ENABLED': False,
+            'LOG_LEVEL': 'DEBUG',
             m: {}
         }
         if self.settings.random_proxies:

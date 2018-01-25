@@ -51,6 +51,13 @@ $ python3 main.py
 
 The results will be in the `outputs/` directory.
 
+If we want to both save a log with the output as well as see the actual output
+in real-time in the terminal, we can use the following instead:
+
+```
+$ python3 -u main.py | tee outputs/log.txt
+```
+
 ## Tasks
 
 ### Phase 1

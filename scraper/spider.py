@@ -1,6 +1,8 @@
 
 import scrapy
 
+from slugify import slugify
+
 from utilities.inputs import SearchStringsCSV
 from utilities.select import select
 from .parsers import Item, Search
@@ -14,8 +16,7 @@ class Spider(scrapy.Spider):
         'CONCURRENT_REQUESTS': 16,
         'CONCURRENT_REQUESTS_PER_DOMAIN': 1,
         'RANDOMIZE_DOWNLOAD_DELAY': True,
-        'DOWNLOAD_DELAY': 2,
-        'LOG_LEVEL': 'DEBUG'
+        'DOWNLOAD_DELAY': 2
     }
 
     def __init__(self, settings={}, now=None, **kwargs):
@@ -67,19 +68,19 @@ class Spider(scrapy.Spider):
         yield self._parse_search(response)
 
     def _parse_item(self, response):
-        self._save_raw_html(response)
+        self._save_html(response, '_item')
         yield Item(response, self.site_settings,).data()
 
     def _parse_item_error(self, response):
-        self._save_raw_html(response)
+        self._save_html(response, '_item')
         yield Item(response, self.site_settings, error=True).data()
 
     def _parse_search(self, response):
-        self._save_raw_html(response)
+        self._save_html(response, '_search')
         return Search(response, self.site_settings).data()
 
     def _parse_search_error(self, response):
-        self._save_raw_html(response)
+        self._save_html(response, '_search')
         return Search(response, self.site_settings, error=True).data()
 
     def _start_combinations(self):
@@ -94,12 +95,15 @@ class Spider(scrapy.Spider):
     def _search_strings(self):
         return SearchStringsCSV(self.site_settings).search_strings()
 
-    def _save_raw_html(self, response):
-        if self.site_settings.save_raw_html and hasattr(response, "body"):
-            search_string = response.meta.get('search_string', False)
-            with open(self._raw_html_file_name(search_string), 'w+b') as f:
+    def _save_html(self, response, suffix=''):
+        if self.site_settings.save_html and hasattr(response, "body"):
+            s = response.meta['custom_variables'].get('search_string', False)
+            with open(self._file_name('html', s + suffix), 'w+b') as f:
                 f.write(response.body)
 
-    def _raw_html_file_name(self, search_string):
-        return 'outputs/html/{}_{}_{}.html'.format(
-            self.name, self.now, search_string)
+    def _file_name(self, extension, search_string=None):
+        if search_string:
+            return 'outputs/html/{}_{}_{}.{}'.format(
+                self.name, self.now, slugify(search_string), extension)
+        return 'outputs/{}/{}_{}.{}'.format(
+            self.name, self.now, extension)
