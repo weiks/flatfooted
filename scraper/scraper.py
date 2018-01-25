@@ -31,18 +31,20 @@ class Scraper:
             results.to_csv(csv_name)
 
     def _postprocess_dataframe(self, data):
-        searches = (
-            data[data['url_item'].isnull()]
-            .set_index('search_string')
-            .dropna(axis='columns', how='all')
-        )
-        items = (
-            data[data['url_search'].isnull()]
-            .set_index('search_string')
-            .dropna(axis='columns', how='all')
-        )
-        results = searches.join(items, how='outer', rsuffix='_delete')
-        return results[[c for c in results.columns if '_delete' not in c]]
+        if 'url_item' in data.columns and 'url_search' in data.columns:
+            searches = (
+                data[data['url_item'].isnull()]
+                .set_index('search_string')
+                .dropna(axis='columns', how='all')
+            )
+            items = (
+                data[data['url_search'].isnull()]
+                .set_index('search_string')
+                .dropna(axis='columns', how='all')
+            )
+            results = searches.join(items, how='outer', rsuffix='_delete')
+            return results[[c for c in results.columns if '_delete' not in c]]
+        return data
 
     def _setup_process(self):
         self.now = datetime.now(self.settings.timezone).strftime(TS_FORMAT)
