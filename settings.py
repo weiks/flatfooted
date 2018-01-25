@@ -8,63 +8,63 @@ SETTINGS = {
     'search_strings': {
         'file': 'inputs/search-strings-full.csv',
         'variable': 'String',
-        'sample': 10
+        'sample': None
     },
     'required_fields': [
         'name',
         'price'
     ],
     'sites': {
-        # 'Amazon': {
-        #     'search': {
-        #         'query': 'https://www.amazon.com/s/?field-keywords={}',
-        #         'first_item': [
-        #             '//*[@id="result_0"]/div/div[4]/div[1]/a/@href',
-        #             '//*[@id="result_0"]/div/div[3]/div[1]/a/@href',
-        #             '//*[@id="result_0"]/div/div[2]/div/div[2]/div[2]/div[1]/a/@href',
-        #             '//*[@id="result_0"]/div/div/div/div[2]/div[2]/div[1]/a/@href',
-        #             '//*[@id="result_0"]/div/div/div/div[2]/div[1]/div[1]/a/@href',
-        #             '//*[@id="result_0"]/div/div/div/div[2]/div[1]/div/a/@href'
-        #         ],
-        #         'fields': {
-        #             'number_of_results': [
-        #                 '//*[@id="noResultsTitle"]//text()',
-        #                 '//*[@id="s-result-count"]//text()'
-        #             ]
-        #         }
-        #     },
-        #     'item': {
-        #         'fields': {
-        #             'name': [
-        #                 '//*[@id="productTitle"]//text()'
-        #             ],
-        #             'brand': [
-        #                 '//*[@id="brand"]//text()',
-        #                 '//*[@id="bylineInfo"]//text()'
-        #             ],
-        #             'brand_link': [
-        #                 '//*[@id="brand"]//@href',
-        #                 '//*[@id="bylineInfo"]//@href'
-        #             ],
-        #             'price': [
-        #                 '//*[@id="priceblock_ourprice"]//text()',
-        #                 '//*[@id="priceblock_saleprice"]//text()'
-        #             ],
-        #             'availability': [
-        #                 '//*[@id="availability"]//text()'
-        #             ],
-        #             'ships_from': [
-        #                 '//*[@id="shipsFromSoldBy_feature_div"]//text()'
-        #             ],
-        #             'fast_track': [
-        #                 '//*[@id="fast-track-message"]//text()'
-        #             ],
-        #             'n_resellers': [
-        #                 '//*[@id="olp_feature_div"]//text()'
-        #             ]
-        #         }
-        #     }
-        # },
+        'Amazon': {
+            'search': {
+                'query': 'https://www.amazon.com/s/?field-keywords={}',
+                'first_item': [
+                    '//*[@id="result_0"]/div/div[4]/div[1]/a/@href',
+                    '//*[@id="result_0"]/div/div[3]/div[1]/a/@href',
+                    '//*[@id="result_0"]/div/div[2]/div/div[2]/div[2]/div[1]/a/@href',
+                    '//*[@id="result_0"]/div/div/div/div[2]/div[2]/div[1]/a/@href',
+                    '//*[@id="result_0"]/div/div/div/div[2]/div[1]/div[1]/a/@href',
+                    '//*[@id="result_0"]/div/div/div/div[2]/div[1]/div/a/@href'
+                ],
+                'fields': {
+                    'number_of_results': [
+                        '//*[@id="noResultsTitle"]//text()',
+                        '//*[@id="s-result-count"]//text()'
+                    ]
+                }
+            },
+            'item': {
+                'fields': {
+                    'name': [
+                        '//*[@id="productTitle"]//text()'
+                    ],
+                    'brand': [
+                        '//*[@id="brand"]//text()',
+                        '//*[@id="bylineInfo"]//text()'
+                    ],
+                    'brand_link': [
+                        '//*[@id="brand"]//@href',
+                        '//*[@id="bylineInfo"]//@href'
+                    ],
+                    'price': [
+                        '//*[@id="priceblock_ourprice"]//text()',
+                        '//*[@id="priceblock_saleprice"]//text()'
+                    ],
+                    'availability': [
+                        '//*[@id="availability"]//text()'
+                    ],
+                    'ships_from': [
+                        '//*[@id="shipsFromSoldBy_feature_div"]//text()'
+                    ],
+                    'fast_track': [
+                        '//*[@id="fast-track-message"]//text()'
+                    ],
+                    'n_resellers': [
+                        '//*[@id="olp_feature_div"]//text()'
+                    ]
+                }
+            }
+        },
         # 'cdw': {
         #     'search': {
         #         'query': 'https://www.cdw.com/shop/search/result.aspx?b={}',
@@ -118,8 +118,8 @@ SETTINGS = {
         #                 '/html/body/main/div[3]/div[2]/div[1]/div[2]/div[1]/div[2]/div/div/div//text()'
         #             ],
         #             #
-        #             # NOTE: Since the table is dynamice (fields can change
-        #             # order/location without that location being known aprior),
+        #             # NOTE: Since the table is dynamic (fields can change
+        #             # order/location without that location being known apriori),
         #             # Mike opted for us to simply get the whole table instead
         #             # of trying to parse it. This may change once the results
         #             # are evaluated.
