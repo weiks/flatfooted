@@ -8,63 +8,66 @@ SETTINGS = {
     'search_strings': {
         'file': 'inputs/search-strings-full.csv',
         'variable': 'String',
-        'sample': None
+        'sample': 10
     },
     'required_fields': [
         'name',
         'price'
     ],
     'sites': {
-        'Amazon': {
-            'search': {
-                'query': 'https://www.amazon.com/s/?field-keywords={}',
-                'first_item': [
-                    '//*[@id="result_0"]/div/div[4]/div[1]/a/@href',
-                    '//*[@id="result_0"]/div/div[3]/div[1]/a/@href',
-                    '//*[@id="result_0"]/div/div[2]/div/div[2]/div[2]/div[1]/a/@href',
-                    '//*[@id="result_0"]/div/div/div/div[2]/div[2]/div[1]/a/@href',
-                    '//*[@id="result_0"]/div/div/div/div[2]/div[1]/div[1]/a/@href',
-                    '//*[@id="result_0"]/div/div/div/div[2]/div[1]/div/a/@href'
-                ],
-                'fields': {
-                    'number_of_results': [
-                        '//*[@id="noResultsTitle"]//text()',
-                        '//*[@id="s-result-count"]//text()'
-                    ]
-                }
-            },
-            'item': {
-                'fields': {
-                    'name': [
-                        '//*[@id="productTitle"]//text()'
-                    ],
-                    'brand': [
-                        '//*[@id="brand"]//text()',
-                        '//*[@id="bylineInfo"]//text()'
-                    ],
-                    'brand_link': [
-                        '//*[@id="brand"]//@href',
-                        '//*[@id="bylineInfo"]//@href'
-                    ],
-                    'price': [
-                        '//*[@id="priceblock_ourprice"]//text()',
-                        '//*[@id="priceblock_saleprice"]//text()'
-                    ],
-                    'availability': [
-                        '//*[@id="availability"]//text()'
-                    ],
-                    'ships_from': [
-                        '//*[@id="shipsFromSoldBy_feature_div"]//text()'
-                    ],
-                    'fast_track': [
-                        '//*[@id="fast-track-message"]//text()'
-                    ],
-                    'n_resellers': [
-                        '//*[@id="olp_feature_div"]//text()'
-                    ]
-                }
-            }
-        },
+        #
+        # Standard
+        #
+        # 'Amazon': {
+        #     'search': {
+        #         'query': 'https://www.amazon.com/s/?field-keywords={}',
+        #         'first_item': [
+        #             '//*[@id="result_0"]/div/div[4]/div[1]/a/@href',
+        #             '//*[@id="result_0"]/div/div[3]/div[1]/a/@href',
+        #             '//*[@id="result_0"]/div/div[2]/div/div[2]/div[2]/div[1]/a/@href',
+        #             '//*[@id="result_0"]/div/div/div/div[2]/div[2]/div[1]/a/@href',
+        #             '//*[@id="result_0"]/div/div/div/div[2]/div[1]/div[1]/a/@href',
+        #             '//*[@id="result_0"]/div/div/div/div[2]/div[1]/div/a/@href'
+        #         ],
+        #         'fields': {
+        #             'number_of_results': [
+        #                 '//*[@id="noResultsTitle"]//text()',
+        #                 '//*[@id="s-result-count"]//text()'
+        #             ]
+        #         }
+        #     },
+        #     'item': {
+        #         'fields': {
+        #             'name': [
+        #                 '//*[@id="productTitle"]//text()'
+        #             ],
+        #             'brand': [
+        #                 '//*[@id="brand"]//text()',
+        #                 '//*[@id="bylineInfo"]//text()'
+        #             ],
+        #             'brand_link': [
+        #                 '//*[@id="brand"]//@href',
+        #                 '//*[@id="bylineInfo"]//@href'
+        #             ],
+        #             'price': [
+        #                 '//*[@id="priceblock_ourprice"]//text()',
+        #                 '//*[@id="priceblock_saleprice"]//text()'
+        #             ],
+        #             'availability': [
+        #                 '//*[@id="availability"]//text()'
+        #             ],
+        #             'ships_from': [
+        #                 '//*[@id="shipsFromSoldBy_feature_div"]//text()'
+        #             ],
+        #             'fast_track': [
+        #                 '//*[@id="fast-track-message"]//text()'
+        #             ],
+        #             'n_resellers': [
+        #                 '//*[@id="olp_feature_div"]//text()'
+        #             ]
+        #         }
+        #     }
+        # },
         # 'cdw': {
         #     'search': {
         #         'query': 'https://www.cdw.com/shop/search/result.aspx?b={}',
@@ -205,44 +208,87 @@ SETTINGS = {
         #         }
         #     }
         # },
-        # 'Staples': {
-        #     # NOTE: TEST: NO: JavaScript
+        # 'hdss': {
         #     'search': {
-        #         'query': 'https://www.staples.com/{0}/directory_{0}?',
-        #         'first_item_css': [
-        #             'div.product-info > a::attr(href)'
+        #         'query': 'https://hdsupplysolutions.com/shop/SearchDisplay?searchTerm={}',
+        #         'first_item': [
+        #             # '//*[@id="productsForm"]/div[1]/div/div[3]',
+        #             '//*[@id="productsForm"]/div[1]/div/div[3]/div[1]/div[1]/h2/a/@href'
         #         ],
         #         'fields': {
         #             'number_of_results': [
-        #                 ''
+        #                 '//*[@id="total_results"]//text()'
         #             ]
         #         }
         #     },
         #     'item': {
         #         'fields': {
         #             'name': [
-        #                 '//*[@id="mainNgApp"]/div/div[2]/div/div[1]/h1//text()'
+        #                 '//*[@id="product_detail_h1"]//text()'
         #             ],
         #             'price': [
-        #                 '//*[@id="getPrice"]/div[1]/div[2]/div[2]/div/div[3]/div[1]/div/div[1]/div[2]/div[1]/div[1]/span//text()',
-        #                 '//*[@id="getPrice"]/div[1]/div[2]/div[2]/div/div[1]/div[1]/div[1]/div/div[1]/div[2]/div[1]/div[1]/span//text()',
-        #                 '//*[@id="getPrice"]/div[1]/div[2]/div/div/div[1]/div[1]/div[1]/div/div[1]/div[2]/div[1]/div[1]/span//text()',
-        #                 '//*[@id="getPrice"]/div[1]/div[2]//text()',
+        #                 '//*[@id="product-detail-price-tier"]/ul/li/div/div[2]//text()'
+        #             ],
+        #             'unspsc': [
+        #                 '//*[@id="make"]/table/tbody/tr[1]/td[2]//text()'
+        #             ],
+        #             'brand': [
+        #                 '//*[@id="make"]/table/tbody/tr[2]/td[2]//text()'
+        #             ],
+        #             'site_id': [
+        #                 '//*[@id="make"]/table/tbody/tr[3]/td[2]//text()'
         #             ],
         #             'availability': [
-        #                 '//*[@id="getPrice"]/div[1]/div[2]/div/div/div[1]/div[2]/div[2]/div/div/div/div/div/div//text()',
-        #             ],
-        #             'ships_from': [
-        #                 '//*[@id="getPrice"]/div[1]/div[2]/div/div/div[1]/div[1]/div[1]/div/div[2]/div[2]/div[4]/div[2]/div//text()'
-        #             ],
-        #             'model': [
-        #                 '//*[@id="mainNgApp"]/div/div[2]/div/div[1]/div/ul/li[2]/span//text()'
+        #                 '//*[@id="product-detail-shipping"]/ul//text()'
         #             ]
         #         }
         #     }
         # }
+        #
+        # JavaScript
+        #
+        # 'Zoro': {
+        #     'javascript': True,
+        #     'search': {
+        #         'query': 'https://www.zoro.com/search?q={}',
+        #         'first_item': [
+        #             '//*[@id="grid"]/li[1]/div/ul/li[1]/h5/a/@href'
+        #         ],
+        #         'fields': {
+        #             'number_of_results': [
+        #                 '//*[@id="part_content"]/div[3]/div[3]/div[1]/div[1]//text()',
+        #                 '//*[@id="part_content"]/div[3]/div[3]/div[2]/div[1]/div//text()',
+        #                 '//*[@id="part_content"]/div[3]/div[3]/div[1]/div[2]/div//text()',
+        #                 '//*[@id="part_content"]/div[3]/div[3]/div[2]/div[2]/div//text()',
+        #                 '//*[@id="part_content"]/div[1]/div[2]//text()'
+        #             ]
+        #         }
+        #     },
+        #     'item': {
+        #         'fields': {
+        #             'name': [
+        #                 '//*[@id="single-sku"]/div[4]/h1/span//text()'
+        #             ],
+        #             'price': [
+        #                 '//*[@id="availability"]/h3//text()'
+        #             ],
+        #             'availability': [
+        #                 '//*[@id="availability"]/div[1]//text()'
+        #             ],
+        #             'shipping': [
+        #                 '//*[@id="availability"]/div//text()'
+        #             ],
+        #             'site_id': [
+        #                 '//*[@id="brand-name"]/strong/span//text()'
+        #             ],
+        #             'mfr': [
+        #                 '//*[@id="brand-name"]/span[3]//text()'
+        #             ]
+        #         }
+        #     }
+        # },
         # 'GWW': {
-        #     # NOTE: TEST: NO: JavaScript
+        #     'javascript': True,
         #     'search': {
         #         'query': 'https://www.grainger.com/search?searchQuery={}',
         #         'first_item': [
@@ -289,12 +335,76 @@ SETTINGS = {
         #             # ]
         #     }
         # },
-        # 'Zoro': {
-        #     # NOTE: TESTED: NO: JavaScript
+        # 'nsit': {
+        #     'javascript': True,
         #     'search': {
-        #         'query': 'https://www.zoro.com/search?q={}',
+        #         'query': 'https://www.insight.com/en_US/search.html?q={}',
         #         'first_item': [
-        #             '//*[@id="grid"]/li[1]/div/ul/li[1]/h5/a/@href'
+        #             '//*[@id="js-search-product-items"]/div[1]/div/div[4]/div/h3/a/@href'
+        #         ],
+        #         'fields': {
+        #             'number_of_results': [
+        #                 '//*[@id="buy-counter"]/span//text()'
+        #             ]
+        #         }
+        #     },
+        #     'item': {
+        #         'fields': {
+        #             'name': [
+        #                 '//*[@id="js-product-detail-target"]/h1/a/@href'
+        #             ],
+        #             'price': [
+        #                 '//*[@id="js-product-detail-pricing-target"]/div[3]/div[1]/div/div[1]/p[2]//text()'
+        #             ],
+        #             'site_id': [
+        #                 '//*[@id="js-product-detail-pricing-target"]/table/tbody/tr/td[1]//text()'
+        #             ],
+        #             'mfr': [
+        #                 '//*[@id="js-product-detail-pricing-target"]/table/tbody/tr/td[2]//text()'
+        #             ],
+        #             'availability': [
+        #                 '//*[@id="product-avalialability-by-warehouse"]/span//text()'
+        #             ]
+        #         }
+        #     }
+        # },
+        # 'esnd': {
+        #     'javascript': True,
+        #     'search': {
+        #         'query': 'http://biggestbook.com/ui/catalog.html#/search?keyword={}',
+        #         'first_item': [
+        #             '//*[@id="bbMain"]/div/div/main/div/div/div/div[4]/div[3]/div[1]/bb-product/div/div/div[8]/div[2]/@href',
+        #             '//*[@id="bbMain"]/div/div/main/div/div/div/div[4]/div[2]/div[1]/bb-product/div/div/div[8]/div[2]/@href'
+        #         ],
+        #         'fields': {
+        #             'number_of_results': [
+        #                 '//*[@id="bbMain"]/div/div/main/div/div/div/div[4]/bb-views[1]/div/div/div/span[1]/bb-count//text()',
+        #                 '//*[@id="bbMain"]/div/div/main/div/div/div/div[1]/span//text()'
+        #             ]
+        #         }
+        #     },
+        #     'item': {
+        #         'fields': {
+        #             'name': [
+        #                 '//*[@id="bbMain"]/div/div/main/div/div/div/div/div[1]/bb-product/div/div/div[8]/div[2]/span//text()'
+        #             ],
+        #             'price': [
+        #                 '//*[@id="bbMain"]/div/div/main/div/div/div/div/div[1]/bb-product/div/div/div[8]/div[6]/div[1]/div[1]/div[2]//text()'
+        #             ],
+        #             'site_id': [
+        #                 '//*[@id="bbMain"]/div/div/main/div/div/div/div/div[1]/bb-product/div/div/div[8]/div[3]/span//text()'
+        #             ]
+        #         }
+        #     }
+        # },
+        #
+        # Search Page
+        #
+        # 'tecd': {
+        #     'search': {
+        #         'query': 'https://shop.techdata.com/searchall?kw={}',
+        #         'first_item': [
+        #             '//*[@id="productSearchResults"]/div[1]/div[2]/div/div[1]/div[1]/a/@href'
         #         ],
         #         'fields': {
         #             'number_of_results': [
@@ -304,29 +414,24 @@ SETTINGS = {
         #     'item': {
         #         'fields': {
         #             'name': [
-        #                 '//*[@id="single-sku"]/div[4]/h1/span//text()'
         #             ],
         #             'price': [
-        #                 '//*[@id="availability"]/h3/span[2]//text()'
         #             ],
-        #             'availability': [
-        #                 '//*[@id="avl-info-icon"]/span//text()'
-        #             ],
-        #             'site_id': [
-        #                 '//*[@id="brand-name"]/strong/span//text()'
-        #             ],
-        #             'mfr_id': [
-        #                 '//*[@id="brand-name"]/span[3]//text()'
-        #             ],
-        #             'shipping_time': [
-        #                 '//*[@id="ships-from-lead-time-G1787563"]//text()'
-        #             ]
+        #             # 'msrp': [
+        #             # ],
+        #             # 'mrf': [
+        #             # ],
+        #             # 'site_id': [
+        #             # ],
+        #             # 'status': [
+        #             # ]
         #         }
         #     }
         # },
+        #
+        # Fix HTTP responses
+        #
         # 'cnxn': {
-        #     # NOTE: TESTED: YES
-        #     # NOTE: Incorrect usage of HTTPS codes (404 (Not Found) and 302 (Moved))
         #     'search': {
         #         'query': 'https://www.connection.com/IPA/Shop/Product/Search?SearchType=1&term={}',
         #         'first_item': [
@@ -360,92 +465,10 @@ SETTINGS = {
         #         }
         #     }
         # },
-        # 'tecd': {
-        #     # NOTE: TEST: NO: Needs sign-in
-        #     'search': {
-        #         'query': 'https://shop.techdata.com/searchall?kw={}',
-        #         'first_item': [
-        #             '//*[@id="productSearchResults"]/div[1]/div[2]/div/div[1]/div[1]/a/@href'
-        #         ],
-        #         'fields': {
-        #             'number_of_results': [
-        #             ]
-        #         }
-        #     },
-        #     'item': {
-        #         'fields': {
-        #             'name': [
-        #             ],
-        #             'price': [
-        #             ],
-        #             # 'msrp': [
-        #             # ],
-        #             # 'mrf': [
-        #             # ],
-        #             # 'site_id': [
-        #             # ],
-        #             # 'status': [
-        #             # ]
-        #         }
-        #     }
-        # },
-        # 'nsit': {
-        #     # NOTE: TEST: NO: Needs ZIP
-        #     'search': {
-        #         'query': 'https://www.insight.com/en_US/search.html?q={}',
-        #         'first_item': [
-        #             '//*[@id="js-search-product-items"]/div[1]/div/div[4]/div/h3/a/@href'
-        #         ],
-        #         'fields': {
-        #             'number_of_results': [
-        #             ]
-        #         }
-        #     },
-        #     'item': {
-        #         'fields': {
-        #             'name': [
-        #                 '//*[@id="js-product-detail-target"]/h1/a/@href'
-        #             ],
-        #             'price': [
-        #                 # Has a "Estimate the total price of this item" step
-        #                 # before actually showing price, and requires ZIP
-        #                 '//*[@id="js-product-detail-pricing-target"]/div[3]/div[1]/div/div[1]/p[2]//text()'
-        #             ],
-        #             'site_id': [
-        #                 '//*[@id="js-product-detail-pricing-target"]/table/tbody/tr/td[1]//text()'
-        #             ],
-        #             'mfr': [
-        #                 '//*[@id="js-product-detail-pricing-target"]/table/tbody/tr/td[2]//text()'
-        #             ],
-        #             'availability': [
-        #                 '//*[@id="product-avalialability-by-warehouse"]/span//text()'
-        #             ]
-        #         }
-        #     }
-        # },
-        # 'AZO': {
-        #     # NOTE: TESTED: NO: Double-hop, and asks for ZIP
-        #     'search': {
-        #         'query': '',
-        #         'first_item': [
-        #             '//*[@id="idEngineOilPanGasket"]/@href'
-        #         ],
-        #         'fields': {
-        #             'number_of_results': [
-        #             ]
-        #         }
-        #     },
-        #     'item': {
-        #         'fields': {
-        #             'name': [
-        #             ],
-        #             'price': [
-        #             ]
-        #         }
-        #     }
-        # },
+        #
+        # Exploratory work (defered)
+        #
         # 'MSM': {
-        #     # NOTE: TESTED: NO: Double-hop
         #     'search': {
         #         'query': 'https://www.mscdirect.com/browse/tn/?searchterm={}',
         #         'first_item': [
@@ -478,50 +501,11 @@ SETTINGS = {
         #         }
         #     }
         # },
-        # 'hdss': {
-        #     # NOTE: TESTED: YES
+        # 'AZO': {
         #     'search': {
-        #         'query': 'https://hdsupplysolutions.com/shop/SearchDisplay?searchTerm={}',
+        #         'query': '',
         #         'first_item': [
-        #             # '//*[@id="productsForm"]/div[1]/div/div[3]',
-        #             '//*[@id="productsForm"]/div[1]/div/div[3]/div[1]/div[1]/h2/a/@href'
-        #         ],
-        #         'fields': {
-        #             'number_of_results': [
-        #                 '//*[@id="total_results"]//text()'
-        #             ]
-        #         }
-        #     },
-        #     'item': {
-        #         'fields': {
-        #             'name': [
-        #                 '//*[@id="product_detail_h1"]//text()'
-        #             ],
-        #             'price': [
-        #                 '//*[@id="product-detail-price-tier"]/ul/li/div/div[2]//text()'
-        #             ],
-        #             'unspsc': [
-        #                 '//*[@id="make"]/table/tbody/tr[1]/td[2]//text()'
-        #             ],
-        #             'brand': [
-        #                 '//*[@id="make"]/table/tbody/tr[2]/td[2]//text()'
-        #             ],
-        #             'site_id': [
-        #                 '//*[@id="make"]/table/tbody/tr[3]/td[2]//text()'
-        #             ],
-        #             'availability': [
-        #                 '//*[@id="product-detail-shipping"]/ul//text()'
-        #             ]
-        #         }
-        #     }
-        # },
-        # 'esnd': {
-        #     # NOTE: TESTED: YES
-        #     # TODO: URLs being detected as duplicates, maybe it's the `#`
-        #     'search': {
-        #         'query': 'http://biggestbook.com/ui/catalog.html#/search?keyword={}',
-        #         'first_item': [
-        #             '//*[@id="bbMain"]/div/div/main/div/div/div/div[4]/div[3]/div[1]/bb-product/div/div/div[8]/div[2]/@href'
+        #             '//*[@id="idEngineOilPanGasket"]/@href'
         #         ],
         #         'fields': {
         #             'number_of_results': [
@@ -530,12 +514,9 @@ SETTINGS = {
         #     },
         #     'item': {
         #         'fields': {
-        #             # TODO: I don't have an specification for this site
         #             'name': [
-        #                 '//*[@id="bbMain"]/div/div/main/div/div/div/div/div[1]/bb-product/div/div/div[8]/div[2]/span//text()'
         #             ],
         #             'price': [
-        #                 '//*[@id="bbMain"]/div/div/main/div/div/div/div/div[1]/bb-product/div/div/div[8]/div[6]/div[1]/div[1]/div[2]//text()'
         #             ]
         #         }
         #     }
