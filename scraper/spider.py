@@ -26,7 +26,7 @@ class Spider(scrapy.Spider):
         self.site_settings = settings
         if self.site_settings.javascript:
             self.request_method = SplashRequest
-            self.args = {'wait': '1'}
+            self.args = {'wait': '5'}
         else:
             self.request_method = scrapy.Request
             self.args = {}
