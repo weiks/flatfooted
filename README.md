@@ -58,6 +58,15 @@ in real-time in the terminal, we can use the following instead:
 $ python3 -u main.py | tee outputs/log.txt
 ```
 
+If we scrape pages that contain JavaScript, the Splash light web browser, as
+well as it's plugin for Scrapy are used, and everything should work
+automatically. However, there's one extra step que need to do, which is initiate
+the Splash server. To do that, execute the following:
+
+```
+$ sudo docker run -p 8050:8050 scrapinghub/splash
+```
+
 ## Tasks
 
 ### Phase 1
