@@ -154,18 +154,34 @@ $ sudo docker run -p 8050:8050 scrapinghub/splash
 - [x] JOIN by `search_string` in post-processing script
   - Need to separate URLs into "search URL" and "item URL", as well as
     HTTP status codes for searches and items
+- [x] Deal with JavaScript enabled sites by using headless browser
+  - Given that JavaScript takes a bit of time to load, we need to use parameter
+    that specifies how much time to wait. The larger the value, the more time
+    the scrapping will take, and viceversa.
 - [ ] Optionally retrieve item data directly from results page
 - [ ] Optionally specify that an auto-redirect into item is expected
-- [ ] Deal with JavaScript enabled sites
 
 #### Group 1
 
 - [ ] `Zoro` https://www.zoro.com/search?q=pen
-  - Test: No: Requires JavaScript
+  - Status: Fixing XPATHs
+  - JavaScript: Yes
+  - Auto-rediret: Yes
+  - Use search page: No
+  - Double-hop: No
   - Seems that JavaScript is only required to load the site, after that,
     standard techniques apply as they normally would.
+  - Having trouble collecting `availability` and `shipping`
+  - Uses automatic redirects (302) when a unique item was found (I guess):
+    - Example, search for: QUA41967
+      - In: https://httpstatus.io/
+      - Use: https://www.zoro.com/search?q=QUA41967
 - [ ] `GWW` https://www.grainger.com/search?searchQuery=pen
-  - Test: No: Requires JavaScript
+  - Status: Defered (auto-redirect)
+  - JavaScript: Yes
+  - Auto-redirect: Yes (?)
+  - Use search page: No
+  - Double-hop: No
   - Seems that JavaScript is required to actually interact with the site and get
     the data we are looking for. This can be a bit tricky, but will explore it
     later.
@@ -176,11 +192,18 @@ $ sudo docker run -p 8050:8050 scrapinghub/splash
 #### Group 2
 
 - [x] `cdw` https://www.cdw.com/shop/search/result.aspx?b=pen
-  - **DONE**
-  - Test: Yes
+  - Status: **DONE**
+  - JavaScript: No
+  - Auto-redirect: No
+  - Use search page: No
+  - Double-hop: No
   - Need to identify `ship`, and `ship2` on page
 - [ ] `cnxn` https://www.connection.com/IPA/Shop/Product/Search?term=pen
-  - Test: Yes
+  - Status: Defered (auto-redirect)
+  - JavaScript: No
+  - Auto-redirect: Yes
+  - Use search page: No
+  - Double-hop: No
   - I'm getting a lot of 404 (Not Found) and 302 (Moved)
     - It seems that when an item is not found, they return a 404 instead of
       simply returning a 200. They are using HTML status code incorrectly. It
@@ -193,12 +216,18 @@ $ sudo docker run -p 8050:8050 scrapinghub/splash
       needs to be fixed.
   - Need to identify `brand`, `cnxn_no`, `mfg_no`, and `ship` on page
 - [ ] `tecd` https://shop.techdata.com/searchall?kw=pen
-  - Test: Yes
+  - Status: Defered (use search page)
+  - JavaScript: No
+  - Auto-redirect: No
+  - Use search page: Yes
+  - Double-hop: No
   - "Item page" needs sign-in account
-  - How to proceed:
-    - Retrieve data from "search page"
 - [ ] `nsit` https://www.insight.com/en_US/search.html?q=pen
-  - Test: No: Requires JavaScript
+  - Status: Testing
+  - JavaScript: Yes
+  - Auto-redirect: Yes
+  - Use search page: No
+  - Double-hop: No
   - Sometimes price is held back behind a "Estimate the total price of this
     item" button. However, it's not working because even if we put a valid ZIP
     code, the price comes as "$0", and we need to call their number to get a
@@ -208,8 +237,11 @@ $ sudo docker run -p 8050:8050 scrapinghub/splash
 #### Group 3
 
 - [x] `fast` https://www.fastenal.com/products?term=pen
-  - **DONE**
-  - Test: Yes
+  - Status: **DONE**
+  - JavaScript: No
+  - Auto-redirect: No
+  - Use search page: No
+  - Double-hop: No
   - There's a "first item" per category and then there's a table. I'm
     using the table results. Is this ok? Answer: Yes
   - There are various types of prices mixed ("wholesale", "online", "unit",
@@ -222,41 +254,60 @@ $ sudo docker run -p 8050:8050 scrapinghub/splash
     "Manufacturer" in one of the cells, and use the appropriate value)
     - How to proceed: save all the data in the table as a single string.
 - [ ] `AZO` https://www.autozone.com/searchresult?searchText=pen
-  - Test: No: Double-hop and asks for ZIP
-  - Marked as: Exploratory work (defered)
+  - Status: Defered (double-hop and ZIP)
+  - JavaScript: No
+  - Auto-redirect: No
+  - Use search page: No
+  - Double-hop: Yes
+  - Asks for ZIP
 
 #### Group 4
 
 - [x] `BUNZL` https://www.bunzlpd.com/catalogsearch/result/?q=pen
-  - **DONE**
-  - Test: Yes
-  - Need to identify `min_price`, and `shipping` on page
+  - Status: **DONE**
+  - JavaScript: No
+  - Auto-redirect: No
+  - Use search page: No
+  - Double-hop: No
 - [x] `pcmi` http://www.tigerdirect.com/applications/SearchTools/search.asp?keywords=pen
-  - **DONE**
-  - Test: Yes
+  - Status: **DONE**
+  - JavaScript: No
+  - Auto-redirect: No
+  - Use search page: No
+  - Double-hop: No
 - [ ] `MSM` https://www.mscdirect.com/browse/tn/?searchterm=pen
-  - Test: Yes
-  - This site has a double-hop for search (categories/search results/item)
-    - How to proceed:
-      - If it goes to "categories" mark it as not having results
-      - If it goes to "research results" proceed normally
-      - If it goes into "item" proceed normally
-        - This can be tricky, I need to find a reliable way to identify
-          whether we are in a "item" or "search" page
+  - Status: Defered (double-hop and auto-redirect)
+  - JavaScript: No
+  - Auto-redirect: Yes
+  - Use search page: No
+  - Double-hop: Yes
+  - How to proceed:
+    - If it goes to "categories" mark it as not having results
+    - If it goes to "research results" proceed normally
+    - If it goes into "item" proceed normally
+      - This can be tricky, I need to find a reliable way to identify
+        whether we are in a "item" or "search" page
 - [x] `hdss` https://hdsupplysolutions.com/shop/SearchDisplay?searchTerm=pen
-  - **DONE**
-  - Test: Yes
+  - Status: **DONE**
+  - JavaScript: No
+  - Auto-redirect: No
+  - Use search page: No
+  - Double-hop: No
   - Not getting search results with the inputs we're using. Not sure if this is
     a problem with my code or if it's something else. Need to look into this
     futher.
   - Need to identify `price_tier` and `priceq` on page
   - `instock` button requires site account for checking
   - `shipping_details` has various fields, trying to get all of them
-- [ ] `esnd` http://biggestbook.com/ui/catalog.html#/search?keyword=pen
-  - Test: No: Requires JavaScript
+- [x] `esnd` http://biggestbook.com/ui/catalog.html#/search?keyword=pen
+  - Status: Testing
+  - JavaScript: Yes
+  - Auto-redirect: Yes
+  - Use search page: No
+  - Double-hop: No
   - This is giving me problems (duplicated URLs), I need to look into this
     further, but I think it could be the reserved symbol `#`.
-  - Need fields specification for this site.
+  - No specification provided for items for this website.
 
 ## Item analysis for Amazon
 
