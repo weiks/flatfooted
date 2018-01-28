@@ -78,6 +78,10 @@ class Settings:
         return self.settings['results_file_type']
 
     @property
+    def javascript(self):
+        return self._site_settings.get('javascript', False)
+
+    @property
     def _site_settings(self):
         if not self._name:
             raise ValueError('Global settings instance (without `name`)')

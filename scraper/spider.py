@@ -2,6 +2,7 @@
 import scrapy
 
 from slugify import slugify
+from scrapy_splash import SplashRequest
 
 from utilities.inputs import SearchStringsCSV
 from utilities.select import select
@@ -16,21 +17,28 @@ class Spider(scrapy.Spider):
         'CONCURRENT_REQUESTS': 16,
         'CONCURRENT_REQUESTS_PER_DOMAIN': 1,
         'RANDOMIZE_DOWNLOAD_DELAY': True,
-        'DOWNLOAD_DELAY': 2
+        'DOWNLOAD_DELAY': 2,
     }
 
     def __init__(self, settings={}, now=None, **kwargs):
         self.now = now
         self.name = settings.name
         self.site_settings = settings
+        if self.site_settings.javascript:
+            self.request_method = SplashRequest
+            self.args = {'wait': '1'}
+        else:
+            self.request_method = scrapy.Request
+            self.args = {}
         super().__init__(**kwargs)
 
     def start_requests(self):
         for combination in self._start_combinations():
-            yield scrapy.Request(
+            yield self.request_method(
                 combination['url'],
                 callback=self._parse_searches,
                 errback=self._parse_search_error,
+                args=self.args,
                 meta={
                     'type': 'search',
                     'site_name': self.name,

@@ -72,7 +72,17 @@ class Scraper:
             'LOG_LEVEL': 'DEBUG',
             'DOWNLOADER_MIDDLEWARES': {
                 'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
-                'scraper.middleware.CustomRetryMiddleware': 550
+                'scraper.middleware.CustomRetryMiddleware': 550,
+                # Settings for Splash (JavaScript)
+                'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,
+                'scrapy_splash.SplashCookiesMiddleware': 723,
+                'scrapy_splash.SplashMiddleware': 725
+            },
+            # Settings for Splash (JavaScript)
+            'SPLASH_URL': 'http://localhost:8050/',
+            'DUPEFILTER_CLASS': 'scrapy_splash.SplashAwareDupeFilter',
+            'SPIDER_MIDDLEWARES': {
+                'scrapy_splash.SplashDeduplicateArgsMiddleware': 100,
             }
         }
         m = 'DOWNLOADER_MIDDLEWARES'
