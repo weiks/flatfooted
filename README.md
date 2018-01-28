@@ -67,6 +67,14 @@ the Splash server. To do that, execute the following:
 $ sudo docker run -p 8050:8050 scrapinghub/splash
 ```
 
+When you're attempt to use Splash server to parse JavaScript, if you a an error
+in the termianl similar to the one shown below, it's because you forgot to start
+the Splash server with the command shown above.
+
+```
+Connection was refused by other side: 111: Connection refused.
+```
+
 ## Tasks
 
 ### Phase 1
