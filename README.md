@@ -162,17 +162,32 @@ Connection was refused by other side: 111: Connection refused.
 - [x] JOIN by `search_string` in post-processing script
   - Need to separate URLs into "search URL" and "item URL", as well as
     HTTP status codes for searches and items
-- [x] Deal with JavaScript enabled sites by using headless browser
+- [ ] Deal with JavaScript enabled sites by using headless browser
   - Given that JavaScript takes a bit of time to load, we need to use parameter
     that specifies how much time to wait. The larger the value, the more time
     the scrapping will take, and viceversa.
 - [ ] Optionally retrieve item data directly from results page
 - [ ] Optionally specify that an auto-redirect into item is expected
+- [ ] Get indicator for "suggeted" results or "no results" for a search
+  - [ ] Zoro (`ZORO`): Pending JavaScript
+  - [x] Grainger (`GWW`): Unnecessary due to auto-redirect?
+  - [ ] CDW (`CDW`): In Progress: Need to fix problematic pages (JavaScript)
+  - [ ] Connection (`CNXN`): Pending auto-redirect
+  - [ ] TechData (`TECD`): Pending search page
+  - [ ] Insight (`NSIT`): Pending decision by Mike (did not mention it)
+  - [x] Fastenal (`FAST`): Never suggests results
+  - [x] AutoZone (`AZO`): No "suggested" results indicator
+  - [ ] Bunzlpd (`BUNZL`): Pending decision by Mike (OR/AND issue)
+  - [x] Tiger Direct (`PCMI`): **DONE**
+  - [ ] MSC Direct (`MSM`): Pending double-hop and auto-redirect
+  - [x] HD Supply Solutions (`HDSS`): **DONE**
+  - [ ] Biggest Book (`ESND`): Pending JavaScript
+  - [ ] Staples (`STAPLES`): Pending JavaScript
 
 #### Group 1
 
-- [ ] `Zoro` https://www.zoro.com/search?q=pen
-  - Status: Fixing XPATHs
+- [ ] `ZORO` https://www.zoro.com/search?q=pen
+  - Status: In Progress: JavaScript data retrieval issues
   - JavaScript: Yes
   - Auto-rediret: Yes
   - Use search page: No
@@ -199,14 +214,14 @@ Connection was refused by other side: 111: Connection refused.
 
 #### Group 2
 
-- [x] `cdw` https://www.cdw.com/shop/search/result.aspx?b=pen
-  - Status: **DONE**
-  - JavaScript: No
+- [ ] `CDW` https://www.cdw.com/shop/search/result.aspx?b=pen
+  - Status: In Progress: Test search pages `result_description` with JavaScript
+  - JavaScript: Yes
   - Auto-redirect: No
   - Use search page: No
   - Double-hop: No
   - Need to identify `ship`, and `ship2` on page
-- [ ] `cnxn` https://www.connection.com/IPA/Shop/Product/Search?term=pen
+- [ ] `CNXN` https://www.connection.com/IPA/Shop/Product/Search?term=pen
   - Status: Defered (auto-redirect)
   - JavaScript: No
   - Auto-redirect: Yes
@@ -223,15 +238,15 @@ Connection was refused by other side: 111: Connection refused.
       messing up the mechanism. Need to look into this further. This definitely
       needs to be fixed.
   - Need to identify `brand`, `cnxn_no`, `mfg_no`, and `ship` on page
-- [ ] `tecd` https://shop.techdata.com/searchall?kw=pen
+- [ ] `TECD` https://shop.techdata.com/searchall?kw=pen
   - Status: Defered (use search page)
   - JavaScript: No
   - Auto-redirect: No
   - Use search page: Yes
   - Double-hop: No
   - "Item page" needs sign-in account
-- [ ] `nsit` https://www.insight.com/en_US/search.html?q=pen
-  - Status: Testing
+- [ ] `NSIT` https://www.insight.com/en_US/search.html?q=pen
+  - Status: In Progress: JavaScript data retrieval issues
   - JavaScript: Yes
   - Auto-redirect: Yes
   - Use search page: No
@@ -244,7 +259,7 @@ Connection was refused by other side: 111: Connection refused.
 
 #### Group 3
 
-- [x] `fast` https://www.fastenal.com/products?term=pen
+- [x] `FAST` https://www.fastenal.com/products?term=pen
   - Status: **DONE**
   - JavaScript: No
   - Auto-redirect: No
@@ -277,7 +292,7 @@ Connection was refused by other side: 111: Connection refused.
   - Auto-redirect: No
   - Use search page: No
   - Double-hop: No
-- [x] `pcmi` http://www.tigerdirect.com/applications/SearchTools/search.asp?keywords=pen
+- [x] `PCMI` http://www.tigerdirect.com/applications/SearchTools/search.asp?keywords=pen
   - Status: **DONE**
   - JavaScript: No
   - Auto-redirect: No
@@ -295,7 +310,7 @@ Connection was refused by other side: 111: Connection refused.
     - If it goes into "item" proceed normally
       - This can be tricky, I need to find a reliable way to identify
         whether we are in a "item" or "search" page
-- [x] `hdss` https://hdsupplysolutions.com/shop/SearchDisplay?searchTerm=pen
+- [x] `HDSS` https://hdsupplysolutions.com/shop/SearchDisplay?searchTerm=pen
   - Status: **DONE**
   - JavaScript: No
   - Auto-redirect: No
@@ -307,8 +322,8 @@ Connection was refused by other side: 111: Connection refused.
   - Need to identify `price_tier` and `priceq` on page
   - `instock` button requires site account for checking
   - `shipping_details` has various fields, trying to get all of them
-- [x] `esnd` http://biggestbook.com/ui/catalog.html#/search?keyword=pen
-  - Status: Testing
+- [x] `ESND` http://biggestbook.com/ui/catalog.html#/search?keyword=pen
+  - Status: In Progress: JavaScript data retrieval issues
   - JavaScript: Yes
   - Auto-redirect: Yes
   - Use search page: No
