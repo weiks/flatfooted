@@ -29,12 +29,23 @@ class ProxyMiddleware:
         print('-' * 50)
         pprint.pprint(request.__dict__)
         print('-' * 50)
+        return request
+
+
+class FixURLBeforeRequestMiddleware:
+
+    def process_request(self, request, spider):
+        if request.meta.get('type', '') == 'item':
+            print('1' * 100)
+            pprint.pprint(request.url)
+            print('1' * 100)
+            return request
 
 
 class CustomRetryMiddleware(RetryMiddleware):
 
     def process_response(self, request, response, spider):
-        # This is standard Scrapy code fro `process_response()`
+        # This is standard Scrapy code for `process_response()`
         if request.meta.get('dont_retry', False):
             return response
         if response.status in self.retry_http_codes:
