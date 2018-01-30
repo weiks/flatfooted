@@ -9,6 +9,10 @@ class Settings:
         self._name = name
 
     @property
+    def base_url(self):
+        return self._site_settings['base_url']
+
+    @property
     def names(self):
         return list(self.settings['sites'].keys())
 

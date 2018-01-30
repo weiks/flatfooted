@@ -18,7 +18,8 @@ SETTINGS = {
         #
         # Standard
         #
-        # 'Amazon': {
+        # 'AMZN': {
+        #     'base_url': 'https://www.amazon.com',
         #     'search': {
         #         'query': 'https://www.amazon.com/s/?field-keywords={}',
         #         'first_item': [
@@ -31,8 +32,10 @@ SETTINGS = {
         #         ],
         #         'fields': {
         #             'number_of_results': [
-        #                 '//*[@id="noResultsTitle"]//text()',
         #                 '//*[@id="s-result-count"]//text()'
+        #             ],
+        #             'results_description': [
+        #                 '//*[@id="noResultsTitle"]//text()'
         #             ]
         #         }
         #     },
@@ -68,39 +71,46 @@ SETTINGS = {
         #         }
         #     }
         # },
-        # 'cdw': {
-        #     'search': {
-        #         'query': 'https://www.cdw.com/shop/search/result.aspx?b={}',
-        #         'first_item': [
-        #             '//*[@id="main"]/div/div/div[2]/div[5]/div[1]/div[3]/div[1]/h2/a/@href'
-        #         ],
-        #         'fields': {
-        #             'number_of_results': [
-        #                 '//*[@id="main"]/div/div/div[2]/div[2]/div[1]//text()'
-        #             ]
-        #         }
-        #     },
-        #     'item': {
-        #         'fields': {
-        #             'name': [
-        #                 '//*[@id="primaryProductName"]/span//text()'
-        #             ],
-        #             'price': [
-        #                 '//*[@id="singleCurrentItemLabel"]/span[2]//text()'
-        #             ],
-        #             'mfg': [
-        #                 '//*[@id="primaryProductPartNumbers"]/span[1]/span//text()'
-        #             ],
-        #             'cdw': [
-        #                 '//*[@id="primaryProductPartNumbers"]/span[3]//text()'
-        #             ],
-        #             'availability': [
-        #                 '//*[@id="primaryProductAvailability"]//text()'
-        #             ]
-        #         }
-        #     }
-        # },
-        # 'fast': {
+        'CDW': {
+            'javascript': True,
+            'base_url': 'https://www.cdw.com',
+            'search': {
+                'query': 'https://www.cdw.com/shop/search/result.aspx?b={}',
+                'first_item': [
+                    '//*[@id="main"]/div/div/div[2]/div[5]/div[1]/div[3]/div[1]/h2/a/@href'
+                ],
+                'fields': {
+                    'number_of_results': [
+                        '//*[@id="main"]/div/div/div[2]/div[2]/div[1]//text()'
+                    ],
+                    'results_description': [
+                        # TODO: Test with JavaScript for problematic pages
+                        '//*[@id="main"]/div/div/div[2]/div[3]/div[1]//text()
+                    ]
+                }
+            },
+            'item': {
+                'fields': {
+                    'name': [
+                        '//*[@id="primaryProductName"]/span//text()'
+                    ],
+                    'price': [
+                        '//*[@id="singleCurrentItemLabel"]/span[2]//text()'
+                    ],
+                    'mfg': [
+                        '//*[@id="primaryProductPartNumbers"]/span[1]/span//text()'
+                    ],
+                    'cdw': [
+                        '//*[@id="primaryProductPartNumbers"]/span[3]//text()'
+                    ],
+                    'availability': [
+                        '//*[@id="primaryProductAvailability"]//text()'
+                    ]
+                }
+            }
+        },
+        # 'FAST': {
+        #     'base_url': 'https://www.fastenal.com',
         #     'search': {
         #         'query': 'https://www.fastenal.com/products?term={}',
         #         'first_item': [
@@ -109,6 +119,9 @@ SETTINGS = {
         #         'fields': {
         #             'number_of_results': [
         #                 '//*[@id="refine-by-attribute"]/span//text()'
+        #             ],
+        #             'results_description': [
+        #                 ''
         #             ]
         #         }
         #     },
@@ -144,6 +157,7 @@ SETTINGS = {
         #     }
         # },
         # 'BUNZL': {
+        #     'base_url': 'https://www.bunzlpd.com',
         #     'search': {
         #         'query': 'https://www.bunzlpd.com/catalogsearch/result/?q={}',
         #         'first_item': [
@@ -155,6 +169,9 @@ SETTINGS = {
         #             'number_of_results': [
         #                 '//*[@id="content"]/div/div[3]/p[1]//text()',
         #                 '//*[@id="content"]/div/div[3]/div[2]/div[1]/div[1]/div[1]//text()'
+        #             ],
+        #             'results_description': [
+        #                 ''
         #             ]
         #         }
         #     },
@@ -178,7 +195,8 @@ SETTINGS = {
         #         }
         #     }
         # },
-        # 'pcmi': {
+        # 'PCMI': {
+        #     'base_url': 'http://www.tigerdirect.com',
         #     'search': {
         #         'query': 'http://www.tigerdirect.com/applications/SearchTools/search.asp?keywords={}',
         #         'first_item': [
@@ -188,6 +206,12 @@ SETTINGS = {
         #         'fields': {
         #             'number_of_results': [
         #                 '//*[@id="mainC"]/div/div[3]/div/div[1]/div[2]/div[1]//text()'
+        #             ],
+        #             'results_description': [
+        #                 # TODO: Encoding issue with some of the search pages
+        #                 #       Possibly fix by using Selenium when available
+        #                 '//*[@id="mainC"]/div/div[3]/h1//text()',
+        #                 '//*[@id="mainC"]/table/tbody/tr[1]/td[3]//text()'
         #             ]
         #         }
         #     },
@@ -208,7 +232,8 @@ SETTINGS = {
         #         }
         #     }
         # },
-        # 'hdss': {
+        # 'HDSS': {
+        #     'base_url': 'https://hdsupplysolutions.com',
         #     'search': {
         #         'query': 'https://hdsupplysolutions.com/shop/SearchDisplay?searchTerm={}',
         #         'first_item': [
@@ -218,6 +243,9 @@ SETTINGS = {
         #         'fields': {
         #             'number_of_results': [
         #                 '//*[@id="total_results"]//text()'
+        #             ],
+        #             'results_description_css': [
+        #                 'div.results_description::text'
         #             ]
         #         }
         #     },
@@ -243,12 +271,13 @@ SETTINGS = {
         #             ]
         #         }
         #     }
-        # }
+        # },
         #
         # JavaScript
         #
-        # 'Zoro': {
+        # 'ZORO': {
         #     'javascript': True,
+        #     'base_url': 'https://www.zoro.com',
         #     'search': {
         #         'query': 'https://www.zoro.com/search?q={}',
         #         'first_item': [
@@ -261,6 +290,9 @@ SETTINGS = {
         #                 '//*[@id="part_content"]/div[3]/div[3]/div[1]/div[2]/div//text()',
         #                 '//*[@id="part_content"]/div[3]/div[3]/div[2]/div[2]/div//text()',
         #                 '//*[@id="part_content"]/div[1]/div[2]//text()'
+        #             ],
+        #             'results_description': [
+        #                 ''
         #             ]
         #         }
         #     },
@@ -276,7 +308,7 @@ SETTINGS = {
         #                 '//*[@id="availability"]/div[1]//text()'
         #             ],
         #             'shipping': [
-        #                 '//*[@id="availability"]/div//text()'
+        #                 '//*[@id="availability"]/div[2]//text()'
         #             ],
         #             'site_id': [
         #                 '//*[@id="brand-name"]/strong/span//text()'
@@ -289,6 +321,7 @@ SETTINGS = {
         # },
         # 'GWW': {
         #     'javascript': True,
+        #     'base_url': 'https://www.grainger.com',
         #     'search': {
         #         'query': 'https://www.grainger.com/search?searchQuery={}',
         #         'first_item': [
@@ -298,6 +331,10 @@ SETTINGS = {
         #         ],
         #         'fields': {
         #             'number_of_results': [
+        #                 ''
+        #             ],
+        #             'results_description': [
+        #                 ''
         #             ]
         #         }
         #     },
@@ -335,8 +372,9 @@ SETTINGS = {
         #             # ]
         #     }
         # },
-        # 'nsit': {
+        # 'NSIT': {
         #     'javascript': True,
+        #     'base_url': 'https://www.insight.com',
         #     'search': {
         #         'query': 'https://www.insight.com/en_US/search.html?q={}',
         #         'first_item': [
@@ -345,6 +383,9 @@ SETTINGS = {
         #         'fields': {
         #             'number_of_results': [
         #                 '//*[@id="buy-counter"]/span//text()'
+        #             ],
+        #             'results_description': [
+        #                 ''
         #             ]
         #         }
         #     },
@@ -368,8 +409,9 @@ SETTINGS = {
         #         }
         #     }
         # },
-        # 'esnd': {
+        # 'ESND': {
         #     'javascript': True,
+        #     'base_url': 'http://biggestbook.com',
         #     'search': {
         #         'query': 'http://biggestbook.com/ui/catalog.html#/search?keyword={}',
         #         'first_item': [
@@ -380,6 +422,9 @@ SETTINGS = {
         #             'number_of_results': [
         #                 '//*[@id="bbMain"]/div/div/main/div/div/div/div[4]/bb-views[1]/div/div/div/span[1]/bb-count//text()',
         #                 '//*[@id="bbMain"]/div/div/main/div/div/div/div[1]/span//text()'
+        #             ],
+        #             'results_description': [
+        #                 ''
         #             ]
         #         }
         #     },
@@ -400,7 +445,8 @@ SETTINGS = {
         #
         # Search Page
         #
-        # 'tecd': {
+        # 'TECD': {
+        #     'base_url': 'https://techdata.com',
         #     'search': {
         #         'query': 'https://shop.techdata.com/searchall?kw={}',
         #         'first_item': [
@@ -408,6 +454,10 @@ SETTINGS = {
         #         ],
         #         'fields': {
         #             'number_of_results': [
+        #                 ''
+        #             ],
+        #             'results_description': [
+        #                 ''
         #             ]
         #         }
         #     },
@@ -431,7 +481,8 @@ SETTINGS = {
         #
         # Fix HTTP responses
         #
-        # 'cnxn': {
+        # 'CNXN': {
+        #     'base_url': 'https://www.connection.com',
         #     'search': {
         #         'query': 'https://www.connection.com/IPA/Shop/Product/Search?SearchType=1&term={}',
         #         'first_item': [
@@ -439,6 +490,10 @@ SETTINGS = {
         #         ],
         #         'fields': {
         #             'number_of_results': [
+        #                 ''
+        #             ],
+        #             'results_description': [
+        #                 ''
         #             ]
         #         }
         #     },
@@ -469,12 +524,17 @@ SETTINGS = {
         # Exploratory work (defered)
         #
         # 'MSM': {
+        #     'base_url': 'https://www.mscdirect.com',
         #     'search': {
         #         'query': 'https://www.mscdirect.com/browse/tn/?searchterm={}',
         #         'first_item': [
         #         ],
         #         'fields': {
         #             'number_of_results': [
+        #                 ''
+        #             ],
+        #             'results_description': [
+        #                 ''
         #             ]
         #         }
         #     },
@@ -502,6 +562,7 @@ SETTINGS = {
         #     }
         # },
         # 'AZO': {
+        #     'base_url': 'https://',
         #     'search': {
         #         'query': '',
         #         'first_item': [
@@ -509,6 +570,10 @@ SETTINGS = {
         #         ],
         #         'fields': {
         #             'number_of_results': [
+        #                 ''
+        #             ],
+        #             'results_description': [
+        #                 ''
         #             ]
         #         }
         #     },
