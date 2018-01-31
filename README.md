@@ -162,39 +162,37 @@ Connection was refused by other side: 111: Connection refused.
 - [x] JOIN by `search_string` in post-processing script
   - Need to separate URLs into "search URL" and "item URL", as well as
     HTTP status codes for searches and items
-- [ ] Deal with JavaScript enabled sites by using headless browser
-  - Given that JavaScript takes a bit of time to load, we need to use parameter
-    that specifies how much time to wait. The larger the value, the more time
-    the scrapping will take, and viceversa.
+- [x] Deal with JavaScript enabled sites by using headless browser
+  - [ ] Currently there's a manual process to specify what should be looked for
+        to detect that a site has finshed loading the data we need. This is
+        necessary because some sites take a bit longer. Should these be
+        specified through the settings file?
 - [ ] Optionally retrieve item data directly from results page
 - [ ] Optionally specify that an auto-redirect into item is expected
 - [ ] Get indicator for "suggeted" results or "no results" for a search
-  - [ ] Zoro (`ZORO`): Pending JavaScript
+  - [x] Zoro (`ZORO`): Site doesn't show signs of "suggested" results
   - [x] Grainger (`GWW`): Unnecessary due to auto-redirect?
-  - [ ] CDW (`CDW`): In Progress: Need to fix problematic pages (JavaScript)
+  - [x] CDW (`CDW`): **DONE**
   - [ ] Connection (`CNXN`): Pending auto-redirect
   - [ ] TechData (`TECD`): Pending search page
   - [ ] Insight (`NSIT`): Pending decision by Mike (did not mention it)
-  - [x] Fastenal (`FAST`): Never suggests results
-  - [x] AutoZone (`AZO`): No "suggested" results indicator
+  - [x] Fastenal (`FAST`): **DONE** (No "suggested" results indicator)
+  - [x] AutoZone (`AZO`): **DONE** (No "suggested" results indicator)
   - [ ] Bunzlpd (`BUNZL`): Pending decision by Mike (OR/AND issue)
   - [x] Tiger Direct (`PCMI`): **DONE**
   - [ ] MSC Direct (`MSM`): Pending double-hop and auto-redirect
   - [x] HD Supply Solutions (`HDSS`): **DONE**
-  - [ ] Biggest Book (`ESND`): Pending JavaScript
-  - [ ] Staples (`STAPLES`): Pending JavaScript
+  - [ ] Biggest Book (`ESND`): Pending fragmented URLs
+  - [x] Staples (`STAPLES`): **DONE**
 
 #### Group 1
 
-- [ ] `ZORO` https://www.zoro.com/search?q=pen
-  - Status: In Progress: JavaScript data retrieval issues
+- [x] `ZORO` https://www.zoro.com/search?q=pen
+  - Status: **DONE**
   - JavaScript: Yes
   - Auto-rediret: Yes
   - Use search page: No
   - Double-hop: No
-  - Seems that JavaScript is only required to load the site, after that,
-    standard techniques apply as they normally would.
-  - Having trouble collecting `availability` and `shipping`
   - Uses automatic redirects (302) when a unique item was found (I guess):
     - Example, search for: QUA41967
       - In: https://httpstatus.io/
@@ -202,25 +200,25 @@ Connection was refused by other side: 111: Connection refused.
 - [ ] `GWW` https://www.grainger.com/search?searchQuery=pen
   - Status: Defered (auto-redirect)
   - JavaScript: Yes
-  - Auto-redirect: Yes (?)
+  - Auto-redirect: Yes
   - Use search page: No
   - Double-hop: No
   - Seems that JavaScript is required to actually interact with the site and get
     the data we are looking for. This can be a bit tricky, but will explore it
     later.
-  - The JavaScript interaction may be bypassed if we are able to use an
-    identifier from the `Zoro` data, and use that as the search string. This
-    will bypass a "results page" and go straight to "item page".
+    - As suggested by Mike, the JavaScript interaction may be bypassed if we are
+      able to use an identifier from the `Zoro` data, and use that as the search
+      string. This will bypass a "results page" and go straight to "item page".
+      - TODO: How should we proceed about this?
 
 #### Group 2
 
-- [ ] `CDW` https://www.cdw.com/shop/search/result.aspx?b=pen
-  - Status: In Progress: Test search pages `result_description` with JavaScript
-  - JavaScript: Yes
+- [x] `CDW` https://www.cdw.com/search/?key=pen
+  - Status: **DONE**
+  - JavaScript: No
   - Auto-redirect: No
   - Use search page: No
   - Double-hop: No
-  - Need to identify `ship`, and `ship2` on page
 - [ ] `CNXN` https://www.connection.com/IPA/Shop/Product/Search?term=pen
   - Status: Defered (auto-redirect)
   - JavaScript: No
@@ -237,7 +235,6 @@ Connection was refused by other side: 111: Connection refused.
       automatically redirected to the item page (with a 302), and that is
       messing up the mechanism. Need to look into this further. This definitely
       needs to be fixed.
-  - Need to identify `brand`, `cnxn_no`, `mfg_no`, and `ship` on page
 - [ ] `TECD` https://shop.techdata.com/searchall?kw=pen
   - Status: Defered (use search page)
   - JavaScript: No
@@ -245,8 +242,8 @@ Connection was refused by other side: 111: Connection refused.
   - Use search page: Yes
   - Double-hop: No
   - "Item page" needs sign-in account
-- [ ] `NSIT` https://www.insight.com/en_US/search.html?q=pen
-  - Status: In Progress: JavaScript data retrieval issues
+- [x] `NSIT` https://www.insight.com/en_US/search.html?q=pen
+  - Status: **DONE**
   - JavaScript: Yes
   - Auto-redirect: Yes
   - Use search page: No
@@ -265,12 +262,6 @@ Connection was refused by other side: 111: Connection refused.
   - Auto-redirect: No
   - Use search page: No
   - Double-hop: No
-  - There's a "first item" per category and then there's a table. I'm
-    using the table results. Is this ok? Answer: Yes
-  - There are various types of prices mixed ("wholesale", "online", "unit",
-    and maybe others). I'm trying to get all of them.
-  - Some URLs returned by the site are using the `;` character in the URL
-    and that's causing some fields to move in the spreadsheet.
   - There are no identifiers in the first/main table, so the fields can move
     around without ourselves knowing apriori where they will be. We need some
     kind of dynamic parsing for this (check each field until we find the word
@@ -316,21 +307,29 @@ Connection was refused by other side: 111: Connection refused.
   - Auto-redirect: No
   - Use search page: No
   - Double-hop: No
-  - Not getting search results with the inputs we're using. Not sure if this is
-    a problem with my code or if it's something else. Need to look into this
-    futher.
-  - Need to identify `price_tier` and `priceq` on page
-  - `instock` button requires site account for checking
-  - `shipping_details` has various fields, trying to get all of them
-- [x] `ESND` http://biggestbook.com/ui/catalog.html#/search?keyword=pen
-  - Status: In Progress: JavaScript data retrieval issues
+  - Sometimes `instock` button requires site account for checking
+- [ ] `ESND` http://biggestbook.com/ui/catalog.html#/search?keyword=pen
+  - Status: Defered (framgmented URLs)
   - JavaScript: Yes
   - Auto-redirect: Yes
   - Use search page: No
   - Double-hop: No
-  - This is giving me problems (duplicated URLs), I need to look into this
-    further, but I think it could be the reserved symbol `#`.
-  - No specification provided for items for this website.
+  - This site has fragmented URLs, meaning that they contain a `#` character,
+    which is used to identify sections within a page, not a different, page,
+    and that's causing problems with Scrapy and Selenium. Need to look into
+    this further.
+- [x] `STAPLES` https://www.staples.com/{0}/directory_{0}?
+  - Status: **DONE**
+  - JavaScript: Yes
+  - Auto-redirect: No
+  - Use search page: No
+  - Double-hop: No
+  - Note that the search URL is dynamic in the sense that it needs the field to
+    be filled twice in different places.
+  - The site gives problematic results when a `?` character is used in the
+    search, probably due to the dynamic nature of the URL and the fact that the
+    `?` symbol is used to specify parameters in a URL. These should be avoided
+    in the search strings.
 
 ## Item analysis for Amazon
 
