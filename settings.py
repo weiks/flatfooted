@@ -3,11 +3,10 @@ SETTINGS = {
     'save_html': True,
     'random_proxies': False,
     'random_user_agents': True,
-    'results_file_type': 'json',
     'timezone': 'America/Mexico_City',
     'search_strings': {
-        # 'file': 'inputs/search-strings-full.csv',
-        'file': 'inputs/search-strings-re-test.csv',
+        'file': 'inputs/search-strings-full.csv',
+        # 'file': 'inputs/search-strings-re-test.csv',
         'variable': 'String',
         'sample': None
     },
@@ -372,6 +371,7 @@ SETTINGS = {
         #             # 'get_this_price': [
         #             #     # TODO: Identify on page
         #             # ]
+        #         }
         #     }
         # },
         # 'NSIT': {
@@ -411,6 +411,46 @@ SETTINGS = {
         #         }
         #     }
         # },
+        # 'STAPLES': {
+        #     'javascript': True,
+        #     'base_url': 'https://www.staples.com',
+        #     'search': {
+        #         'query': 'https://www.staples.com/{0}/directory_{0}?',
+        #         'first_item_css': [
+        #             'div.product-info > a::attr(href)'
+        #         ],
+        #         'fields': {
+        #             'number_of_results': [
+        #                 '//*[@id="rightRailApp"]/div[1]/div/div[1]//text()'
+        #             ],
+        #             'results_description': [
+        #                 '/html/body/div[3]/h1//text()'
+        #             ]
+        #         }
+        #     },
+        #     'item': {
+        #         'fields': {
+        #             'name': [
+        #                 '//*[@id="mainNgApp"]/div/div[2]/div/div[1]/h1//text()'
+        #             ],
+        #             'price': [
+        #                 '//*[@id="getPrice"]/div[1]/div[2]/div[2]/div/div[3]/div[1]/div/div[1]/div[2]/div[1]/div[1]/span//text()',
+        #                 '//*[@id="getPrice"]/div[1]/div[2]/div[2]/div/div[1]/div[1]/div[1]/div/div[1]/div[2]/div[1]/div[1]/span//text()',
+        #                 '//*[@id="getPrice"]/div[1]/div[2]/div/div/div[1]/div[1]/div[1]/div/div[1]/div[2]/div[1]/div[1]/span//text()',
+        #                 '//*[@id="getPrice"]/div[1]/div[2]//text()',
+        #             ],
+        #             'availability': [
+        #                 '//*[@id="getPrice"]/div[1]/div[2]/div/div/div[1]/div[2]/div[2]/div/div/div/div/div/div//text()',
+        #             ],
+        #             'ships_from': [
+        #                 '//*[@id="getPrice"]/div[1]/div[2]/div/div/div[1]/div[1]/div[1]/div/div[2]/div[2]/div[4]/div[2]/div//text()'
+        #             ],
+        #             'model': [
+        #                 '//*[@id="mainNgApp"]/div/div[2]/div/div[1]/div/ul/li[2]/span//text()'
+        #             ]
+        #         }
+        #     }
+        # },
         # 'ESND': {
         #     'javascript': True,
         #     'base_url': 'http://biggestbook.com',
@@ -444,46 +484,6 @@ SETTINGS = {
         #         }
         #     }
         # },
-        'STAPLES': {
-            'javascript': True,
-            'base_url': 'https://www.staples.com',
-            'search': {
-                'query': 'https://www.staples.com/{0}/directory_{0}?',
-                'first_item_css': [
-                    'div.product-info > a::attr(href)'
-                ],
-                'fields': {
-                    'number_of_results': [
-                        '//*[@id="rightRailApp"]/div[1]/div/div[1]//text()'
-                    ],
-                    'results_description': [
-                        '/html/body/div[3]/h1//text()'
-                    ]
-                }
-            },
-            'item': {
-                'fields': {
-                    'name': [
-                        '//*[@id="mainNgApp"]/div/div[2]/div/div[1]/h1//text()'
-                    ],
-                    'price': [
-                        '//*[@id="getPrice"]/div[1]/div[2]/div[2]/div/div[3]/div[1]/div/div[1]/div[2]/div[1]/div[1]/span//text()',
-                        '//*[@id="getPrice"]/div[1]/div[2]/div[2]/div/div[1]/div[1]/div[1]/div/div[1]/div[2]/div[1]/div[1]/span//text()',
-                        '//*[@id="getPrice"]/div[1]/div[2]/div/div/div[1]/div[1]/div[1]/div/div[1]/div[2]/div[1]/div[1]/span//text()',
-                        '//*[@id="getPrice"]/div[1]/div[2]//text()',
-                    ],
-                    'availability': [
-                        '//*[@id="getPrice"]/div[1]/div[2]/div/div/div[1]/div[2]/div[2]/div/div/div/div/div/div//text()',
-                    ],
-                    'ships_from': [
-                        '//*[@id="getPrice"]/div[1]/div[2]/div/div/div[1]/div[1]/div[1]/div/div[2]/div[2]/div[4]/div[2]/div//text()'
-                    ],
-                    'model': [
-                        '//*[@id="mainNgApp"]/div/div[2]/div/div[1]/div/ul/li[2]/span//text()'
-                    ]
-                }
-            }
-        },
         #
         # Search Page
         #
