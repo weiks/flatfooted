@@ -62,11 +62,9 @@ class Scraper:
         `RETRY_TIMES` and `RETRY_HTTP_CODES` must be much more flexible if
         proxies are being used because proxies can fail for a variety of
         reasons, and we need to be able to adapt to that.
-
-        NOTE: Using proxies slows the process quite a bit.
         """
         options = {
-            'FEED_FORMAT': self.settings.results_file_type,
+            'FEED_FORMAT': 'json',
             'FEED_URI': self._file_name(),
             'COOKIES_ENABLED': False,
             'LOG_LEVEL': 'DEBUG',
@@ -74,17 +72,7 @@ class Scraper:
                 'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
                 'scraper.middleware.CustomRetryMiddleware': 550,
                 'scraper.middlewares.selenium.SeleniumMiddleware': 450
-                # Settings for Splash (JavaScript)
-                # 'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,
-                # 'scrapy_splash.SplashCookiesMiddleware': 723,
-                # 'scrapy_splash.SplashMiddleware': 725
             },
-            # Settings for Splash (JavaScript)
-            # 'SPLASH_URL': 'http://localhost:8050/',
-            # 'DUPEFILTER_CLASS': 'scrapy_splash.SplashAwareDupeFilter',
-            # 'SPIDER_MIDDLEWARES': {
-            #     'scrapy_splash.SplashDeduplicateArgsMiddleware': 100,
-            # }
         }
         m = 'DOWNLOADER_MIDDLEWARES'
         if self.settings.random_proxies:
@@ -95,10 +83,8 @@ class Scraper:
             options[m]['scraper.middleware.RandomUserAgentMiddleware'] = 400
         return options
 
-    def _file_with_name(self, name, ext=None):
+    def _file_with_name(self, name, ext='json'):
         return self._file_name(ext).replace("%(name)s", name)
 
-    def _file_name(self, ext=None):
-        if ext is None:
-            ext = self.settings.results_file_type
+    def _file_name(self, ext='json'):
         return "outputs/%(name)s_{}.{}".format(self.now, ext)

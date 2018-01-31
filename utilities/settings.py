@@ -78,10 +78,6 @@ class Settings:
         return self.settings['search_strings']['sample']
 
     @property
-    def results_file_type(self):
-        return self.settings['results_file_type']
-
-    @property
     def javascript(self):
         return self._site_settings.get('javascript', False)
 

@@ -107,7 +107,7 @@ class Spider(scrapy.Spider):
             self.name, self.now, extension)
 
     def _meta(self, request_type, search_string):
-        meta = {
+        return {
             'type': request_type,
             'site_name': self.name,
             'site_settings': self.site_settings,
@@ -117,13 +117,6 @@ class Spider(scrapy.Spider):
                 'timestamp': self.now
             }
         }
-        if self.site_settings.javascript:
-            meta['splash'] = {
-                'args': {
-                    'wait': '3'
-                }
-            }
-        return meta
 
     def use_selenium(self):
         return self.site_settings.javascript
