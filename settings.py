@@ -6,9 +6,10 @@ SETTINGS = {
     'results_file_type': 'json',
     'timezone': 'America/Mexico_City',
     'search_strings': {
-        'file': 'inputs/search-strings-full.csv',
+        # 'file': 'inputs/search-strings-full.csv',
+        'file': 'inputs/search-strings-re-test.csv',
         'variable': 'String',
-        'sample': 10
+        'sample': None
     },
     'required_fields': [
         'name',
@@ -71,44 +72,45 @@ SETTINGS = {
         #         }
         #     }
         # },
-        'CDW': {
-            'javascript': True,
-            'base_url': 'https://www.cdw.com',
-            'search': {
-                'query': 'https://www.cdw.com/shop/search/result.aspx?b={}',
-                'first_item': [
-                    '//*[@id="main"]/div/div/div[2]/div[5]/div[1]/div[3]/div[1]/h2/a/@href'
-                ],
-                'fields': {
-                    'number_of_results': [
-                        '//*[@id="main"]/div/div/div[2]/div[2]/div[1]//text()'
-                    ],
-                    'results_description': [
-                        # TODO: Test with JavaScript for problematic pages
-                        '//*[@id="main"]/div/div/div[2]/div[3]/div[1]//text()
-                    ]
-                }
-            },
-            'item': {
-                'fields': {
-                    'name': [
-                        '//*[@id="primaryProductName"]/span//text()'
-                    ],
-                    'price': [
-                        '//*[@id="singleCurrentItemLabel"]/span[2]//text()'
-                    ],
-                    'mfg': [
-                        '//*[@id="primaryProductPartNumbers"]/span[1]/span//text()'
-                    ],
-                    'cdw': [
-                        '//*[@id="primaryProductPartNumbers"]/span[3]//text()'
-                    ],
-                    'availability': [
-                        '//*[@id="primaryProductAvailability"]//text()'
-                    ]
-                }
-            }
-        },
+        # 'CDW': {
+        #     'base_url': 'https://www.cdw.com',
+        #     'search': {
+        #         'query': 'https://www.cdw.com/search/?key={}',
+        #         'first_item': [
+        #             '//*[@id="main"]/div/div/div[2]/div[4]/div[1]/div[3]/div[1]/h2/a/@href',
+        #             '//*[@id="main"]/div/div/div[2]/div[4]/div[1]/div[2]/div[1]/h2/a/@href',
+        #             '//*[@id="main"]/div/div/div[2]/div[5]/div[1]/div[2]/div[1]/h2/a/@href'
+        #         ],
+        #         'fields': {
+        #             'number_of_results': [
+        #                 '//*[@id="main"]/div/div/div[2]/div[2]/div[1]//text()'
+        #             ],
+        #             'results_description': [
+        #                 '//*[@id="main"]/div/div/div[2]/div[3]/div[1]//text()',
+        #                 '//*[@id="main"]/div/div/div/div[1]/span//text()'
+        #             ]
+        #         }
+        #     },
+        #     'item': {
+        #         'fields': {
+        #             'name': [
+        #                 '//*[@id="primaryProductName"]/span//text()'
+        #             ],
+        #             'price': [
+        #                 '//*[@id="singleCurrentItemLabel"]/span[2]//text()'
+        #             ],
+        #             'mfg': [
+        #                 '//*[@id="primaryProductPartNumbers"]/span[1]/span//text()'
+        #             ],
+        #             'cdw': [
+        #                 '//*[@id="primaryProductPartNumbers"]/span[3]//text()'
+        #             ],
+        #             'availability': [
+        #                 '//*[@id="primaryProductAvailability"]//text()'
+        #             ]
+        #         }
+        #     }
+        # },
         # 'FAST': {
         #     'base_url': 'https://www.fastenal.com',
         #     'search': {
@@ -288,11 +290,11 @@ SETTINGS = {
         #                 '//*[@id="part_content"]/div[3]/div[3]/div[1]/div[1]//text()',
         #                 '//*[@id="part_content"]/div[3]/div[3]/div[2]/div[1]/div//text()',
         #                 '//*[@id="part_content"]/div[3]/div[3]/div[1]/div[2]/div//text()',
-        #                 '//*[@id="part_content"]/div[3]/div[3]/div[2]/div[2]/div//text()',
-        #                 '//*[@id="part_content"]/div[1]/div[2]//text()'
+        #                 '//*[@id="part_content"]/div[3]/div[3]/div[2]/div[2]/div//text()'
         #             ],
         #             'results_description': [
-        #                 ''
+        #                 '//*[@id="part_content"]/div[3]/div[3]/div[2]/div[1]//text()',
+        #                 '//*[@id="part_content"]/div[1]/div[2]//text()'
         #             ]
         #         }
         #     },
@@ -385,14 +387,14 @@ SETTINGS = {
         #                 '//*[@id="buy-counter"]/span//text()'
         #             ],
         #             'results_description': [
-        #                 ''
+        #                 '//*[@id="js-search-product-items"]/div/div/h4//text()'
         #             ]
         #         }
         #     },
         #     'item': {
         #         'fields': {
         #             'name': [
-        #                 '//*[@id="js-product-detail-target"]/h1/a/@href'
+        #                 '//*[@id="js-product-detail-target"]/h1//text()'
         #             ],
         #             'price': [
         #                 '//*[@id="js-product-detail-pricing-target"]/div[3]/div[1]/div/div[1]/p[2]//text()'
@@ -424,7 +426,7 @@ SETTINGS = {
         #                 '//*[@id="bbMain"]/div/div/main/div/div/div/div[1]/span//text()'
         #             ],
         #             'results_description': [
-        #                 ''
+        #                 '//*[@id="bbMain"]/div/div/main/div/div/div/div[1]/span//text()'
         #             ]
         #         }
         #     },
@@ -442,6 +444,46 @@ SETTINGS = {
         #         }
         #     }
         # },
+        'STAPLES': {
+            'javascript': True,
+            'base_url': 'https://www.staples.com',
+            'search': {
+                'query': 'https://www.staples.com/{0}/directory_{0}?',
+                'first_item_css': [
+                    'div.product-info > a::attr(href)'
+                ],
+                'fields': {
+                    'number_of_results': [
+                        '//*[@id="rightRailApp"]/div[1]/div/div[1]//text()'
+                    ],
+                    'results_description': [
+                        '/html/body/div[3]/h1//text()'
+                    ]
+                }
+            },
+            'item': {
+                'fields': {
+                    'name': [
+                        '//*[@id="mainNgApp"]/div/div[2]/div/div[1]/h1//text()'
+                    ],
+                    'price': [
+                        '//*[@id="getPrice"]/div[1]/div[2]/div[2]/div/div[3]/div[1]/div/div[1]/div[2]/div[1]/div[1]/span//text()',
+                        '//*[@id="getPrice"]/div[1]/div[2]/div[2]/div/div[1]/div[1]/div[1]/div/div[1]/div[2]/div[1]/div[1]/span//text()',
+                        '//*[@id="getPrice"]/div[1]/div[2]/div/div/div[1]/div[1]/div[1]/div/div[1]/div[2]/div[1]/div[1]/span//text()',
+                        '//*[@id="getPrice"]/div[1]/div[2]//text()',
+                    ],
+                    'availability': [
+                        '//*[@id="getPrice"]/div[1]/div[2]/div/div/div[1]/div[2]/div[2]/div/div/div/div/div/div//text()',
+                    ],
+                    'ships_from': [
+                        '//*[@id="getPrice"]/div[1]/div[2]/div/div/div[1]/div[1]/div[1]/div/div[2]/div[2]/div[4]/div[2]/div//text()'
+                    ],
+                    'model': [
+                        '//*[@id="mainNgApp"]/div/div[2]/div/div[1]/div/ul/li[2]/span//text()'
+                    ]
+                }
+            }
+        },
         #
         # Search Page
         #
