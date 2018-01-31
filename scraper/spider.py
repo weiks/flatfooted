@@ -16,7 +16,7 @@ class Spider(scrapy.Spider):
         'CONCURRENT_REQUESTS': 16,
         'CONCURRENT_REQUESTS_PER_DOMAIN': 1,
         'RANDOMIZE_DOWNLOAD_DELAY': True,
-        'DOWNLOAD_DELAY': 2,
+        'DOWNLOAD_DELAY': 2
     }
 
     def __init__(self, settings={}, now=None, **kwargs):
@@ -124,3 +124,6 @@ class Spider(scrapy.Spider):
                 }
             }
         return meta
+
+    def use_selenium(self):
+        return self.site_settings.javascript
