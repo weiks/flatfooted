@@ -13,8 +13,15 @@ class Site:
         return self._settings
 
     def _check_required_fields(self):
+        if self._settings.site_has_item_specification():
+            keys_to_check = self.settings.item_field_keys
+            fields_to_check = self.settings.item_fields
+        else:
+            keys_to_check = self.settings.search_field_keys
+            fields_to_check = self.settings.search_fields
         for field in self.settings.required_fields:
-            if field not in self.settings.item_field_keys:
-                raise ValueError("Missing required field ({})".format(field))
-            if not self.settings.item_fields[field]:
+            if self._invalid_field(field, keys_to_check, fields_to_check):
                 raise ValueError("Invalid required field ({})".format(field))
+
+    def _invalid_field(self, field, keys_to_check, fields_to_check):
+        return field not in keys_to_check or not fields_to_check[field]

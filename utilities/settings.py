@@ -41,6 +41,10 @@ class Settings:
         return self._site_settings['search']['fields']
 
     @property
+    def search_field_keys(self):
+        return list(self._site_settings['search']['fields'].keys())
+
+    @property
     def item_fields(self):
         return self._site_settings['item']['fields']
 
@@ -59,6 +63,8 @@ class Settings:
 
     @property
     def first_item_selectors(self):
+        if not self.site_has_item_specification():
+            return None
         return self._site_settings['search'][self.first_item_selectors_key]
 
     @property
@@ -86,3 +92,10 @@ class Settings:
         if not self._name:
             raise ValueError('Global settings instance (without `name`)')
         return self.settings['sites'][self.name]
+
+    def site_has_item_specification(self):
+        search_keys = self._site_settings['search'].keys()
+        return (
+            'first_item' in search_keys or
+            'first_item_css' in search_keys
+        )

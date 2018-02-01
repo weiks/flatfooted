@@ -36,23 +36,19 @@ class Spider(scrapy.Spider):
 
     def _parse_searches(self, response):
         selectors = self.site_settings.first_item_selectors
-        key = self.site_settings.first_item_selectors_key
-        returned_results = False
-        for i, selector in enumerate(selectors):
-            first_item = select(response, key, selector).extract_first()
-            if first_item:
-                returned_results = True
-                previous_meta = response.meta['custom_variables']
-                yield scrapy.Request(
-                    self._enforce_absolute_url(first_item),
-                    callback=self._parse_item,
-                    errback=self._parse_item_error,
-                    meta=self._meta('item', previous_meta['search_string'])
-                )
-                break
-        response.meta['custom_variables'].update({
-            'returned_results': returned_results
-        })
+        if selectors:
+            key = self.site_settings.first_item_selectors_key
+            for i, selector in enumerate(selectors):
+                first_item = select(response, key, selector).extract_first()
+                if first_item:
+                    previous_meta = response.meta['custom_variables']
+                    yield scrapy.Request(
+                        self._enforce_absolute_url(first_item),
+                        callback=self._parse_item,
+                        errback=self._parse_item_error,
+                        meta=self._meta('item', previous_meta['search_string'])
+                    )
+                    break
         yield self._parse_search(response)
 
     def _enforce_absolute_url(self, url):
