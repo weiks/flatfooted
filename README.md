@@ -41,13 +41,25 @@ parameters that may be modified are:
     - `search` (dictionary): specification for search parameters for site.
       - `query` (string): URL used for searching (with `{}` where search strings
         should appear).
+      - `auto_redirected` (list of strings, optional): if specified, a site's
+        search pages will pass through a "auto-redirected detector" which uses
+        the specified XPATH/CSS selectors to detect whether the return page is
+        an "item page" insteado of a "search page", and if it is, it will be
+        treated as such. The selectors I'm using for now look for price data for
+        this detection mechanism.
+      - `double_hop` (list of strings, optional): if specified, a site's search
+        pages will pass through a "double hop detector" which uses the specified
+        XPATH/CSS selectors to detect whether a page is a "intermediate" hop. If
+        such detection is positive, the first category will be passed through to
+        the standard "search page" parser, otherwise, it will be treated as a
+        "search page" itself.
       - `first_item` (list of strings): XPATHs used to identify the first item
       - `fields` (dictionary): where each key is a string with the name of the
         variable as it will be store in the CSV (may end with `_css` to indicate
         that a CSS selector should be used instead of an XPATH selector), and
         the value should be a list with strings representing XPATH/CSS
         selectors.
-    - `item` (dictionary): specification for item parameters for site.
+    - `item` (dictionary, optional): specification for item parameters for site.
       - `fields` (dictionary): same as the `fields` dicitonary for `search`.
 
 ### Execute
@@ -155,22 +167,22 @@ $ python3 -u main.py | tee outputs/<FILENAME>.log
   - Need to separate URLs into "search URL" and "item URL", as well as
     HTTP status codes for searches and items
 - [x] Deal with JavaScript enabled sites by using headless browser
-  - [ ] Currently there's a manual process to specify what should be looked for
-        to detect that a site has finshed loading the data we need. This is
-        necessary because some sites take a bit longer. Should these be
-        specified through the settings file?
+  - Currently there's a manual process to specify what should be looked for to
+    detect that a site has finshed loading the data we need. This is necessary
+    because some sites take a bit longer. Should these be specified through the
+    settings file?
 - [ ] Get indicator for "suggeted" results or "no results" for a search
   - [x] Zoro (`ZORO`): **DONE** (No "suggested" results indicator)
-  - [x] Grainger (`GWW`): Unnecessary due to auto-redirect?
+  - [x] Grainger (`GWW`): **DONE**
   - [x] CDW (`CDW`): **DONE**
-  - [ ] Connection (`CNXN`): Pending auto-redirect
+  - [x] Connection (`CNXN`): **DONE**
   - [x] TechData (`TECD`): **DONE**
   - [x] Insight (`NSIT`): **DONE**
   - [x] Fastenal (`FAST`): **DONE** (No "suggested" results indicator)
   - [x] AutoZone (`AZO`): **DONE** (No "suggested" results indicator)
   - [ ] Bunzlpd (`BUNZL`): Pending decision by Mike (OR/AND issue)
   - [x] Tiger Direct (`PCMI`): **DONE**
-  - [ ] MSC Direct (`MSM`): Pending double-hop and auto-redirect
+  - [x] MSC Direct (`MSM`): **DONE**
   - [x] HD Supply Solutions (`HDSS`): **DONE**
   - [ ] Biggest Book (`ESND`): Pending fragmented URLs
   - [x] Staples (`STAPLES`): **DONE**
@@ -181,9 +193,10 @@ $ python3 -u main.py | tee outputs/<FILENAME>.log
   - I changed things so that if the `item` key is ommitted from the settings for
     a site, then it means that only results from the search page will be used,
     and the item data should be specified in its corresponding `fields`.
-- [ ] Optionally specify that an auto-redirect into item is expected
-- [ ] Optionally specify when double-hops should be used
+- [x] Optionally specify that an auto-redirect into item is expected
+- [x] Optionally specify when double-hops should be used
 - [ ] Save into a database? (TODO: discuss with Mike)
+- [ ] Deterministic column order in CSVs
 
 ## Site Groups
 
@@ -199,8 +212,8 @@ $ python3 -u main.py | tee outputs/<FILENAME>.log
     - Example, search for: QUA41967
       - In: https://httpstatus.io/
       - Use: https://www.zoro.com/search?q=QUA41967
-- [ ] `GWW` https://www.grainger.com/search?searchQuery=pen
-  - Status: Defered (auto-redirect)
+- [x] `GWW` https://www.grainger.com/search?searchQuery=pen
+  - Status: **DONE**
   - JavaScript: Yes
   - Auto-redirect: Yes
   - Use search page: No
@@ -211,7 +224,9 @@ $ python3 -u main.py | tee outputs/<FILENAME>.log
     - As suggested by Mike, the JavaScript interaction may be bypassed if we are
       able to use an identifier from the `Zoro` data, and use that as the search
       string. This will bypass a "results page" and go straight to "item page".
-      - TODO: How should we proceed about this?
+    - This is how we solved it. However, this requires a "special" search
+      strings list that contains the `MFR` IDs for the items. Any other search
+      may produce results, but currently we are not able to crawl them.
 
 #### Group 2
 
@@ -221,8 +236,8 @@ $ python3 -u main.py | tee outputs/<FILENAME>.log
   - Auto-redirect: No
   - Use search page: No
   - Double-hop: No
-- [ ] `CNXN` https://www.connection.com/IPA/Shop/Product/Search?term=pen
-  - Status: Defered (auto-redirect)
+- [x] `CNXN` https://www.connection.com/IPA/Shop/Product/Search?term=pen
+  - Status: **DONE**
   - JavaScript: No
   - Auto-redirect: Yes
   - Use search page: No
@@ -237,6 +252,9 @@ $ python3 -u main.py | tee outputs/<FILENAME>.log
       automatically redirected to the item page (with a 302), and that is
       messing up the mechanism. Need to look into this further. This definitely
       needs to be fixed.
+    - Working around the misuse of the HTTP response codes can be very tricky,
+      and it won't add value to the analysis. I propose that we deal with it in
+      the post-processing, and leave as is for now.
 - [x] `TECD` https://shop.techdata.com/searchall?kw=pen
   - Status: **DONE**
   - JavaScript: No
@@ -291,18 +309,19 @@ $ python3 -u main.py | tee outputs/<FILENAME>.log
   - Auto-redirect: No
   - Use search page: No
   - Double-hop: No
-- [ ] `MSM` https://www.mscdirect.com/browse/tn/?searchterm=pen
-  - Status: Defered (double-hop and auto-redirect)
+- [x] `MSM` https://www.mscdirect.com/browse/tn/?searchterm=pen
+  - Status: **DONE**
   - JavaScript: No
   - Auto-redirect: Yes
   - Use search page: No
   - Double-hop: Yes
-  - How to proceed:
+  - How to proceed (by Mike):
     - If it goes to "categories" mark it as not having results
-    - If it goes to "research results" proceed normally
-    - If it goes into "item" proceed normally
-      - This can be tricky, I need to find a reliable way to identify
-        whether we are in a "item" or "search" page
+    - If it goes to "search results" proceed normally
+    - If it auto-redirects to item, proceed normally
+  - I was able to go through "categories" pages to follow through the double
+    hop, which is more than what Mike asked for and allows us to get more item
+    data.
 - [x] `HDSS` https://hdsupplysolutions.com/shop/SearchDisplay?searchTerm=pen
   - Status: **DONE**
   - JavaScript: No
