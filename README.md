@@ -164,7 +164,7 @@ $ python3 -u main.py | tee outputs/<FILENAME>.log
   - [x] Grainger (`GWW`): Unnecessary due to auto-redirect?
   - [x] CDW (`CDW`): **DONE**
   - [ ] Connection (`CNXN`): Pending auto-redirect
-  - [ ] TechData (`TECD`): Pending search page
+  - [x] TechData (`TECD`): **DONE**
   - [x] Insight (`NSIT`): **DONE**
   - [x] Fastenal (`FAST`): **DONE** (No "suggested" results indicator)
   - [x] AutoZone (`AZO`): **DONE** (No "suggested" results indicator)
@@ -177,7 +177,10 @@ $ python3 -u main.py | tee outputs/<FILENAME>.log
 
 ### Phase 5
 
-- [ ] Optionally retrieve item data directly from results page
+- [x] Optionally retrieve item data directly from results page
+  - I changed things so that if the `item` key is ommitted from the settings for
+    a site, then it means that only results from the search page will be used,
+    and the item data should be specified in its corresponding `fields`.
 - [ ] Optionally specify that an auto-redirect into item is expected
 - [ ] Optionally specify when double-hops should be used
 - [ ] Save into a database? (TODO: discuss with Mike)
@@ -234,8 +237,8 @@ $ python3 -u main.py | tee outputs/<FILENAME>.log
       automatically redirected to the item page (with a 302), and that is
       messing up the mechanism. Need to look into this further. This definitely
       needs to be fixed.
-- [ ] `TECD` https://shop.techdata.com/searchall?kw=pen
-  - Status: Defered (use search page)
+- [x] `TECD` https://shop.techdata.com/searchall?kw=pen
+  - Status: **DONE**
   - JavaScript: No
   - Auto-redirect: No
   - Use search page: Yes
