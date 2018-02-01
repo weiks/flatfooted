@@ -1,6 +1,6 @@
 
 SETTINGS = {
-    'save_html': True,
+    'save_html': False,
     'random_proxies': False,
     'random_user_agents': True,
     'timezone': 'America/Mexico_City',
@@ -192,8 +192,6 @@ SETTINGS = {
                         '//*[@id="mainC"]/div/div[3]/div/div[1]/div[2]/div[1]//text()'
                     ],
                     'results_description': [
-                        # TODO: Encoding issue with some of the search pages
-                        #       Possibly fix by using Selenium when available
                         '//*[@id="mainC"]/div/div[3]/h1//text()',
                         '//*[@id="mainC"]/table/tbody/tr[1]/td[3]//text()'
                     ]
@@ -221,7 +219,6 @@ SETTINGS = {
             'search': {
                 'query': 'https://hdsupplysolutions.com/shop/SearchDisplay?searchTerm={}',
                 'first_item': [
-                    # '//*[@id="productsForm"]/div[1]/div/div[3]',
                     '//*[@id="productsForm"]/div[1]/div/div[3]/div[1]/div[1]/h2/a/@href'
                 ],
                 'fields': {
@@ -252,6 +249,51 @@ SETTINGS = {
                     ],
                     'availability': [
                         '//*[@id="product-detail-shipping"]/ul//text()'
+                    ]
+                }
+            }
+        },
+        'CNXN': {
+            'base_url': 'https://www.connection.com',
+            'search': {
+                'query': 'https://www.connection.com/IPA/Shop/Product/Search?SearchType=1&term={}',
+                'first_item': [
+                    '//*[@id="listView"]/div/table/tbody/tr[1]/td[2]/div[1]/a/@href'
+                ],
+                'auto_redirected_css': [
+                    '#productDetail::text'
+                ],
+                'fields': {
+                    'number_of_results': [
+                        '//*[@id="searchResultContainer"]/div[1]/div[1]/span//text()'
+                    ],
+                    'results_description': [
+                        '//*[@id="search-content"]/div/div[2]/p/strong//text()'
+                    ]
+                }
+            },
+            'item': {
+                'fields': {
+                    'name': [
+                        '//*[@id="mainLayoutContainer"]/div[2]/div/div/div[1]/div[1]/div[2]/div[1]/div/div/h1//text()'
+                    ],
+                    'price': [
+                        '//*[@id="productDetail"]/div/div[4]/div[3]/div[1]/div[2]/div/div/span/span//text()'
+                    ],
+                    'brand': [
+                        '//*[@id="productNameLink"]/a//text()'
+                    ],
+                    'site_id': [
+                        '//*[@id="productSku"]//text()'
+                    ],
+                    'mfr': [
+                        '//*[@id="productManufacturerPartNumber"]//text()'
+                    ],
+                    'shipping': [
+                        '//*[@id="productEstimatedShipping"]//text()'
+                    ],
+                    'availability': [
+                        '//*[@id="productAvailability"]//text()'
                     ]
                 }
             }
@@ -303,60 +345,51 @@ SETTINGS = {
                 }
             }
         },
-        # 'GWW': {
-        #     'javascript': True,
-        #     'base_url': 'https://www.grainger.com',
-        #     'search': {
-        #         'query': 'https://www.grainger.com/search?searchQuery={}',
-        #         'first_item': [
-        #             # TODO: Do we need JavaScript? Must be clicked?
-        #             # '//*[@id="list-view--js"]/li[1]'
-        #             '//*[@id="body"]/div[3]/div/header/h2/a/@href'
-        #         ],
-        #         'fields': {
-        #             'number_of_results': [
-        #                 ''
-        #             ],
-        #             'results_description': [
-        #                 ''
-        #             ]
-        #         }
-        #     },
-        #     'item': {
-        #         'fields': {
-        #             'name': [
-        #                 '//*[@id="productPage"]/div[2]/h1//text()'
-        #             ],
-        #             'price': [
-        #                 '//*[@id="addItemsToCartFromIdp"]/div/div[1]/div/div[1]/div/div/span[2]/span[2]//text()'
-        #             ],
-        #             'item_id': [
-        #                 '//*[@id="productPage"]/div[2]/ul/li[1]/span//text()'
-        #             ],
-        #             'mfr_id': [
-        #                 '//*[@id="productPage"]/div[2]/ul/li[3]/span//text()'
-        #             ],
-        #             'unspsc': [
-        #                 '//*[@id="unspsc"]/span//text()'
-        #             ],
-        #             'brand': [
-        #                 '//*[@id="productPage"]/div[2]/a//text()'
-        #             ],
-        #             # 'per': [
-        #             #     # TODO: Identify on page
-        #             # ],
-        #             # 'availability': [
-        #             #     # TODO: Identify on page
-        #             # ],
-        #             # 'drop_ship': [
-        #             #     # TODO: Identify on page
-        #             # ],
-        #             # 'get_this_price': [
-        #             #     # TODO: Identify on page
-        #             # ]
-        #         }
-        #     }
-        # },
+        'GWW': {
+            'base_url': 'https://www.grainger.com',
+            'search': {
+                'query': 'https://www.grainger.com/search?searchQuery={}',
+                'first_item': [
+                    '//*[@id="body"]/div[3]/div/header/h2/a/@href'
+                ],
+                'auto_redirected_css': [
+                    '#productPage > div.head-container.clearfix > h1::text'
+                ],
+                'fields': {
+                    'number_of_results': [
+                        '//*[@id="header-breadcrumb-container"]/div[3]//text()'
+                    ],
+                    'results_description': [
+                        '//*[@id="main-content"]/div[1]/h1//text()',
+                        '//*[@id="messaging-container"]//text()',
+                        '//*[@id="header-breadcrumb-container"]/h1/span//text()',
+                        '//*[@id="pageHeader"]//text()'
+                    ]
+                }
+            },
+            'item': {
+                'fields': {
+                    'name': [
+                        '//*[@id="productPage"]/div[2]/h1//text()'
+                    ],
+                    'price': [
+                        '//*[@id="addItemsToCartFromIdp"]/div/div[1]/div/div[1]/div/div/span[2]/span[2]//text()'
+                    ],
+                    'site_id': [
+                        '//*[@id="productPage"]/div[2]/ul/li[1]/span//text()'
+                    ],
+                    'mfr': [
+                        '//*[@id="productPage"]/div[2]/ul/li[3]/span//text()'
+                    ],
+                    'unspsc': [
+                        '//*[@id="unspsc"]/span//text()'
+                    ],
+                    'brand': [
+                        '//*[@id="productPage"]/div[2]/a//text()'
+                    ]
+                }
+            }
+        },
         'NSIT': {
             'javascript': True,
             'base_url': 'https://www.insight.com',
@@ -470,122 +503,97 @@ SETTINGS = {
         #
         # Search Page
         #
-        # 'TECD': {
-        #     'base_url': 'https://techdata.com',
-        #     'search': {
-        #         'query': 'https://shop.techdata.com/searchall?kw={}',
-        #         'first_item': [
-        #             '//*[@id="productSearchResults"]/div[1]/div[2]/div/div[1]/div[1]/a/@href'
-        #         ],
-        #         'fields': {
-        #             'number_of_results': [
-        #                 ''
-        #             ],
-        #             'results_description': [
-        #                 ''
-        #             ]
-        #         }
-        #     },
-        #     'item': {
-        #         'fields': {
-        #             'name': [
-        #             ],
-        #             'price': [
-        #             ],
-        #             # 'msrp': [
-        #             # ],
-        #             # 'mrf': [
-        #             # ],
-        #             # 'site_id': [
-        #             # ],
-        #             # 'status': [
-        #             # ]
-        #         }
-        #     }
-        # },
+        'TECD': {
+            'base_url': 'https://techdata.com',
+            'search': {
+                'query': 'https://shop.techdata.com/searchall?kw={}',
+                'fields': {
+                    'number_of_results': [
+                        '//*[@id="productSearchPageContainer"]/div[1]/div[2]/span[1]//text()'
+                    ],
+                    'results_description': [
+                        '//*[@id="productSearchPageContainer"]/div[3]//text()',
+                        '//*[@id="productSearchResults"]/div/h1//text()'
+                    ],
+                    'name': [
+                        '//*[@id="productSearchResults"]/div[1]/div[2]/div/div[1]/div[1]//text()'
+                    ],
+                    'price': [
+                        '//*[@id="productSearchResults"]/div[1]/div[2]/div/div[2]/div/div[1]/div//text()'
+                    ],
+                    'site_id': [
+                        '//*[@id="productSearchResults"]/div[1]/div[2]/div/div[1]/div[3]/div[1]/div[1]/span//text()'
+                    ],
+                    'mfr': [
+                        '//*[@id="productSearchResults"]/div[1]/div[2]/div/div[1]/div[3]/div[1]/div[2]/span//text()'
+                    ],
+                    'upc_ean': [
+                        '//*[@id="productSearchResults"]/div[1]/div[2]/div/div[1]/div[3]/div[1]/div[3]/span/span//text()'
+                    ],
+                    'status': [
+                        '//*[@id="productSearchResults"]/div[1]/div[2]/div/div[1]/div[3]/div[2]/div//text()'
+                    ]
+                }
+            }
+        },
         #
-        # Fix HTTP responses
+        # Double-hops
         #
-        # 'CNXN': {
-        #     'base_url': 'https://www.connection.com',
-        #     'search': {
-        #         'query': 'https://www.connection.com/IPA/Shop/Product/Search?SearchType=1&term={}',
-        #         'first_item': [
-        #             '//*[@id="listView"]/div/table/tbody/tr[1]/td[2]/div[1]/a/@href'
-        #         ],
-        #         'fields': {
-        #             'number_of_results': [
-        #                 ''
-        #             ],
-        #             'results_description': [
-        #                 ''
-        #             ]
-        #         }
-        #     },
-        #     'item': {
-        #         'fields': {
-        #             'name': [
-        #                 '//*[@id="mainLayoutContainer"]/div[2]/div/div/div[1]/div[1]/div[2]/div[1]/div/div/h1//text()'
-        #             ],
-        #             'price': [
-        #                 '//*[@id="productDetail"]/div/div[4]/div[3]/div[1]/div[2]/div/div/span/span//text()'
-        #             ],
-        #             # 'brand': [
-        #             #     # TODO: Identify on page
-        #             # ],
-        #             # 'cnxn': [
-        #             #     # TODO: Identify on page
-        #             # ],
-        #             # 'mfg': [
-        #             #     # TODO: Identify on page
-        #             # ],
-        #             # 'availability': [
-        #             #     # TODO: Identify on page
-        #             # ]
-        #         }
-        #     }
-        # },
-        #
-        # Exploratory work (defered)
-        #
-        # 'MSM': {
-        #     'base_url': 'https://www.mscdirect.com',
-        #     'search': {
-        #         'query': 'https://www.mscdirect.com/browse/tn/?searchterm={}',
-        #         'first_item': [
-        #         ],
-        #         'fields': {
-        #             'number_of_results': [
-        #                 ''
-        #             ],
-        #             'results_description': [
-        #                 ''
-        #             ]
-        #         }
-        #     },
-        #     'item': {
-        #         'fields': {
-        #             'name': [
-        #             ],
-        #             'price': [
-        #             ],
-        #             'brand': [
-        #             ],
-        #             'msc': [
-        #             ],
-        #             'upc': [
-        #             ],
-        #             'cat_1': [
-        #             ],
-        #             'cat_2': [
-        #             ],
-        #             'availability': [
-        #             ],
-        #             'mfr': [
-        #             ]
-        #         }
-        #     }
-        # },
+        'MSM': {
+            'base_url': 'https://www.mscdirect.com',
+            'search': {
+                'query': 'https://www.mscdirect.com/browse/tn/?searchterm={}',
+                'auto_redirected_css': [
+                    '#listPriceDiv::text'
+                ],
+                'double_hop': [
+                    '//*[@id="v4-browse-items-grid-1"]/div/div[1]/a/@href'
+                ],
+                'first_item': [
+                    '//*[@id="v4-tn-items-box"]/div[1]/div/div[2]/h4/a/@href'
+                ],
+                'fields': {
+                    'number_of_results': [
+                        '//*[@id="popluateAjaxResponse"]/h2[2]/div//text()',
+                        '//*[@id="popluateAjaxResponse"]/h2/div//text()'
+                    ],
+                    'results_description': [
+                        '//*[@id="popluateAjaxResponse"]/h2[1]//text()',
+                        '//*[@id="v4-browse-content"]/div/div[1]/div/h3//text()',
+                        '//*[@id="v4-browse-content"]/div[1]/h2//text()',
+                        '//*[@id="popluateAjaxResponse"]/p//text()'
+                    ],
+                    'double_hop_url': [
+                        '//*[@id="v4-browse-items-grid-1"]/div/div[1]/a/@href'
+                    ],
+                    'double_hop_text': [
+                        '//*[@id="v4-browse-items-grid-1"]/div/div[1]/a//text()'
+                    ]
+                }
+            },
+            'item': {
+                'fields': {
+                    'name': [
+                        '//*[@id="pdp-prod-title"]/h1//text()'
+                    ],
+                    'price': [
+                        '//*[@id="listPriceDiv"]//text()'
+                    ],
+                    'brand': [
+                        '//*[@id="pdp-spec-details"]/div[3]/div[2]//text()'
+                    ],
+                    'msc': [
+                        '//*[@id="pdp-spec-details"]/div[4]/div[2]//text()'
+                    ],
+                    'mfr': [
+                        '//*[@id="title_mfrPartNum"]//text()'
+                    ],
+                    'availability': [
+                        '//*[@id="pdp-addtocart-notes-container"]/div[3]/p/strong//text()'
+                    ]
+                }
+            }
+        },
         # 'AZO': {
         #     'base_url': 'https://',
         #     'search': {
