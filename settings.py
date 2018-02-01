@@ -562,12 +562,6 @@ SETTINGS = {
                         '//*[@id="v4-browse-content"]/div/div[1]/div/h3//text()',
                         '//*[@id="v4-browse-content"]/div[1]/h2//text()',
                         '//*[@id="popluateAjaxResponse"]/p//text()'
-                    ],
-                    'double_hop_url': [
-                        '//*[@id="v4-browse-items-grid-1"]/div/div[1]/a/@href'
-                    ],
-                    'double_hop_text': [
-                        '//*[@id="v4-browse-items-grid-1"]/div/div[1]/a//text()'
                     ]
                 }
             },
