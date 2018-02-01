@@ -35,21 +35,52 @@ class Spider(scrapy.Spider):
             )
 
     def _parse_searches(self, response):
-        selectors = self.site_settings.first_item_selectors
+        if self._auto_redirection_detected(response):
+            yield self._parse_item_with_return(response)
+        elif self._double_hop_detected(response):
+            yield self._parse_double_hop(response)
+        else:
+            # TODO: Refactor into own method
+            selectors = self.site_settings.first_item_selectors
+            if selectors:
+                key = self.site_settings.first_item_selectors_key
+                for i, selector in enumerate(selectors):
+                    first_item = select(response, key, selector).extract_first()
+                    if first_item:
+                        previous_meta = response.meta['custom_variables']
+                        yield scrapy.Request(
+                            self._enforce_absolute_url(first_item),
+                            callback=self._parse_item,
+                            errback=self._parse_item_error,
+                            meta=self._meta('item', previous_meta['search_string'])
+                        )
+                        break
+            yield self._parse_search(response)
+
+    def _double_hop_detected(self, response):
+        return self._content_exists(
+            response,
+            self.site_settings.double_hop_key,
+            self.site_settings.double_hop_selectors
+        )
+
+    def _auto_redirection_detected(self, response):
+        return self._content_exists(
+            response,
+            self.site_settings.auto_redirected_key,
+            self.site_settings.auto_redirected_selectors
+        )
+
+    def _content_exists(self, response, key, selectors):
+        return True if self._content(response, key, selectors) else False
+
+    def _content(self, response, key, selectors):
         if selectors:
-            key = self.site_settings.first_item_selectors_key
-            for i, selector in enumerate(selectors):
-                first_item = select(response, key, selector).extract_first()
-                if first_item:
-                    previous_meta = response.meta['custom_variables']
-                    yield scrapy.Request(
-                        self._enforce_absolute_url(first_item),
-                        callback=self._parse_item,
-                        errback=self._parse_item_error,
-                        meta=self._meta('item', previous_meta['search_string'])
-                    )
-                    break
-        yield self._parse_search(response)
+            for selector in selectors:
+                results = select(response, key, selector).extract()
+                if results:
+                    return results
+        return []
 
     def _enforce_absolute_url(self, url):
         """Enforce URL in possibly relative `url`
@@ -61,9 +92,28 @@ class Spider(scrapy.Spider):
             url = '{}{}'.format(self.site_settings.base_url, url)
         return url
 
+    def _parse_double_hop(self, response):
+        previous_meta = response.meta['custom_variables']
+        links = self._content(
+            response,
+            self.site_settings.double_hop_key,
+            self.site_settings.double_hop_selectors
+        )
+        return scrapy.Request(
+            self._enforce_absolute_url(links[0]),
+            callback=self._parse_searches,
+            errback=self._parse_search_error,
+            meta=self._meta(
+                'search', previous_meta['search_string'], double_hop=True)
+        )
+
+    def _parse_item_with_return(self, response):
+        self._save_html(response, '_item')
+        return Item(response, self.site_settings).data()
+
     def _parse_item(self, response):
         self._save_html(response, '_item')
-        yield Item(response, self.site_settings,).data()
+        yield Item(response, self.site_settings).data()
 
     def _parse_item_error(self, response):
         self._save_html(response, '_item')
@@ -102,8 +152,8 @@ class Spider(scrapy.Spider):
         return 'outputs/{}/{}_{}.{}'.format(
             self.name, self.now, extension)
 
-    def _meta(self, request_type, search_string):
-        return {
+    def _meta(self, request_type, search_string, double_hop=False):
+        meta = {
             'type': request_type,
             'site_name': self.name,
             'site_settings': self.site_settings,
@@ -113,6 +163,9 @@ class Spider(scrapy.Spider):
                 'timestamp': self.now
             }
         }
+        if double_hop:
+            meta['custom_variables']['double_hop'] = True
+        return meta
 
     def use_selenium(self):
         return self.site_settings.javascript

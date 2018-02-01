@@ -68,6 +68,28 @@ class Settings:
         return self._site_settings['search'][self.first_item_selectors_key]
 
     @property
+    def auto_redirected_key(self):
+        is_xpath = self._site_settings['search'].get('auto_redirected')
+        return 'auto_redirected' if is_xpath else 'auto_redirected_css'
+
+    @property
+    def auto_redirected_selectors(self):
+        if self.site_has_auto_redirected_selectors():
+            return self._site_settings['search'][self.auto_redirected_key]
+        return None
+
+    @property
+    def double_hop_key(self):
+        is_xpath = self._site_settings['search'].get('double_hop')
+        return 'double_hop' if is_xpath else 'double_hop_css'
+
+    @property
+    def double_hop_selectors(self):
+        if self.site_has_double_hop_selectors():
+            return self._site_settings['search'][self.double_hop_key]
+        return None
+
+    @property
     def search_query(self):
         return self._site_settings['search']['query']
 
@@ -98,4 +120,18 @@ class Settings:
         return (
             'first_item' in search_keys or
             'first_item_css' in search_keys
+        )
+
+    def site_has_auto_redirected_selectors(self):
+        search_keys = self._site_settings['search'].keys()
+        return (
+            'auto_redirected' in search_keys or
+            'auto_redirected_css' in search_keys
+        )
+
+    def site_has_double_hop_selectors(self):
+        search_keys = self._site_settings['search'].keys()
+        return (
+            'double_hop' in search_keys or
+            'double_hop_css' in search_keys
         )
