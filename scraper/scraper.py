@@ -68,6 +68,7 @@ class Scraper:
             'FEED_URI': self._file_name(),
             'COOKIES_ENABLED': False,
             'LOG_LEVEL': 'DEBUG',
+            'DUPEFILTER_CLASS': 'scrapy.dupefilters.BaseDupeFilter',
             'DOWNLOADER_MIDDLEWARES': {
                 'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
                 'scraper.middleware.CustomRetryMiddleware': 550,

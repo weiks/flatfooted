@@ -1,6 +1,7 @@
 
 import os
 
+from selenium.common.exceptions import TimeoutException
 from scrapy.http import HtmlResponse
 from selenium import webdriver
 
@@ -22,14 +23,18 @@ class SeleniumMiddleware(object):
             '{}/../../utilities/chromedriver'.format(
                 os.path.dirname(os.path.realpath(__file__))),
             chrome_options=options)
-        self.driver.implicitly_wait(5)
+        self.driver.set_page_load_timeout(3)
+        self.driver.implicitly_wait(2)
 
     def __del__(self):
         self.driver.close()
 
     def process_request(self, request, spider):
         if spider.use_selenium():
-            self.driver.get(request.url)
+            try:
+                self.driver.get(request.url)
+            except TimeoutException:
+                pass
             #
             # TODO: Specify through settings file?
             #
@@ -55,10 +60,24 @@ class SeleniumMiddleware(object):
                         'body > div.stp--container-sm.no-results > h1')
                 except:
                     pass
-
-            return HtmlResponse(
-                self.driver.current_url,
-                body=self.driver.page_source,
-                encoding='UTF-8',
-                request=request
-            )
+            if spider.name == 'ESND' and request.meta['type'] == 'search':
+                try:
+                    self.driver.find_element_by_css_selector(
+                        'div.ess-product-desc')
+                except:
+                    pass
+            if spider.name == 'ESND' and request.meta['type'] == 'item':
+                try:
+                    self.driver.find_element_by_css_selector(
+                        'div.ess-product-price')
+                except:
+                    pass
+            try:
+                return HtmlResponse(
+                    self.driver.current_url,
+                    body=self.driver.page_source,
+                    encoding='UTF-8',
+                    request=request
+                )
+            except TimeoutException:
+                return None
