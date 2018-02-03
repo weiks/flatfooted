@@ -48,12 +48,21 @@ class Spider(scrapy.Spider):
                     first_item = select(response, key, selector).extract_first()
                     if first_item:
                         previous_meta = response.meta['custom_variables']
-                        yield scrapy.Request(
-                            self._enforce_absolute_url(first_item),
-                            callback=self._parse_item,
-                            errback=self._parse_item_error,
-                            meta=self._meta('item', previous_meta['search_string'])
-                        )
+                        try:
+                            yield scrapy.Request(
+                                self._enforce_absolute_url(first_item),
+                                callback=self._parse_item,
+                                errback=self._parse_item_error,
+                                meta=self._meta('item', previous_meta['search_string'])
+                            )
+                        except:
+                            print('1' * 100)
+                            print('ERROR in `_parse_searches()` in `spider.py`')
+                            print(first_item)
+                            print(self._enforce_absolute_url(first_item))
+                            print(previous_meta['search_string'])
+                            print(self._meta('item', previous_meta['search_string']))
+                            print('1' * 100)
                         break
             yield self._parse_search(response)
 
