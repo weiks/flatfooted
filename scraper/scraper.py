@@ -72,7 +72,7 @@ class Scraper:
             'DOWNLOADER_MIDDLEWARES': {
                 'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
                 'scraper.middleware.CustomRetryMiddleware': 550,
-                'scraper.middlewares.selenium.SeleniumMiddleware': 450
+                # 'scraper.middlewares.selenium.SeleniumMiddleware': 450
             },
         }
         m = 'DOWNLOADER_MIDDLEWARES'
