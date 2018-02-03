@@ -92,12 +92,7 @@ class Spider(scrapy.Spider):
         return []
 
     def _enforce_absolute_url(self, url):
-        """Enforce URL in possibly relative `url`
-
-        Currently it only checks for HTTP/S protocols at the beginning of the
-        URL, but we can possibly find more complex cases as we move along.
-        """
-        if 'http' not in url and 'https' not in url:
+        if not url.startswith(('http', 'https')) or url.startswith('/'):
             url = '{}{}'.format(self.site_settings.base_url, url)
         return url
 
