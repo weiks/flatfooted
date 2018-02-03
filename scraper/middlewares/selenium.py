@@ -18,7 +18,7 @@ class SeleniumMiddleware(object):
         # concurrency of Scrapy, specifically Twisted.
         #
         options = webdriver.ChromeOptions()
-        # options.add_argument('headless')
+        options.add_argument('headless')
         self.driver = webdriver.Chrome(
             '{}/../../utilities/chromedriver'.format(
                 os.path.dirname(os.path.realpath(__file__))),
