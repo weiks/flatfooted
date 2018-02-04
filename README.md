@@ -233,7 +233,7 @@ $ python3 -u main.py | tee outputs/<FILENAME>.log
 - [x] `CDW` https://www.cdw.com/search/?key=pen
   - Status: **DONE**
   - JavaScript: No
-  - Auto-redirect: No
+  - Auto-redirect: Yes
   - Use search page: No
   - Double-hop: No
 - [x] `CNXN` https://www.connection.com/IPA/Shop/Product/Search?term=pen
