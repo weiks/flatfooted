@@ -1,14 +1,14 @@
 
 SETTINGS = {
     'save_html': True,
-    'random_proxies': False,
+    'random_proxies': True,
     'random_user_agents': True,
     'timezone': 'America/Mexico_City',
     'search_strings': {
         'file': 'inputs/search-strings-full.csv',
         # 'file': 'inputs/search-strings-re-test.csv',
         'variable': 'String',
-        'sample': 12
+        'sample': None
     },
     'required_fields': [
         'name',
