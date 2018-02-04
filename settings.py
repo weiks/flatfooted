@@ -76,7 +76,8 @@ SETTINGS = {
             'search': {
                 'query': 'https://www.cdw.com/search/?key={}',
                 'auto_redirected_css': [
-                    '#singleCurrentItemLabel::text'
+                    '#singleCurrentItemLabel::text',
+                    '#singleCurrentItemLabel > span:nth-child(2)::text'
                 ],
                 'first_item': [
                     '//*[@id="main"]/div/div/div[2]/div[4]/div[1]/div[3]/div[1]/h2/a/@href',
@@ -310,6 +311,9 @@ SETTINGS = {
             'base_url': 'https://www.zoro.com',
             'search': {
                 'query': 'https://www.zoro.com/search?q={}',
+                'auto_redirected_css': [
+                    '#availability > h3 > span:nth-child(2)::text'
+                ],
                 'first_item': [
                     '//*[@id="grid"]/li[1]/div/ul/li[1]/h5/a/@href'
                 ],
@@ -399,6 +403,9 @@ SETTINGS = {
             'base_url': 'https://www.insight.com',
             'search': {
                 'query': 'https://www.insight.com/en_US/search.html?q={}',
+                'auto_redirected_css': [
+                    'p.prod-price::text'
+                ],
                 'first_item': [
                     '//*[@id="js-search-product-items"]/div[1]/div/div[4]/div/h3/a/@href'
                 ],
