@@ -89,5 +89,5 @@ class SeleniumMiddleware(object):
             '{}/../../../utilities/chromedriver'.format(
                 os.path.dirname(os.path.realpath(__file__))),
             chrome_options=options)
-        self.driver.set_page_load_timeout(3)
-        self.driver.implicitly_wait(2)
+        self.driver.set_page_load_timeout(30)
+        self.driver.implicitly_wait(15)
