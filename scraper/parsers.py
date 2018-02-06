@@ -3,6 +3,7 @@ from twisted.internet.error import TimeoutError, TCPTimedOutError
 from scrapy.spidermiddlewares.httperror import HttpError
 from twisted.internet.error import DNSLookupError
 from scrapy.exceptions import IgnoreRequest
+from pprint import pprint
 
 from utilities.select import select
 
@@ -57,8 +58,11 @@ class Parser:
         elif hasattr(self.response.value, 'response'):
             data = self.response.value.response.meta['custom_variables']
         else:
+            data = {'Error': 'No metadata in response?'}
             self._print_error_info()
-            raise ValueError("Is there a missing case for metadata?")
+            print('!' * 100)
+            print("Is there a missing case for metadata?")
+            print('!' * 100)
         data[self.response_status_variable] = self.response_status
         data[self.url_variable] = self.url
         return data
@@ -72,13 +76,11 @@ class Parser:
         print('Should parse:')
         print(self.should_parse)
         print('Response:')
-        print(self.response)
+        pprint(self.response.__dict__)
         print('Error:')
         print(self.error)
         print('URL:')
         print(self.url)
-        print('Data:')
-        print(self._initial_data())
         print('!' * 100)
 
 
