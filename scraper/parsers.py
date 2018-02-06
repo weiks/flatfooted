@@ -60,9 +60,6 @@ class Parser:
         else:
             data = {'Error': 'No metadata in response?'}
             self._print_error_info()
-            print('!' * 100)
-            print("Is there a missing case for metadata?")
-            print('!' * 100)
         data[self.response_status_variable] = self.response_status
         data[self.url_variable] = self.url
         return data
