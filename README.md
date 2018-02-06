@@ -195,8 +195,13 @@ $ python3 -u main.py | tee outputs/<FILENAME>.log
     and the item data should be specified in its corresponding `fields`.
 - [x] Optionally specify that an auto-redirect into item is expected
 - [x] Optionally specify when double-hops should be used
-- [ ] Save into a database? (TODO: discuss with Mike)
-- [ ] Deterministic column order in CSVs
+- [ ] Make sure we can reliably scrape Amazon and Zoro
+- [x] Make proxies work together with Selenium
+- [ ] Save into a relational database (single table)
+  - [ ] Save each page as it's scraped
+  - [ ] Easily etrieve saved HTML
+- [ ] Setup periodic scraping for once a day
+- [ ] Deterministic column order in CSVs (delete?)
 
 ## Site Groups
 
