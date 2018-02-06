@@ -5,7 +5,7 @@ from twisted.internet.error import TimeoutError, TCPTimedOutError
 from scrapy.spidermiddlewares.httperror import HttpError
 from twisted.internet.error import DNSLookupError
 from scrapy.exceptions import IgnoreRequest
-from scrapy import Response
+from scrapy.http import Response
 
 from utilities.select import select
 
