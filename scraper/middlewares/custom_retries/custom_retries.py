@@ -1,48 +1,11 @@
 
-import random
-import pprint
-
 from utilities.select import select
 
 from scrapy.downloadermiddlewares.retry import RetryMiddleware
 from scrapy.utils.response import response_status_message
 
-from proxies.proxies import PredefinedProxies
-# from proxies.proxies import RealTimeProxies
 
-from .constants import USER_AGENTS
-
-
-class RandomUserAgentMiddleware:
-    def process_request(self, request, spider):
-        request.headers.setdefault('User-Agent', random.choice(USER_AGENTS))
-
-
-class ProxyMiddleware:
-
-    def __init__(self):
-        # self.proxies = RealTimeProxies().list()
-        self.proxies = PredefinedProxies().list()
-
-    def process_request(self, request, spider):
-        request.meta['proxy'] = random.choice(self.proxies)
-        print('-' * 50)
-        pprint.pprint(request.__dict__)
-        print('-' * 50)
-        return request
-
-
-class FixURLBeforeRequestMiddleware:
-
-    def process_request(self, request, spider):
-        if request.meta.get('type', '') == 'item':
-            print('1' * 100)
-            pprint.pprint(request.url)
-            print('1' * 100)
-            return request
-
-
-class CustomRetryMiddleware(RetryMiddleware):
+class CustomRetriesMiddleware(RetryMiddleware):
 
     def process_response(self, request, response, spider):
         # This is standard Scrapy code for `process_response()`
@@ -58,12 +21,12 @@ class CustomRetryMiddleware(RetryMiddleware):
         return response
 
     def _should_be_retried_reason(self, request, response):
-        # Return '' if request should not be retried
+        """Return '' if request should not be retried"""
         if request.meta['site_name'] != 'Amazon':
             return ''
-        if request.meta['type'] == 'search':
-            if not self._number_of_results_data_exists(request, response):
-                return 'Empty `number_of_results` data'
+        # if request.meta['type'] == 'search':
+        #     if not self._number_of_results_data_exists(request, response):
+        #         return 'Empty `number_of_results` data'
         return ''
 
     def _number_of_results_data_exists(self, request, response):

@@ -71,17 +71,18 @@ class Scraper:
             'DUPEFILTER_CLASS': 'scrapy.dupefilters.BaseDupeFilter',
             'DOWNLOADER_MIDDLEWARES': {
                 'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
-                'scraper.middleware.CustomRetryMiddleware': 550,
-                'scraper.middlewares.selenium.SeleniumMiddleware': 450
+                'scraper.middlewares.CustomRetriesMiddleware': 550,
+                'scraper.middlewares.SeleniumMiddleware': 450
             },
         }
         m = 'DOWNLOADER_MIDDLEWARES'
         if self.settings.random_proxies:
-            options['RETRY_TIMES'] = 3
-            options['RETRY_HTTP_CODES'] = [500, 503, 504, 400, 403, 404, 408]
-            options[m]['scraper.middleware.ProxyMiddleware'] = 410
+            # options['RETRY_TIMES'] = 3
+            # options['RETRY_HTTP_CODES'] = [500, 503, 504, 400, 403, 404, 408]
+            # TODO: Test that Selenium also uses these proxies
+            options[m]['scraper.middlewares.ProxiesMiddleware'] = 410
         if self.settings.random_user_agents:
-            options[m]['scraper.middleware.RandomUserAgentMiddleware'] = 400
+            options[m]['scraper.middlewares.RandomUserAgentsMiddleware'] = 400
         return options
 
     def _file_with_name(self, name, ext='json'):

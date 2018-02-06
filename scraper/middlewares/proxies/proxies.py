@@ -1,9 +1,20 @@
 
 import os
+import random
 
 from selenium import webdriver
 
-from proxies.constants import PROXIES
+from .constants import PROXIES
+
+
+class ProxiesMiddleware:
+
+    def __init__(self):
+        # self.proxies = RealTimeProxies().list()
+        self.proxies = PredefinedProxies().list()
+
+    def process_request(self, request, spider):
+        request.meta['proxy'] = random.choice(self.proxies)
 
 
 class RealTimeProxies:

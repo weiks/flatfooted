@@ -1,11 +1,13 @@
 
 from pprint import pprint
 
-from utilities.select import select
-
 from twisted.internet.error import TimeoutError, TCPTimedOutError
 from scrapy.spidermiddlewares.httperror import HttpError
 from twisted.internet.error import DNSLookupError
+from scrapy.exceptions import IgnoreRequest
+from scrapy import Response
+
+from utilities.select import select
 
 
 class Parser:
@@ -26,7 +28,19 @@ class Parser:
                 self.response_status = 'DNS Lookup Error'
             elif response.check(TimeoutError, TCPTimedOutError):
                 self.response_status = 'TCP Timeout Error'
+            elif response.check(IgnoreRequest):
+                self.response_status = 'Selenium Timeout Error'
             else:
+                print('!' * 100)
+                print('Should parse:')
+                print(self.should_parse)
+                print('Response:')
+                print(self.response)
+                print('Error:')
+                print(self.error)
+                print('URL:')
+                print(self.url)
+                print('!' * 100)
                 raise ValueError("Is there a missing case?")
         else:
             self.should_parse = True
@@ -55,7 +69,7 @@ class Parser:
         return data
 
     def _initial_data(self):
-        if self.error:
+        if self.error or not isinstance(self.response, Response):
             data = self.response.value.response.meta['custom_variables']
         else:
             data = self.response.meta['custom_variables']

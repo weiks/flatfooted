@@ -1,6 +1,8 @@
 
 import os
 
+from scrapy.exceptions import IgnoreRequest
+
 from selenium.common.exceptions import TimeoutException
 from scrapy.http import HtmlResponse
 from selenium import webdriver
@@ -9,34 +11,22 @@ from selenium import webdriver
 class SeleniumMiddleware(object):
 
     def __init__(self):
-        #
-        # To avoid crashes, I'm using the `driver` as a singleton
-        # by putting it into the `__init__()` method instead of
-        # restarting it everytime within the `process_request()`
-        # method. However, I need to be careful that multiple
-        # requests don't try to use the same `driver` due to the
-        # concurrency of Scrapy, specifically Twisted.
-        #
-        options = webdriver.ChromeOptions()
-        options.add_argument('headless')
-        self.driver = webdriver.Chrome(
-            '{}/../../utilities/chromedriver'.format(
-                os.path.dirname(os.path.realpath(__file__))),
-            chrome_options=options)
-        self.driver.set_page_load_timeout(3)
-        self.driver.implicitly_wait(2)
+        self.driver = None
+        self._setup_driver()
 
     def __del__(self):
         self.driver.close()
 
     def process_request(self, request, spider):
+        self._setup_driver(request.meta.get('proxy', None))
         if spider.use_selenium():
             try:
                 self.driver.get(request.url)
             except TimeoutException:
-                pass
+                raise IgnoreRequest()
             #
-            # TODO: Specify through settings file?
+            # Make Selenium wait for a pre-specified selector
+            # TODO: Specify these cases through settings file?
             #
             if spider.name == 'CDW' and request.meta['type'] == 'search':
                 try:
@@ -72,12 +62,32 @@ class SeleniumMiddleware(object):
                         'div.ess-product-price')
                 except:
                     pass
-            try:
-                return HtmlResponse(
-                    self.driver.current_url,
-                    body=self.driver.page_source,
-                    encoding='UTF-8',
-                    request=request
-                )
-            except TimeoutException:
-                return None
+
+            return HtmlResponse(
+                self.driver.current_url,
+                body=self.driver.page_source,
+                encoding='UTF-8',
+                request=request
+            )
+
+    def _setup_driver(self, proxy=None):
+        #
+        # To avoid crashes, I'm using the `driver` as a singleton
+        # by putting it into the `__init__()` method instead of
+        # restarting it everytime within the `process_request()`
+        # method. However, I need to be careful that multiple
+        # requests don't try to use the same `driver` due to the
+        # concurrency of Scrapy, specifically Twisted.
+        #
+        if self.driver:
+            self.driver.close()
+        options = webdriver.ChromeOptions()
+        if proxy:
+            options.add_argument('--proxy-server={}'.format(proxy))
+        options.add_argument('headless')
+        self.driver = webdriver.Chrome(
+            '{}/../../../utilities/chromedriver'.format(
+                os.path.dirname(os.path.realpath(__file__))),
+            chrome_options=options)
+        self.driver.set_page_load_timeout(3)
+        self.driver.implicitly_wait(2)
