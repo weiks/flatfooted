@@ -57,7 +57,6 @@ class Parser:
         elif hasattr(self.response.value, 'response'):
             data = self.response.value.response.meta['custom_variables']
         else:
-            self._print_error_info()
             raise ValueError("Is there a missing case for metadata?")
         data[self.response_status_variable] = self.response_status
         data[self.url_variable] = self.url
