@@ -1,11 +1,8 @@
 
-from pprint import pprint
-
 from twisted.internet.error import TimeoutError, TCPTimedOutError
 from scrapy.spidermiddlewares.httperror import HttpError
 from twisted.internet.error import DNSLookupError
 from scrapy.exceptions import IgnoreRequest
-from scrapy.http import Response
 
 from utilities.select import select
 
@@ -31,22 +28,12 @@ class Parser:
             elif response.check(IgnoreRequest):
                 self.response_status = 'Selenium Timeout Error'
             else:
-                print('!' * 100)
-                print('Should parse:')
-                print(self.should_parse)
-                print('Response:')
-                print(self.response)
-                print('Error:')
-                print(self.error)
-                print('URL:')
-                print(self.url)
-                print('!' * 100)
-                raise ValueError("Is there a missing case?")
+                self._print_error_info()
+                raise ValueError("Is there a missing case for errors?")
         else:
             self.should_parse = True
             self.url = response.url
-            self.response_status = 'HTTP {}'.format(
-                self.response.status)
+            self.response_status = 'HTTP {}'.format(self.response.status)
 
     def data(self):
         data = self._initial_data()
@@ -62,17 +49,16 @@ class Parser:
                 clean_text = text.encode("ascii", errors="ignore").decode()
                 data[key] = clean_text
                 data["{}_selector".format(key)] = i
-        if self.error:
-            print('!' * 100)
-            pprint(data)
-            print('!' * 100)
         return data
 
     def _initial_data(self):
-        if self.error or not isinstance(self.response, Response):
+        if hasattr(self.response, 'meta'):
+            data = self.response.meta['custom_variables']
+        elif hasattr(self.response.value, 'response'):
             data = self.response.value.response.meta['custom_variables']
         else:
-            data = self.response.meta['custom_variables']
+            self._print_error_info()
+            raise ValueError("Is there a missing case for metadata?")
         data[self.response_status_variable] = self.response_status
         data[self.url_variable] = self.url
         return data
@@ -80,6 +66,20 @@ class Parser:
     def _raw_text(self, key, selector):
         texts_list = select(self.response, key, selector).extract()
         return ' '.join(' '.join(texts_list).split()) if texts_list else []
+
+    def _print_error_info(self):
+        print('!' * 100)
+        print('Should parse:')
+        print(self.should_parse)
+        print('Response:')
+        print(self.response)
+        print('Error:')
+        print(self.error)
+        print('URL:')
+        print(self.url)
+        print('Data:')
+        print(self._initial_data())
+        print('!' * 100)
 
 
 class Item(Parser):

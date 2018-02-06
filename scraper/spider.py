@@ -16,6 +16,7 @@ class Spider(scrapy.Spider):
         'CONCURRENT_REQUESTS': 16,
         'CONCURRENT_REQUESTS_PER_DOMAIN': 1,
         'RANDOMIZE_DOWNLOAD_DELAY': True,
+        'DOWNLOAD_TIMEOUT': 30,
         'DOWNLOAD_DELAY': 2
     }
 
