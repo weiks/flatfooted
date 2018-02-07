@@ -110,6 +110,10 @@ class Settings:
         return self._site_settings.get('javascript', False)
 
     @property
+    def mongo(self):
+        return 'mongo' in self.settings.keys()
+
+    @property
     def _site_settings(self):
         if not self._name:
             raise ValueError('Global settings instance (without `name`)')

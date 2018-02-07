@@ -1,9 +1,14 @@
 
 SETTINGS = {
-    'save_html': True,
-    'random_proxies': True,
+    'save_html': False,
+    'random_proxies': False,
     'random_user_agents': True,
     'timezone': 'America/Mexico_City',
+    'mongo': {
+        'db': 'flatfooted',
+        'host': 'localhost',
+        'port': 27017
+    },
     'search_strings': {
         'file': 'inputs/search-strings-full.csv',
         # 'file': 'inputs/search-strings-re-test.csv',

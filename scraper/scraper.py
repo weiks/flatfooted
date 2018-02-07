@@ -73,7 +73,7 @@ class Scraper:
                 'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
                 'scraper.middlewares.CustomRetriesMiddleware': 550,
                 'scraper.middlewares.SeleniumMiddleware': 450
-            },
+            }
         }
         m = 'DOWNLOADER_MIDDLEWARES'
         if self.settings.random_proxies:
@@ -83,6 +83,10 @@ class Scraper:
             options[m]['scraper.middlewares.ProxiesMiddleware'] = 410
         if self.settings.random_user_agents:
             options[m]['scraper.middlewares.RandomUserAgentsMiddleware'] = 400
+        if self.settings.mongo:
+            options['ITEM_PIPELINES'] = {
+                'scraper.pipelines.MongoWriterPipeline': 700
+            }
         return options
 
     def _file_with_name(self, name, ext='json'):
