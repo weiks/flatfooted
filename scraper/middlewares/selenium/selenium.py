@@ -64,6 +64,12 @@ class SeleniumMiddleware(object):
                         'div.ess-product-price')
                 except:
                     pass
+            if spider.name == 'ZORO' and request.meta['type'] == 'item':
+                try:
+                    driver.find_element_by_css_selector(
+                        '#grid > li:nth-child(1) > div')
+                except:
+                    pass
 
 
 class SeleniumDriver:
