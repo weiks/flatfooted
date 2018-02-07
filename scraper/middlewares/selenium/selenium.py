@@ -85,7 +85,7 @@ class SeleniumDriver:
         if proxy:
             print('-' * 100)
             print('Selenium using proxy: {}'.format(proxy))
-            proxy_option = '--proxy-server=http://{}'.format(proxy)
+            proxy_option = '--proxy-server={}'.format(proxy)
             print(proxy_option)
             print('-' * 100)
             options.add_argument(proxy_option)
@@ -94,8 +94,8 @@ class SeleniumDriver:
             '{}/../../../utilities/chromedriver'.format(
                 os.path.dirname(os.path.realpath(__file__))),
             chrome_options=options)
-        self._driver.set_page_load_timeout(30)
-        self._driver.implicitly_wait(15)
+        self._driver.set_page_load_timeout(90)
+        self._driver.implicitly_wait(60)
 
     @property
     def driver(self):

@@ -74,7 +74,7 @@ class Scraper:
             'COOKIES_ENABLED': False,
             'LOG_LEVEL': 'DEBUG',
             'DOWNLOAD_DELAY': 2,
-            'DOWNLOAD_TIMEOUT': 30,
+            'DOWNLOAD_TIMEOUT': 120,
             'DOWNLOADER_MIDDLEWARES': {
                 'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
                 'scraper.middlewares.CustomRetriesMiddleware': 550,
