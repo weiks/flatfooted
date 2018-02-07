@@ -1,5 +1,6 @@
 
 from twisted.internet.error import TimeoutError, TCPTimedOutError
+from selenium.common.exceptions import WebDriverException
 from scrapy.spidermiddlewares.httperror import HttpError
 from twisted.internet.error import DNSLookupError
 from scrapy.exceptions import IgnoreRequest
@@ -28,6 +29,8 @@ class Parser:
                 self.response_status = 'TCP Timeout Error'
             elif response.check(IgnoreRequest):
                 self.response_status = 'Selenium Timeout Error'
+            elif isinstance(response, WebDriverException):
+                self.response_status = 'Selenium No-Session Error'
             else:
                 self._print_error_info()
                 raise ValueError("Is there a missing case for errors?")
