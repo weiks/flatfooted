@@ -228,10 +228,11 @@ $ sudo crontab -l
 - [x] Optionally specify when double-hops should be used
 - [ ] Make sure we can reliably scrape Amazon and Zoro
 - [x] Make proxies work together with Selenium
-- [ ] Save into a relational database (single table)
-  - [ ] Save each page as it's scraped
+  - [ ] TODO: Waiting for Mike to whitelist new instance's IP for proxies
+- [x] Save into a relational database (single table)
+  - [x] Save each page as it's scraped
   - [ ] Easily etrieve saved HTML
-- [ ] Setup periodic scraping for once a day
+- [x] Setup periodic scraping for once a day
 - [ ] Deterministic column order in CSVs (delete?)
 
 ## Site Groups
