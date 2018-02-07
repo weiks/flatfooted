@@ -226,7 +226,7 @@ $ sudo crontab -l
     and the item data should be specified in its corresponding `fields`.
 - [x] Optionally specify that an auto-redirect into item is expected
 - [x] Optionally specify when double-hops should be used
-- [ ] Make sure we can reliably scrape Amazon and Zoro
+- [x] Make sure we can reliably scrape Amazon and Zoro
 - [x] Make proxies work together with Selenium
 - [x] Save into a relational database (single table)
   - [x] Save each page as it's scraped
