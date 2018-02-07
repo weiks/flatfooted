@@ -1,7 +1,7 @@
 
 SETTINGS = {
-    'save_html': False,
-    'random_proxies': False,
+    'save_html': True,
+    'random_proxies': True,
     'random_user_agents': True,
     'timezone': 'America/Mexico_City',
     'mongo': {
@@ -13,7 +13,7 @@ SETTINGS = {
         'file': 'inputs/search-strings-full.csv',
         # 'file': 'inputs/search-strings-re-test.csv',
         'variable': 'String',
-        'sample': 10
+        'sample': None
     },
     'required_fields': [
         'name',
@@ -23,59 +23,59 @@ SETTINGS = {
         #
         # Standard
         #
-        'AMZN': {
-            'base_url': 'https://www.amazon.com',
-            'search': {
-                'query': 'https://www.amazon.com/s/?field-keywords={}',
-                'first_item': [
-                    '//*[@id="result_0"]/div/div[4]/div[1]/a/@href',
-                    '//*[@id="result_0"]/div/div[3]/div[1]/a/@href',
-                    '//*[@id="result_0"]/div/div[2]/div/div[2]/div[2]/div[1]/a/@href',
-                    '//*[@id="result_0"]/div/div/div/div[2]/div[2]/div[1]/a/@href',
-                    '//*[@id="result_0"]/div/div/div/div[2]/div[1]/div[1]/a/@href',
-                    '//*[@id="result_0"]/div/div/div/div[2]/div[1]/div/a/@href'
-                ],
-                'fields': {
-                    'number_of_results': [
-                        '//*[@id="s-result-count"]//text()'
-                    ],
-                    'results_description': [
-                        '//*[@id="noResultsTitle"]//text()'
-                    ]
-                }
-            },
-            'item': {
-                'fields': {
-                    'name': [
-                        '//*[@id="productTitle"]//text()'
-                    ],
-                    'brand': [
-                        '//*[@id="brand"]//text()',
-                        '//*[@id="bylineInfo"]//text()'
-                    ],
-                    'brand_link': [
-                        '//*[@id="brand"]//@href',
-                        '//*[@id="bylineInfo"]//@href'
-                    ],
-                    'price': [
-                        '//*[@id="priceblock_ourprice"]//text()',
-                        '//*[@id="priceblock_saleprice"]//text()'
-                    ],
-                    'availability': [
-                        '//*[@id="availability"]//text()'
-                    ],
-                    'ships_from': [
-                        '//*[@id="shipsFromSoldBy_feature_div"]//text()'
-                    ],
-                    'fast_track': [
-                        '//*[@id="fast-track-message"]//text()'
-                    ],
-                    'n_resellers': [
-                        '//*[@id="olp_feature_div"]//text()'
-                    ]
-                }
-            }
-        },
+        # 'AMZN': {
+        #     'base_url': 'https://www.amazon.com',
+        #     'search': {
+        #         'query': 'https://www.amazon.com/s/?field-keywords={}',
+        #         'first_item': [
+        #             '//*[@id="result_0"]/div/div[4]/div[1]/a/@href',
+        #             '//*[@id="result_0"]/div/div[3]/div[1]/a/@href',
+        #             '//*[@id="result_0"]/div/div[2]/div/div[2]/div[2]/div[1]/a/@href',
+        #             '//*[@id="result_0"]/div/div/div/div[2]/div[2]/div[1]/a/@href',
+        #             '//*[@id="result_0"]/div/div/div/div[2]/div[1]/div[1]/a/@href',
+        #             '//*[@id="result_0"]/div/div/div/div[2]/div[1]/div/a/@href'
+        #         ],
+        #         'fields': {
+        #             'number_of_results': [
+        #                 '//*[@id="s-result-count"]//text()'
+        #             ],
+        #             'results_description': [
+        #                 '//*[@id="noResultsTitle"]//text()'
+        #             ]
+        #         }
+        #     },
+        #     'item': {
+        #         'fields': {
+        #             'name': [
+        #                 '//*[@id="productTitle"]//text()'
+        #             ],
+        #             'brand': [
+        #                 '//*[@id="brand"]//text()',
+        #                 '//*[@id="bylineInfo"]//text()'
+        #             ],
+        #             'brand_link': [
+        #                 '//*[@id="brand"]//@href',
+        #                 '//*[@id="bylineInfo"]//@href'
+        #             ],
+        #             'price': [
+        #                 '//*[@id="priceblock_ourprice"]//text()',
+        #                 '//*[@id="priceblock_saleprice"]//text()'
+        #             ],
+        #             'availability': [
+        #                 '//*[@id="availability"]//text()'
+        #             ],
+        #             'ships_from': [
+        #                 '//*[@id="shipsFromSoldBy_feature_div"]//text()'
+        #             ],
+        #             'fast_track': [
+        #                 '//*[@id="fast-track-message"]//text()'
+        #             ],
+        #             'n_resellers': [
+        #                 '//*[@id="olp_feature_div"]//text()'
+        #             ]
+        #         }
+        #     }
+        # },
         # 'CDW': {
         #     'base_url': 'https://www.cdw.com',
         #     'search': {

@@ -64,22 +64,26 @@ class Scraper:
         reasons, and we need to be able to adapt to that.
         """
         options = {
+            'RANDOMIZE_DOWNLOAD_DELAY': True,
+            'AUTOTHROTTLE_TARGET_CONCURRENCY': 0.3,
+            'AUTOTHROTTLE_ENABLED': True,
+            'CONCURRENT_REQUESTS': 4,
+            'CONCURRENT_REQUESTS_PER_DOMAIN': 1,
             'FEED_FORMAT': 'json',
             'FEED_URI': self._file_name(),
             'COOKIES_ENABLED': False,
             'LOG_LEVEL': 'DEBUG',
-            'DUPEFILTER_CLASS': 'scrapy.dupefilters.BaseDupeFilter',
+            'DOWNLOAD_DELAY': 2,
+            'DOWNLOAD_TIMEOUT': 30,
             'DOWNLOADER_MIDDLEWARES': {
                 'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
                 'scraper.middlewares.CustomRetriesMiddleware': 550,
                 'scraper.middlewares.SeleniumMiddleware': 950
-            }
+            },
+            'DUPEFILTER_CLASS': 'scrapy.dupefilters.BaseDupeFilter'
         }
         m = 'DOWNLOADER_MIDDLEWARES'
         if self.settings.random_proxies:
-            # options['RETRY_TIMES'] = 3
-            # options['RETRY_HTTP_CODES'] = [500, 503, 504, 400, 403, 404, 408]
-            # TODO: Test that Selenium also uses these proxies
             options[m]['scraper.middlewares.ProxiesMiddleware'] = 410
         if self.settings.random_user_agents:
             options[m]['scraper.middlewares.RandomUserAgentsMiddleware'] = 400
