@@ -67,13 +67,13 @@ class SeleniumMiddleware(object):
             if spider.name == 'ZORO' and request.meta['type'] == 'search':
                 try:
                     driver.find_element_by_css_selector(
-                        '#grid > li:nth-child(1) > div')
+                        '#grid')
                 except:
                     pass
             if spider.name == 'ZORO' and request.meta['type'] == 'item':
                 try:
                     driver.find_element_by_css_selector(
-                        '#avl-info-icon > span > i')
+                        '#avl-info-icon')
                 except:
                     pass
 
@@ -85,8 +85,10 @@ class SeleniumDriver:
         if proxy:
             print('-' * 100)
             print('Selenium using proxy: {}'.format(proxy))
+            proxy_option = '--proxy-server=http://{}'.format(proxy)
+            print(proxy_option)
             print('-' * 100)
-            options.add_argument('--proxy-server={}'.format(proxy))
+            options.add_argument(proxy_option)
         options.add_argument('headless')
         self._driver = webdriver.Chrome(
             '{}/../../../utilities/chromedriver'.format(
