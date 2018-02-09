@@ -64,8 +64,8 @@ class Parser:
             self._print_error_info()
             data = {}
         data = meta.get('custom_variables', {})
-        data['proxy'] = meta.get('proxy', 'None')
         data[self.response_status_variable] = self.response_status
+        data[self.proxy_variable] = meta.get('proxy', 'None')
         data[self.url_variable] = self.url
         return data
 
@@ -89,8 +89,9 @@ class Parser:
 class Item(Parser):
 
     def __init__(self, response, settings, error=False):
-        self.url_variable = 'url_item'
         self.response_status_variable = 'response_status_item'
+        self.proxy_variable = 'proxy_item'
+        self.url_variable = 'url_item'
         self.fields = settings.item_fields
         super().__init__(response, settings, error)
 
@@ -98,8 +99,9 @@ class Item(Parser):
 class Search(Parser):
 
     def __init__(self, response, settings, returned_results=None, error=False):
-        self.url_variable = 'url_search'
         self.response_status_variable = 'response_status_search'
+        self.proxy_variable = 'proxy_search'
+        self.url_variable = 'url_search'
         self.returned_results = returned_results
         self.fields = settings.search_fields
         super().__init__(response, settings, error)
