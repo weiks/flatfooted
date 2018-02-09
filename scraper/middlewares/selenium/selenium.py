@@ -83,12 +83,10 @@ class SeleniumDriver:
     def __init__(self, proxy=None):
         options = webdriver.ChromeOptions()
         if proxy:
+            options.add_argument('--proxy-server={}'.format(proxy))
             print('-' * 100)
             print('Selenium using proxy: {}'.format(proxy))
-            proxy_option = '--proxy-server={}'.format(proxy)
-            print(proxy_option)
             print('-' * 100)
-            options.add_argument(proxy_option)
         options.add_argument('headless')
         self._driver = webdriver.Chrome(
             '{}/../../../utilities/chromedriver'.format(

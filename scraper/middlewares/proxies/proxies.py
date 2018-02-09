@@ -63,8 +63,7 @@ class PredefinedProxies:
 
     """Use a predefined set of proxies
 
-    These were taken from https://blazingseollc.com/ through their
-    SEMI-DEDICATED offering.
+    Semi-dedicated proxies from: https://blazingseollc.com/
     """
 
     def __init__(self):
