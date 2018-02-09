@@ -73,11 +73,12 @@ class Scraper:
             'FEED_URI': self._file_name(),
             'COOKIES_ENABLED': False,
             'LOG_LEVEL': 'DEBUG',
+            'RETRY_TIMES': 2,
             'DOWNLOAD_DELAY': 2,
             'DOWNLOAD_TIMEOUT': 120,
             'DOWNLOADER_MIDDLEWARES': {
-                'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
-                'scraper.middlewares.CustomRetriesMiddleware': 550,
+                # 'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
+                # 'scraper.middlewares.CustomRetriesMiddleware': 550,
                 'scraper.middlewares.SeleniumMiddleware': 950
             },
             'DUPEFILTER_CLASS': 'scrapy.dupefilters.BaseDupeFilter'

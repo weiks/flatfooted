@@ -57,12 +57,14 @@ class Parser:
 
     def _initial_data(self):
         if hasattr(self.response, 'meta'):
-            data = self.response.meta['custom_variables']
+            meta = self.response.meta
         elif hasattr(self.response.value, 'response'):
-            data = self.response.value.response.meta['custom_variables']
+            meta = self.response.value.response.meta
         else:
-            data = {'Error': 'No metadata in response?'}
             self._print_error_info()
+            data = {}
+        data = meta.get('custom_variables', {})
+        data['proxy'] = meta.get('proxy', 'None')
         data[self.response_status_variable] = self.response_status
         data[self.url_variable] = self.url
         return data
