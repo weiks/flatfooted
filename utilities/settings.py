@@ -98,8 +98,16 @@ class Settings:
         return self.settings['search_strings']['file']
 
     @property
-    def search_variable(self):
-        return self.settings['search_strings']['variable']
+    def search_string(self):
+        return self.settings['search_strings']['search_string']
+
+    @property
+    def use_on(self):
+        return self.settings['search_strings']['use_on']
+
+    @property
+    def avoid_on(self):
+        return self.settings['search_strings']['avoid_on']
 
     @property
     def search_sample(self):
