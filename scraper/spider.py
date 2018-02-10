@@ -1,4 +1,5 @@
 
+import pandas
 import scrapy
 
 from slugify import slugify
@@ -10,19 +11,29 @@ from .parsers import Item, Search
 
 class Spider(scrapy.Spider):
 
+    errors = []
+
     def __init__(self, settings={}, now=None, **kwargs):
         self.now = now
         self.name = settings.name
         self.site_settings = settings
         super().__init__(**kwargs)
 
+    def spider_closed(self, spider):
+        print('1' * 100)
+        print('SPIDER CLOSED: {}'.format(self.name))
+        print('1' * 100)
+        errors_df = pandas.DataFrame(self.errors)
+        errors_df.to_csv(self._file_name('csv', '_errors'))
+
     def start_requests(self):
         for combination in self._start_combinations():
+            ss = combination['search_string']
             yield scrapy.Request(
                 combination['url'],
                 callback=self._parse_searches,
-                errback=self._parse_search_error,
-                meta=self._meta('search', combination['search_string'])
+                errback=self._parse_search_error(ss),
+                meta=self._meta('search', ss)
             )
 
     def _parse_searches(self, response):
@@ -31,29 +42,19 @@ class Spider(scrapy.Spider):
         elif self._double_hop_detected(response):
             yield self._parse_double_hop(response)
         else:
-            # TODO: Refactor into own method
             selectors = self.site_settings.first_item_selectors
             if selectors:
                 key = self.site_settings.first_item_selectors_key
                 for i, selector in enumerate(selectors):
                     first_item = select(response, key, selector).extract_first()
                     if first_item:
-                        previous_meta = response.meta['custom_variables']
-                        try:
-                            yield scrapy.Request(
-                                self._enforce_absolute_url(first_item),
-                                callback=self._parse_item,
-                                errback=self._parse_item_error,
-                                meta=self._meta('item', previous_meta['search_string'])
-                            )
-                        except:
-                            print('1' * 100)
-                            print('ERROR in `_parse_searches()` in `spider.py`')
-                            print(first_item)
-                            print(self._enforce_absolute_url(first_item))
-                            print(previous_meta['search_string'])
-                            print(self._meta('item', previous_meta['search_string']))
-                            print('1' * 100)
+                        ss = response.meta['custom_variables']['search_string']
+                        yield scrapy.Request(
+                            self._enforce_absolute_url(first_item),
+                            callback=self._parse_item,
+                            errback=self._parse_item_error(ss),
+                            meta=self._meta('item', ss)
+                        )
                         break
             yield self._parse_search(response)
 
@@ -88,18 +89,17 @@ class Spider(scrapy.Spider):
         return url
 
     def _parse_double_hop(self, response):
-        previous_meta = response.meta['custom_variables']
         links = self._content(
             response,
             self.site_settings.double_hop_key,
             self.site_settings.double_hop_selectors
         )
+        ss = response.meta['custom_variables']['search_string']
         return scrapy.Request(
             self._enforce_absolute_url(links[0]),
             callback=self._parse_searches,
-            errback=self._parse_search_error,
-            meta=self._meta(
-                'search', previous_meta['search_string'], double_hop=True)
+            errback=self._parse_search_error(ss),
+            meta=self._meta('search', ss, double_hop=True)
         )
 
     def _parse_item_with_return(self, response):
@@ -110,17 +110,39 @@ class Spider(scrapy.Spider):
         self._save_html(response, '_item')
         yield Item(response, self.site_settings).data()
 
-    def _parse_item_error(self, response):
-        self._save_html(response, '_item')
-        yield Item(response, self.site_settings, error=True).data()
-
     def _parse_search(self, response):
         self._save_html(response, '_search')
         return Search(response, self.site_settings).data()
 
-    def _parse_search_error(self, response):
-        self._save_html(response, '_search')
-        return Search(response, self.site_settings, error=True).data()
+    def _parse_item_error(self, search_string):
+        def _parse_item_error_internal(response):
+            # print('!' * 100)
+            # print('_parse_item_error()')
+            # print(search_string)
+            # print('!' * 100)
+            self._save_html(response, '_item')
+            self.errors.append(Item(
+                response,
+                self.site_settings,
+                error=True,
+                search_string=search_string
+            ).data())
+        return _parse_item_error_internal
+
+    def _parse_search_error(self, search_string):
+        def _parse_search_error_internal(response):
+            # print('!' * 100)
+            # print('_parse_search_error()')
+            # print(search_string)
+            # print('!' * 100)
+            self._save_html(response, '_search')
+            self.errors.append(Search(
+                response,
+                self.site_settings,
+                error=True,
+                search_string=search_string
+            ).data())
+        return _parse_search_error_internal
 
     def _start_combinations(self):
         return [
@@ -140,12 +162,12 @@ class Spider(scrapy.Spider):
             with open(self._file_name('html', s + suffix), 'w+b') as f:
                 f.write(response.body)
 
-    def _file_name(self, extension, search_string=None):
+    def _file_name(self, extension, search_string=None, appendix=''):
         if search_string:
             return 'outputs/html/{}_{}_{}.{}'.format(
                 self.name, self.now, slugify(search_string), extension)
-        return 'outputs/{}/{}_{}.{}'.format(
-            self.name, self.now, extension)
+        return 'outputs/{}_{}{}.{}'.format(
+            self.name, self.now, appendix, extension)
 
     def _meta(self, request_type, search_string, double_hop=False):
         meta = {

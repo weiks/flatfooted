@@ -24,13 +24,16 @@ class Scraper:
 
     def _json_to_csv(self):
         for name in self.settings.names:
+            errors_csv_name = self._file_with_name(
+                name, ext='csv', appendix='_errors')
             csv_name = self._file_with_name(name, ext='csv')
             json_name = self._file_with_name(name)
             data = pandas.read_json(json_name)
-            results = self._postprocess_dataframe(data)
+            errors = pandas.read_csv(errors_csv_name)
+            results = self._postprocess_dataframe(data, errors)
             results.to_csv(csv_name)
 
-    def _postprocess_dataframe(self, data):
+    def _postprocess_dataframe(self, data, errors):
         if 'url_item' in data.columns and 'url_search' in data.columns:
             searches = (
                 data[data['url_item'].isnull()]
@@ -42,7 +45,9 @@ class Scraper:
                 .set_index('search_string')
                 .dropna(axis='columns', how='all')
             )
+            # errors = errors.set_index('search_string')
             results = searches.join(items, how='outer', rsuffix='_delete')
+            # results = results.join(errors, how='outer', rsuffix='_delete')
             return results[[c for c in results.columns if '_delete' not in c]]
         return data
 
@@ -94,8 +99,8 @@ class Scraper:
             }
         return options
 
-    def _file_with_name(self, name, ext='json'):
-        return self._file_name(ext).replace("%(name)s", name)
+    def _file_with_name(self, name, ext='json', appendix=''):
+        return self._file_name(ext, appendix).replace("%(name)s", name)
 
-    def _file_name(self, ext='json'):
-        return "outputs/%(name)s_{}.{}".format(self.now, ext)
+    def _file_name(self, ext='json', appendix=''):
+        return "outputs/%(name)s_{}{}.{}".format(self.now, appendix, ext)
