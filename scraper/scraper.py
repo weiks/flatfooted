@@ -24,14 +24,20 @@ class Scraper:
 
     def _json_to_csv(self):
         for name in self.settings.names:
+            data_exists = False
             errors_csv_name = self._file_with_name(
                 name, ext='csv', appendix='_errors')
             csv_name = self._file_with_name(name, ext='csv')
             json_name = self._file_with_name(name)
-            data = pandas.read_json(json_name)
-            errors = pandas.read_csv(errors_csv_name)
-            results = self._postprocess_dataframe(data, errors)
-            results.to_csv(csv_name)
+            try:
+                data = pandas.read_json(json_name)
+                errors = pandas.read_csv(errors_csv_name)
+                data_exists = True
+            except ValueError:
+                pass
+            if data_exists:
+                results = self._postprocess_dataframe(data, errors)
+                results.to_csv(csv_name)
 
     def _postprocess_dataframe(self, data, errors):
         if 'url_item' in data.columns and 'url_search' in data.columns:
