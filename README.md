@@ -211,7 +211,7 @@ $ sudo crontab -l
   - [x] Insight (`NSIT`): **DONE**
   - [x] Fastenal (`FAST`): **DONE** (No "suggested" results indicator)
   - [x] AutoZone (`AZO`): **DONE** (No "suggested" results indicator)
-  - [ ] Bunzlpd (`BUNZL`): Pending decision by Mike (OR/AND issue)
+  - [ ] Bunzlpd (`BUNZL`): TODO: decision by Mike (OR/AND issue)
   - [x] Tiger Direct (`PCMI`): **DONE**
   - [x] MSC Direct (`MSM`): **DONE**
   - [x] HD Supply Solutions (`HDSS`): **DONE**
@@ -233,6 +233,16 @@ $ sudo crontab -l
   - [ ] Easily etrieve saved HTML
 - [x] Setup periodic scraping for once a day
 - [ ] Deterministic column order in CSVs (delete?)
+
+### Phase 6
+
+- [ ] Settings (throttling, retries, etc) settings per site
+  - TODO: Discuss with Mike
+- [ ] Trip-hops (and possibly more), i.e. generalized mechanism
+  - TODO: Discuss with Mike
+- [ ] Delete JSON and "error" files for sites that did not have any search
+      strings (therefore results) assigned
+  - TODO: Discuss with Mike
 
 ## Site Groups
 
@@ -324,12 +334,21 @@ $ sudo crontab -l
     "Manufacturer" in one of the cells, and use the appropriate value)
     - How to proceed: save all the data in the table as a single string.
 - [ ] `AZO` https://www.autozone.com/searchresult?searchText=pen
-  - Status: Defered (double-hop and ZIP)
+  - Status: In Progress (very sensitive)
   - JavaScript: No
   - Auto-redirect: No
   - Use search page: No
   - Double-hop: Yes
   - Asks for ZIP
+    - The JavaScript that the site uses is completely broken, and the ZIP form
+      does not appear to work (it doesn't return any results or changes
+      anything, possibly due to the JavaScript errors that don't allow it to
+      continue)
+    - ![JavaScript Errors](./img/azo/javascript-errors.png)
+  - The sites is very sensitive and quickly blocks the scraper with a CAPTCHA
+    page (in my case after only 5 requests). Need to find autothrottle settings
+    that are slow enough for this to succeed.
+    - ![CAPTCHA page](./img/azo/captcha.png)
 
 #### Group 4
 
