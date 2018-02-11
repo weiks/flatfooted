@@ -387,6 +387,35 @@ $ sudo crontab -l
     search, probably due to the dynamic nature of the URL and the fact that the
     `?` symbol is used to specify parameters in a URL. These should be avoided
     in the search strings.
+- [ ] `OAUTO` https://www.oreillyauto.com/motor-oil-search?q=pen
+  - Status: Exploring
+  - JavaScript: Yes (ZIP)
+  - Auto-redirect: ?
+  - Use search page: No
+  - Double-hop: Yes (3 hops)
+  - Special result pages:
+    - Search for "wheel" and we are forwarded to:
+      https://www.oreillyauto.com/shop/accessories-16449/accessories---exterior-16767/wheel-12666?q=wheel
+  - Double hops:
+    - Search for "oil" and we are get:
+      https://www.oreillyauto.com/motor-oil-search?q=oil
+  - Triple hops:
+    - In the previous page, select first category and we get:
+      https://www.oreillyauto.com/shop/oil-16865/motor-oil---full-synthetic-16694
+  - ZIP:
+    - Pricing and availability is behind a ZIP form:
+      https://www.oreillyauto.com/detail/o-reilly-oil-4527/oil-16865/motor-oil---full-synthetic-16694/full-synthetic---0w-20-18456/o-reilly-oil-0w-20-synthetic-motor-oil/syn020/4601168
+    - This requires JavaScript to work, and only shows a list of stores near the
+      ZIP code, but did not show actual price and availability. What to do about
+      this?
+- [ ] `MM`:
+  - Status: Exploring
+  - JavaScript: ?
+  - Auto-redirect: ?
+  - Use search page: ?
+  - Double-hop: Yes (multiple?)
+  - Seems to have a very different structure, what to do about this?
+    - Seems that this site will require a specialized scraper
 
 ## Item analysis for Amazon
 
