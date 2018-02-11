@@ -8,11 +8,10 @@ SETTINGS = {
     'timezone': 'America/Mexico_City',
     'search_strings': {
         'file': 'inputs/search-strings-full.csv',
-        # 'file': 'inputs/search-strings-re-test.csv',
         'search_string': 'SearchString',
         'avoid_on': 'AvoidOn',
         'use_on': 'UseOn',
-        'sample': 10
+        'sample': 50
     },
     'mongo': {
         'db': 'flatfooted',
