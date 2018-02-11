@@ -19,12 +19,9 @@ class Spider(scrapy.Spider):
         self.site_settings = settings
         super().__init__(**kwargs)
 
-    def spider_closed(self, spider):
-        print('1' * 100)
-        print('SPIDER CLOSED: {}'.format(self.name))
-        print('1' * 100)
+    def closed(self, spider):
         errors_df = pandas.DataFrame(self.errors)
-        errors_df.to_csv(self._file_name('csv', '_errors'))
+        errors_df.to_csv(self._file_name('csv', appendix='_errors'))
 
     def start_requests(self):
         for combination in self._start_combinations():
