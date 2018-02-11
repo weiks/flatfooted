@@ -602,6 +602,7 @@ MSM = {
 
 AZO = {
     'base_url': 'https://www.autozone.com',
+    'zip': '72335',
     'search': {
         'query': 'https://www.autozone.com/searchresult?searchText={}',
         'double_hop': [
