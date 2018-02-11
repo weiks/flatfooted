@@ -344,11 +344,11 @@ $ sudo crontab -l
       does not appear to work (it doesn't return any results or changes
       anything, possibly due to the JavaScript errors that don't allow it to
       continue)
-    - ![JavaScript Errors](./img/azo/javascript-errors.png)
+    - ![JavaScript Errors](./docs/img/azo/javascript-errors.png)
   - The sites is very sensitive and quickly blocks the scraper with a CAPTCHA
     page (in my case after only 5 requests). Need to find autothrottle settings
     that are slow enough for this to succeed.
-    - ![CAPTCHA page](./img/azo/captcha.png)
+    - ![CAPTCHA page](./docs/img/azo/captcha.png)
 
 #### Group 4
 
