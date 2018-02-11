@@ -77,7 +77,7 @@ in real-time in the terminal, we can use the following instead (you may use the
 `.txt` extension instead of `.log` if you prefer):
 
 ```
-$ python3 -u main.py | tee outputs/log.txt
+$ python3 -u main.py &| tee outputs/log.txt
 ```
 
 If we want to execute under a schedule, we can use the native `cron` utility for
@@ -91,16 +91,16 @@ Inside that file, we can use of the following specifications:
 
 ```
 # Every minute
-*/1 * * * * python3 -u /path/to/main.py | tee "/path/to/outputs/log_$(date +\%Y-\%m-\%d).txt"
+*/1 * * * * python3 -u /path/to/main.py &| tee "/path/to/outputs/log_$(date +\%Y-\%m-\%d).txt"
 
 # Every hour (sharp)
-0 * * * * python3 -u /path/to/main.py | tee "/path/to/outputs/log_$(date +\%Y-\%m-\%d).txt"
+0 * * * * python3 -u /path/to/main.py &| tee "/path/to/outputs/log_$(date +\%Y-\%m-\%d).txt"
 
 # Every day (midnight)
-0 0 * * * python3 -u /path/to/main.py | tee "/path/to/outputs/log_$(date +\%Y-\%m-\%d).txt"
+0 0 * * * python3 -u /path/to/main.py &| tee "/path/to/outputs/log_$(date +\%Y-\%m-\%d).txt"
 
 # Every week (Sunday midnight)
-0 0 0 * * python3 -u /path/to/main.py | tee "/path/to/outputs/log_$(date +\%Y-\%m-\%d).txt"
+0 0 0 * * python3 -u /path/to/main.py &| tee "/path/to/outputs/log_$(date +\%Y-\%m-\%d).txt"
 ```
 
 After saving the file, `cron` will start executing these jobs (look for the
