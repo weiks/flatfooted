@@ -236,13 +236,23 @@ $ sudo crontab -l
 
 ### Phase 6
 
-- [ ] Settings (throttling, retries, etc) settings per site
-  - TODO: Discuss with Mike
-- [ ] Trip-hops (and possibly more), i.e. generalized mechanism
-  - TODO: Discuss with Mike
-- [ ] Delete JSON and "error" files for sites that did not have any search
-      strings (therefore results) assigned
-  - TODO: Discuss with Mike
+- [x] New mechanism for search string specification
+  - [x] `UseOn` and `AvoidOn` columns
+  - [x] Avoid problems when not enough search strings for sample
+- [x] Save protocol-level errors separately
+- [x] Record which proxy were used for each request (search and items)
+- [x] Setup GI to work with current search/item/scrape model
+- [x] Specialized scraper for `MM` to get direct item pages through SKUs
+  - [x] Setup Selenium for specialized scraper (requires JavaScript)
+- [ ] Allow for direct item pages mechanism in current scraper
+  - [ ] Use parameter in settings to specify when this behvaior should be used
+- [ ] Extract data from database into single CSV file
+  - [ ] Extract everything
+  - [ ] Extract for given date range
+    - TODO: Discuss with Mike
+  - [ ] Extract "last x" number of executions
+    - TODO: Discuss with Mike
+- [ ] Ensure these sites work: GWW, MSM, FAST, ZORO, GI, MM
 
 ## Site Groups
 
@@ -334,7 +344,9 @@ $ sudo crontab -l
     "Manufacturer" in one of the cells, and use the appropriate value)
     - How to proceed: save all the data in the table as a single string.
 - [ ] `AZO` https://www.autozone.com/searchresult?searchText=pen
-  - Status: In Progress (very sensitive)
+  - Status: Defered (ZIP interactivity not working due to JavaScript problems on
+    their side, and high sensitivity to scraping, quick blocks with CAPTCHA)
+    sensitivity)
   - JavaScript: No
   - Auto-redirect: No
   - Use search page: No
@@ -406,8 +418,34 @@ $ sudo crontab -l
     search, probably due to the dynamic nature of the URL and the fact that the
     `?` symbol is used to specify parameters in a URL. These should be avoided
     in the search strings.
+
+#### Group 5
+
+- [ ] `GI` https://www.globalindustrial.com/searchResult?searchBox=&q=oil
+  - Status: In Progress (testing)
+  - JavaScript: No
+  - Auto-redirect: ?
+  - Use search page: No
+  - Double-hop: No
+- [ ] `MM`: (Different mechanism, see below)
+  - Status: In Progress (specifying item scraping)
+  - JavaScript: Yes
+  - Auto-redirect: No
+  - Use search page: Yes (if no price in item page)
+  - Double-hop: Yes (multiple hops and different kinds)
+  - Seems to have a very different structure, what to do about this?
+    - For each "catalogue" page, save the direct item pages (through their SKU
+      links) into file with specialized scraper. From 1 to 3939:
+      - https://www.mcmaster.com/#1
+      - https://www.mcmaster.com/#2
+      - ...
+      - https://www.mcmaster.com/#3939
+    - Then use the file with direct item pages for the standard scraper.
+      - Some items have their price data behind some type of interaction. For
+        now, ignore those cases. TODO: Mike will decide what to do with those
+        later.
 - [ ] `OAUTO` https://www.oreillyauto.com/motor-oil-search?q=pen
-  - Status: Exploring
+  - Status: Defered (no price or availability data, only nearby stores)
   - JavaScript: Yes (ZIP)
   - Auto-redirect: ?
   - Use search page: No
@@ -427,31 +465,3 @@ $ sudo crontab -l
     - This requires JavaScript to work, and only shows a list of stores near the
       ZIP code, but did not show actual price and availability. What to do about
       this?
-- [ ] `MM`:
-  - Status: Exploring
-  - JavaScript: ?
-  - Auto-redirect: ?
-  - Use search page: ?
-  - Double-hop: Yes (multiple?)
-  - Seems to have a very different structure, what to do about this?
-    - Seems that this site will require a specialized scraper
-
-## Item analysis for Amazon
-
-In the latest results we got from Amazon, there were 27 (out of , %) that did
-not include price either in the "regular price" or the "reseller price". Those
-URLs are listed below.
-
-The reasons are for not getting results are:
-
-| Number of cases | Reason                         | Can be fixed | Fix                                                                                             | Should fix | Note                              |
-|-----------------|--------------------------------|--------------|-------------------------------------------------------------------------------------------------|------------|-----------------------------------|
-|              10 | "Currently unavailable"        | No           |                                                                                                 |            |                                   |
-|               8 | It's a book                    | Yes          | Extra XPATHs (Hardcover, Paperback, Kindle, Audiobook, MP3 CD, Mass Market Paperback, Audio CD) | ?          | Not all books have all categories |
-|               2 | "Available from these sellers" | Sometimes    | Extra hop                                                                                       | ?          |                                   |
-|               2 | "Sale price"                   | Yes          | Extra XPATH                                                                                     | ?          | Should we mix with "price"?       |
-|               1 | "Temporarily out of stock"     | Yes          | Extra XPATH                                                                                     | ?          |                                   |
-|               1 | It's a movie (type 1)          | Yes          | Extra XPATHs (Amazon Video, Blu-ray, DVD)                                                       | ?          |                                   |
-|               1 | It's a movie (type 2)          | Yes          | Extra XPATH                                                                                     | ?          |                                   |
-|               1 | It's a music CD                | Yes          | Extra XPATH                                                                                     | ?          |                                   |
-|               1 | Standard item page             | Yes          | Extra XPATH                                                                                     | ?          | Should've been scraped            |
