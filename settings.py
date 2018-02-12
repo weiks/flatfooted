@@ -11,7 +11,7 @@ SETTINGS = {
         'search_string': 'SearchString',
         'avoid_on': 'AvoidOn',
         'use_on': 'UseOn',
-        'sample': 50
+        'sample': 10
     },
     'mongo': {
         'db': 'flatfooted',
@@ -26,29 +26,30 @@ SETTINGS = {
         #
         # Standard
         #
-        'AMZN': s.AMZN,
-        'CDW': s.CDW,
-        'FAST': s.FAST,
-        'BUNZL': s.BUNZL,
-        'PCMI': s.PCMI,
-        'HDSS': s.HDSS,
-        'CNXN': s.CNXN,
+        # 'AMZN': s.AMZN,
+        # 'CDW': s.CDW,
+        # 'FAST': s.FAST,
+        # 'BUNZL': s.BUNZL,
+        # 'PCMI': s.PCMI,
+        # 'HDSS': s.HDSS,
+        # 'CNXN': s.CNXN,
+        'GI': s.GI,
         #
         # JavaScript
         #
-        'ZORO': s.ZORO,
-        'GWW': s.GWW,
-        'NSIT': s.NSIT,
-        'STAPLES': s.STAPLES,
-        'ESND': s.ESND,
+        # 'ZORO': s.ZORO,
+        # 'GWW': s.GWW,
+        # 'NSIT': s.NSIT,
+        # 'STAPLES': s.STAPLES,
+        # 'ESND': s.ESND,
         #
         # Search Page
         #
-        'TECD': s.TECD,
+        # 'TECD': s.TECD,
         #
         # Double-hops
         #
-        'MSM': s.MSM,
-        'AZO': s.AZO
+        # 'MSM': s.MSM,
+        # 'AZO': s.AZO
     }
 }

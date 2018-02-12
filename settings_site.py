@@ -1,4 +1,8 @@
 
+#
+# Standard
+#
+
 AMZN = {
     'base_url': 'https://www.amazon.com',
     'search': {
@@ -287,6 +291,44 @@ CNXN = {
             ],
             'availability': [
                 '//*[@id="productAvailability"]//text()'
+            ]
+        }
+    }
+}
+
+GI = {
+    'base_url': 'https://www.globalindustrial.com',
+    'search': {
+        'query': 'https://www.globalindustrial.com/searchResult?searchBox=&q={}',
+        'first_item': [
+            '//*[@id="index_0"]/div[2]/p[1]/a/@href'
+        ],
+        'fields': {
+            'number_of_results': [
+                '//*[@id="midsec"]/div[3]/div[2]/p//text()'
+            ],
+            'results_description': [
+                '//*[@id="midsec"]/div[1]/p//text()'
+            ]
+        }
+    },
+    'item': {
+        'fields': {
+            'name': [
+                '//*[@id="details"]/div[4]/div[1]/h1//text()'
+            ],
+            'price': [
+                '//*[@id="details"]/div[3]/div[1]/div[2]/div[2]/div//text()',
+                '//*[@id="details"]/div[4]/div[1]/div[2]/div[2]/table/tbody/tr[1]/td[2]//text()'
+            ],
+            'site_id': [
+                '//*[@id="details"]/div[3]/div[1]/p[1]/span/span//text()'
+            ],
+            'table': [
+                '//*[@id="prodInfo_txt"]/div[1]/div[2]//text()'
+            ],
+            'shipping': [
+                '//*[@id="details"]/div[4]/div[1]/div[2]/p//text()'
             ]
         }
     }
