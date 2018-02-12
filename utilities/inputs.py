@@ -10,7 +10,7 @@ class SearchStringsCSV:
 
     def search_strings(self):
         s = self.settings
-        data = pandas.read_csv(s.search_file)
+        data = pandas.read_csv(s.search_file).fillna('')
         avoid = data[s.avoid_on].str.contains(s.name, na=False)
         use = data[s.use_on].str.contains(s.name, na=False)
         all = data[s.use_on].str.contains('ALL', na=False)
