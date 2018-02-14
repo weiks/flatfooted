@@ -111,6 +111,67 @@ list of current `cron` jobs with:
 $ sudo crontab -l
 ```
 
+## Database into single CSV script
+
+The script used to extract data from the current database (MongoDB) and put it
+into a single CSV is `scripts/db_to_csv.py`. It allows for three-dimensional
+queries, and receives as inputs:
+
+- `--date-start` (string): format: `YYYY-MM-DD-hh-mm`
+- `--date-end` (string): format: `YYYY-MM-DD-hh-mm`
+- `--site` (string): examples: `AMZN`, `ZORO`, etc
+- `--sku` (string): string to search for in the `search_string` column
+- `--file` (string): results file name
+
+### Some notes about parameters
+
+- If `date_start` is provided, then `date_end` must also be provided
+- They can be combined to filter in multiple dimensions simultaneously
+  - If combined, they will be combined using an `AND` mechanism
+- In the case of `sku`, a "contains" mechanism is used (instead of a "equals"
+  mecahanism) because the data is "dirty" and sometimes the SKU will be
+  contained multiple times, or within a larger string. This was done to maximize
+  the probability of getting the SKU required, even at the cost of not matching
+  exactly.
+- If `file` is not specified, `results.csv` will be used
+- Currently there's no cross-referencing with searches (so the resulting CSV)
+  does not have the information for the searches that preceded the item (if
+  any).
+
+### Examples
+
+Assuming you're located in the `scripts/` directory.
+
+- Example 1: download file [here](./docs/files/db_to_csv/example_1.csv)
+
+```
+python db_to_csv.py --date-start 2018-01-01-00-00 --date-end 2018-02-28-00-00 --file example_1.csv
+```
+
+- Example 2: download file [here](./docs/files/db_to_csv/example_2.csv)
+
+```
+python db_to_csv.py --date-start 2018-01-01-00-00 --date-end 2018-02-28-00-00 --search-string QUA41967 --file example_2.csv
+```
+
+- Example 3: download file [here](./docs/files/db_to_csv/example_3.csv)
+
+```
+python db_to_csv.py --search-string QUA41967 --file example_3.csv
+```
+
+- Example 4: download file [here](./docs/files/db_to_csv/example_4.csv)
+
+```
+python db_to_csv.py --site AMZN --file example_4.csv
+```
+
+- Example 5: download file [here](./docs/files/db_to_csv/example_5.csv)
+
+```
+python db_to_csv.py --site AMZN --search-string 65UX340C --file example_5.csv
+```
+
 ## Tasks
 
 ### Phase 1
@@ -211,7 +272,7 @@ $ sudo crontab -l
   - [x] Insight (`NSIT`): **DONE**
   - [x] Fastenal (`FAST`): **DONE** (No "suggested" results indicator)
   - [x] AutoZone (`AZO`): **DONE** (No "suggested" results indicator)
-  - [ ] Bunzlpd (`BUNZL`): TODO: decision by Mike (OR/AND issue)
+  - [ ] Bunzlpd (`BUNZL`): **TODO**: decision by Mike (OR/AND issue)
   - [x] Tiger Direct (`PCMI`): **DONE**
   - [x] MSC Direct (`MSM`): **DONE**
   - [x] HD Supply Solutions (`HDSS`): **DONE**
@@ -244,15 +305,15 @@ $ sudo crontab -l
 - [x] Setup GI to work with current search/item/scrape model
 - [x] Specialized scraper for `MM` to get direct item pages through SKUs
   - [x] Setup Selenium for specialized scraper (requires JavaScript)
-- [ ] Allow for direct item pages mechanism in current scraper
-  - [ ] Use parameter in settings to specify when this behvaior should be used
-- [ ] Extract data from database into single CSV file
-  - [ ] Extract everything
-  - [ ] Extract for given date range
-    - TODO: Discuss with Mike
-  - [ ] Extract "last x" number of executions
-    - TODO: Discuss with Mike
-- [ ] Ensure these sites work: GWW, MSM, FAST, ZORO, GI, MM
+  - [x] Use random proxies and user agents to avoid sensitivity
+  - [x] Post-process JSON files into single CSV with all items
+- [x] Allow for direct item pages mechanism in current scraper
+  - [x] Use behavior in the absence of a `search` dict in site settings
+- [x] Ensure these sites work: GWW, MSM, FAST, ZORO, GI, CP, MM
+- [x] Extract data from database into single CSV file
+  - [x] Cube with three dimensions: date range, SKU, site
+  - [x] Put examples in README
+- [ ] Get brand and MFR for OREILY
 
 ## Site Groups
 
@@ -421,17 +482,23 @@ $ sudo crontab -l
 
 #### Group 5
 
-- [ ] `GI` https://www.globalindustrial.com/searchResult?searchBox=&q=oil
-  - Status: In Progress (testing)
+- [x] `GI` https://www.globalindustrial.com/searchResult?searchBox=&q=oil
+  - Status: **DONE**
   - JavaScript: No
   - Auto-redirect: ?
   - Use search page: No
   - Double-hop: No
-- [ ] `MM`: (Different mechanism, see below)
-  - Status: In Progress (specifying item scraping)
+- [x] `CP` https://www.carparts.com/results/?Ntt=oil
+  - Status: **DONE**
+  - JavaScript: No
+  - Auto-redirect: No
+  - Use search page: No
+  - Double-hop: No
+- [x] `MM`: (Different mechanism, see below)
+  - Status: **DONE**
   - JavaScript: Yes
   - Auto-redirect: No
-  - Use search page: Yes (if no price in item page)
+  - Use search page: No
   - Double-hop: Yes (multiple hops and different kinds)
   - Seems to have a very different structure, what to do about this?
     - For each "catalogue" page, save the direct item pages (through their SKU
@@ -442,9 +509,12 @@ $ sudo crontab -l
       - https://www.mcmaster.com/#3939
     - Then use the file with direct item pages for the standard scraper.
       - Some items have their price data behind some type of interaction. For
-        now, ignore those cases. TODO: Mike will decide what to do with those
+        now, ignore those cases. **TODO**: Mike will decide what to do with those
         later.
-- [ ] `OAUTO` https://www.oreillyauto.com/motor-oil-search?q=pen
+  - This site is very sensitive, must be throttled quite a bit more
+  - Mark SKU sites that are landing pages instead of item pages
+    - This is automatically done because they don't have results
+- [ ] `ORLY` https://www.oreillyauto.com/motor-oil-search?q=pen
   - Status: Defered (no price or availability data, only nearby stores)
   - JavaScript: Yes (ZIP)
   - Auto-redirect: ?
@@ -465,3 +535,11 @@ $ sudo crontab -l
     - This requires JavaScript to work, and only shows a list of stores near the
       ZIP code, but did not show actual price and availability. What to do about
       this?
+  - For now get only brand and MFR
+- [ ] `RAUTO` http://www.rockauto.com/
+  - Status: Defered (completely different model)
+  - JavaScript: Yes (very interactive site)
+  - Auto-redirect: No
+  - Use search page: Yes
+  - Double-hop: No
+  - **TODO**: Discuss with Mike
