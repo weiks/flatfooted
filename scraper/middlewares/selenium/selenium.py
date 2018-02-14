@@ -76,6 +76,12 @@ class SeleniumMiddleware(object):
                         '#avl-info-icon')
                 except:
                     pass
+            if spider.name == 'MM' and request.meta['type'] == 'item':
+                try:
+                    driver.find_element_by_css_selector(
+                        'h3.header-primary--pd')
+                except:
+                    pass
 
 
 class SeleniumDriver:

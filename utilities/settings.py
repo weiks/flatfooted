@@ -38,11 +38,12 @@ class Settings:
 
     @property
     def search_fields(self):
-        return self._site_settings['search']['fields']
+        return self._site_settings.get('search', {}).get('fields', {})
 
     @property
     def search_field_keys(self):
-        return list(self._site_settings['search']['fields'].keys())
+        return list(self._site_settings
+                    .get('search', {}).get('fields', {}).keys())
 
     @property
     def item_fields(self):
@@ -90,12 +91,20 @@ class Settings:
         return None
 
     @property
+    def use_search(self):
+        return 'search' in self._site_settings.keys()
+
+    @property
     def search_query(self):
         return self._site_settings['search']['query']
 
     @property
     def search_file(self):
         return self.settings['search_strings']['file']
+
+    @property
+    def direct_item_url(self):
+        return self.settings['search_strings']['direct_item_url']
 
     @property
     def search_string(self):
@@ -128,7 +137,7 @@ class Settings:
         return self.settings['sites'][self.name]
 
     def site_has_item_specification(self):
-        search_keys = self._site_settings['search'].keys()
+        search_keys = self._site_settings.get('search', {}).keys()
         return (
             'first_item' in search_keys or
             'first_item_css' in search_keys

@@ -26,12 +26,20 @@ class Spider(scrapy.Spider):
     def start_requests(self):
         for combination in self._start_combinations():
             ss = combination['search_string']
-            yield scrapy.Request(
-                combination['url'],
-                callback=self._parse_searches,
-                errback=self._parse_search_error(ss),
-                meta=self._meta('search', ss)
-            )
+            if self.site_settings.use_search:
+                yield scrapy.Request(
+                    combination['url'],
+                    callback=self._parse_searches,
+                    errback=self._parse_search_error(ss),
+                    meta=self._meta('search', ss)
+                )
+            else:
+                yield scrapy.Request(
+                    combination['url'],
+                    callback=self._parse_item,
+                    errback=self._parse_item_error(ss),
+                    meta=self._meta('item', ss)
+                )
 
     def _parse_searches(self, response):
         if self._auto_redirection_detected(response):
@@ -113,10 +121,6 @@ class Spider(scrapy.Spider):
 
     def _parse_item_error(self, search_string):
         def _parse_item_error_internal(response):
-            # print('!' * 100)
-            # print('_parse_item_error()')
-            # print(search_string)
-            # print('!' * 100)
             self._save_html(response, '_item')
             self.errors.append(Item(
                 response,
@@ -128,10 +132,6 @@ class Spider(scrapy.Spider):
 
     def _parse_search_error(self, search_string):
         def _parse_search_error_internal(response):
-            # print('!' * 100)
-            # print('_parse_search_error()')
-            # print(search_string)
-            # print('!' * 100)
             self._save_html(response, '_search')
             self.errors.append(Search(
                 response,
@@ -142,16 +142,28 @@ class Spider(scrapy.Spider):
         return _parse_search_error_internal
 
     def _start_combinations(self):
-        return [
-            {
-                'url': self.site_settings.search_query.format(search_string),
-                'search_string': search_string
-            }
-            for search_string in self._search_strings()
-        ]
+        if self.site_settings.use_search:
+            return [
+                {
+                    'url': self.site_settings.search_query.format(search_string),
+                    'search_string': search_string
+                }
+                for search_string in self._search_strings()
+            ]
+        else:
+            return [
+                {
+                    'url': c['url'],
+                    'search_string': c['search_string']
+                }
+                for c in self._combinations()
+            ]
 
     def _search_strings(self):
         return SearchStringsCSV(self.site_settings).search_strings()
+
+    def _combinations(self):
+        return SearchStringsCSV(self.site_settings).combinations()
 
     def _save_html(self, response, suffix=''):
         if self.site_settings.save_html and hasattr(response, "body"):
