@@ -9,9 +9,10 @@ SETTINGS = {
     'search_strings': {
         'file': 'inputs/search-strings-full.csv',
         'search_string': 'SearchString',
+        'direct_item_url': 'DirectURL',
         'avoid_on': 'AvoidOn',
         'use_on': 'UseOn',
-        'sample': 10
+        'sample': None
     },
     'mongo': {
         'db': 'flatfooted',
@@ -33,7 +34,10 @@ SETTINGS = {
         # 'PCMI': s.PCMI,
         # 'HDSS': s.HDSS,
         # 'CNXN': s.CNXN,
-        'GI': s.GI,
+        # 'GI': s.GI,
+        # 'CP': s.CP,
+        # 'MM': s.MM,
+        # 'ORLY': s.ORLY,
         #
         # JavaScript
         #

@@ -51,9 +51,7 @@ class Scraper:
                 .set_index('search_string')
                 .dropna(axis='columns', how='all')
             )
-            # errors = errors.set_index('search_string')
             results = searches.join(items, how='outer', rsuffix='_delete')
-            # results = results.join(errors, how='outer', rsuffix='_delete')
             return results[[c for c in results.columns if '_delete' not in c]]
         return data
 
@@ -76,7 +74,7 @@ class Scraper:
         """
         options = {
             'RANDOMIZE_DOWNLOAD_DELAY': True,
-            'AUTOTHROTTLE_TARGET_CONCURRENCY': 0.3,
+            'AUTOTHROTTLE_TARGET_CONCURRENCY': 0.2,
             'AUTOTHROTTLE_ENABLED': True,
             'CONCURRENT_REQUESTS': 4,
             'CONCURRENT_REQUESTS_PER_DOMAIN': 1,
@@ -85,7 +83,7 @@ class Scraper:
             'COOKIES_ENABLED': False,
             'LOG_LEVEL': 'DEBUG',
             'RETRY_TIMES': 2,
-            'DOWNLOAD_DELAY': 2,
+            'DOWNLOAD_DELAY': 5,
             'DOWNLOAD_TIMEOUT': 120,
             'DOWNLOADER_MIDDLEWARES': {
                 # 'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
