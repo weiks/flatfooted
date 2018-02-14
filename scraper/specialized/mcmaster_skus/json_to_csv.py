@@ -1,25 +1,31 @@
 
+import sys
 import json
 import pandas
 
-from pprint import pprint
+file_name = sys.argv[1]
+json_file = './skus_{}.json'.format(file_name)
+csv_file = './skus_{}.csv'.format(file_name)
 
-data = json.load(open('skus.json'))
+print(json_file)
+print(csv_file)
 
-pprint(data)
-
+data = json.load(open(json_file))
 clean_data = []
 
 for page in data:
     for link in page['links']:
         clean_data.append([
+            page['landing'],
             page['timestamp'],
-            page['page'],
             page['heading'],
             link['sku'],
+            link['price_landing'],
             link['url']
         ])
 
-columns = ['timestamp', 'page', 'heading', 'sku', 'url']
+columns = ['landing', 'timestamp', 'heading', 'sku', 'price_landing', 'url']
 df = pandas.DataFrame(clean_data, columns=columns)
-df.to_csv('./skus.csv', index=False)
+df.to_csv(csv_file, index=False)
+
+print("Done.")
