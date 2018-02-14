@@ -1,5 +1,5 @@
 
-import settings_site as s
+import settings_sites as s
 
 SETTINGS = {
     'save_html': True,

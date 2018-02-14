@@ -305,7 +305,7 @@ GI = {
         ],
         'fields': {
             'number_of_results': [
-                '//*[@id="midsec"]/div[3]/div[2]/p//text()'
+                '//*[@id="midsec"]//div[contains(@class, "paging")]/p[1]//text()'
             ],
             'results_description': [
                 '//*[@id="midsec"]/div[1]/p//text()'
@@ -315,24 +315,83 @@ GI = {
     'item': {
         'fields': {
             'name': [
-                '//*[@id="details"]/div[4]/div[1]/h1//text()'
+                '//*[@id="details"]//h1[contains(@itemprop, "name")]//text()'
             ],
             'price': [
-                '//*[@id="details"]/div[3]/div[1]/div[2]/div[2]/div//text()',
-                '//*[@id="details"]/div[4]/div[1]/div[2]/div[2]/table/tbody/tr[1]/td[2]//text()'
+                '//*[@id="details"]//div[contains(@itemprop, "price")]//text()',
+                '//*[@id="details"]//div[contains(@class, "pricing")]//text()'
             ],
             'site_id': [
-                '//*[@id="details"]/div[3]/div[1]/p[1]/span/span//text()'
+                '//*[@id="details"]//span[contains(@itemprop, "sku")]//text()'
             ],
-            'table': [
-                '//*[@id="prodInfo_txt"]/div[1]/div[2]//text()'
+            'table_css': [
+                '#prodInfo_txt > div.infoSec > div.prodSpec::text'
             ],
             'shipping': [
-                '//*[@id="details"]/div[4]/div[1]/div[2]/p//text()'
+                '//*[@id="details"]//div[contains(@itemprop, "offers")]//p//text()'
             ]
         }
     }
 }
+
+CP = {
+    'base_url': 'https://www.carparts.com',
+    'search': {
+        'query': 'https://www.carparts.com/results/?Ntt={}',
+        'first_item': [
+            '//*[@id="GridBuyBoxs"]//a[contains(@data-elemname, "item_name_link_1")]/@href'
+        ],
+        'fields': {
+            'number_of_results': [
+                '//*[@id="TotalProductsMatchingYourSearch"]//span[contains(@class, "total")]//text()'
+            ],
+            'results_description': [
+                '//*[@id="NoSearchResult"]/div[1]/h3//text()'
+            ]
+        }
+    },
+    'item': {
+        'fields': {
+            'name': [
+                '//*[@id="ProductDetailOnev2"]/h1//text()'
+            ],
+            'price': [
+                '//*[@id="PromoPrice"]//span[contains(@data-elemname, "item_price_text")]//text()'
+            ],
+            'site_id': [
+                '//*[@id="PromoPrice"]//span[contains(@data-elemname, "sku_text")]//text()'
+            ],
+            'table': [
+                '//*[@id="product_attr"]//text()'
+            ]
+        }
+    }
+}
+
+MM = {
+    'javascript': True,
+    'base_url': 'https://www.carparts.com',
+    'item': {
+        'fields': {
+            'name': [
+                '//*//h3[contains(@class, "header-primary--pd")]//text()'
+            ],
+            'name_secondary': [
+                '//*//h3[contains(@class, "header-secondary--pd")]//text()'
+            ],
+            'price': [
+                '//*[@id="Prce"]//text()'
+            ],
+            'site_id': [
+                '//*//div[contains(@class, "PartNbr attrComp")]//text()'
+            ],
+            'availability': [
+                '//*//div[contains(@class, "stock-status")]//text()'
+            ]
+        }
+    }
+}
+
 
 #
 # JavaScript
@@ -545,6 +604,27 @@ ESND = {
             ],
             'site_id': [
                 '//*[@id="bbMain"]/div/div/main/div/div/div/div/div[1]/bb-product/div/div/div[8]/div[3]/span//text()'
+            ]
+        }
+    }
+}
+
+ORLY = {
+    'javascript': True,
+    'base_url': 'https://www.oreillyauto.com',
+    'item': {
+        'fields': {
+            'name': [
+                '//*//h1[contains(@class, "page-title")]//text()'
+            ],
+            'breadcrumb': [
+                '//*//div[contains(@class, "site-breadcrumb_slider")]//text()'
+            ],
+            'brand': [
+                '//*//dd[contains(@class, "lineCode")]//text()'
+            ],
+            'site_id': [
+                '//*//dd[contains(@class, "lineNumber")]//text()'
             ]
         }
     }
