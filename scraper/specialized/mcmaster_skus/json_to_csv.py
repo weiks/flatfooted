@@ -4,8 +4,8 @@ import json
 import pandas
 
 file_name = sys.argv[1]
-json_file = './skus_{}.json'.format(file_name)
-csv_file = './skus_{}.csv'.format(file_name)
+json_file = './{}.json'.format(file_name)
+csv_file = './{}.csv'.format(file_name)
 
 print(json_file)
 print(csv_file)
