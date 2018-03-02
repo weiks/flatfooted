@@ -38,6 +38,14 @@ parameters that may be modified are:
   with the following structure:
   - `site_name` (dictionary):
     - `base_url` (string): URL used to fix relative URLs within crawled pages.
+    - `javascript` (boolean): if `True`, Selenium will be used instead of
+      Scrapy's default headless browser/parser. Default is `False`.
+    - `headless` (boolean): If `javascript` is `True`, then this option will be
+      used. If it is `True` Selenium will run in headless mode, otherwise you
+      will be need a windowing system to actually see the browser window.
+      Default is `False`.
+    - `cookies` (list of dictionaries): where each dictionary has `name` and
+      `value` keys, one pair for each cookie. Default is no custom cookies.
     - `search` (dictionary): specification for search parameters for site.
       - `query` (string): URL used for searching (with `{}` where search strings
         should appear).
@@ -511,6 +519,10 @@ python db_to_csv.py --site AMZN --search-string 65UX340C --file example_5.csv
       - Some items have their price data behind some type of interaction. For
         now, ignore those cases. **TODO**: Mike will decide what to do with those
         later.
+    - In the consolidated `SKUs.csv` file, SKU observations that don't have a
+      price associated is because at least one SKU in it's source landing page
+      did not have price data, and therefore is impossible to match for all of
+      them with the current implementation.
   - This site is very sensitive, must be throttled quite a bit more
   - Mark SKU sites that are landing pages instead of item pages
     - This is automatically done because they don't have results
