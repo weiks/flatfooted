@@ -12,7 +12,18 @@ class SeleniumMiddleware(object):
 
     def process_request(self, request, spider):
         if spider.use_selenium():
-            driver = SeleniumDriver(request.meta.get('proxy', None)).driver
+            driver = SeleniumDriver(
+                request.meta.get('proxy', None),
+                request.meta['site_settings'].headless
+            ).driver
+            cookies = request.meta['site_settings'].cookies
+            if len(cookies) >= 1:
+                # Selenium can only add cookies to
+                # the domain that it is already on
+                driver.get(request.url)
+                driver.delete_all_cookies()
+                for cookie in cookies:
+                    driver.add_cookie(cookie)
             try:
                 driver.get(request.url)
             except TimeoutException:
@@ -86,14 +97,15 @@ class SeleniumMiddleware(object):
 
 class SeleniumDriver:
 
-    def __init__(self, proxy=None):
+    def __init__(self, proxy=None, headless=True):
         options = webdriver.ChromeOptions()
         if proxy:
             options.add_argument('--proxy-server={}'.format(proxy))
             print('-' * 100)
             print('Selenium using proxy: {}'.format(proxy))
             print('-' * 100)
-        options.add_argument('headless')
+        if headless:
+            options.add_argument('headless')
         self._driver = webdriver.Chrome(
             '{}/../../../utilities/chromedriver'.format(
                 os.path.dirname(os.path.realpath(__file__))),

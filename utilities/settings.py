@@ -131,6 +131,14 @@ class Settings:
         return 'mongo' in self.settings.keys()
 
     @property
+    def cookies(self):
+        return self._site_settings.get('cookies', [])
+
+    @property
+    def headless(self):
+        return self._site_settings.get('headless', True)
+
+    @property
     def _site_settings(self):
         if not self._name:
             raise ValueError('Global settings instance (without `name`)')

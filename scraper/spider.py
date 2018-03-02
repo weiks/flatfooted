@@ -31,6 +31,7 @@ class Spider(scrapy.Spider):
                     combination['url'],
                     callback=self._parse_searches,
                     errback=self._parse_search_error(ss),
+                    cookies=self.site_settings.cookies,
                     meta=self._meta('search', ss)
                 )
             else:
@@ -38,6 +39,7 @@ class Spider(scrapy.Spider):
                     combination['url'],
                     callback=self._parse_item,
                     errback=self._parse_item_error(ss),
+                    cookies=self.site_settings.cookies,
                     meta=self._meta('item', ss)
                 )
 
@@ -58,6 +60,7 @@ class Spider(scrapy.Spider):
                             self._enforce_absolute_url(first_item),
                             callback=self._parse_item,
                             errback=self._parse_item_error(ss),
+                            cookies=self.site_settings.cookies,
                             meta=self._meta('item', ss)
                         )
                         break
@@ -104,6 +107,7 @@ class Spider(scrapy.Spider):
             self._enforce_absolute_url(links[0]),
             callback=self._parse_searches,
             errback=self._parse_search_error(ss),
+            cookies=self.site_settings.cookies,
             meta=self._meta('search', ss, double_hop=True)
         )
 
