@@ -2,8 +2,8 @@
 import settings_sites as s
 
 SETTINGS = {
-    'save_html': True,
-    'random_proxies': True,
+    'save_html': False,
+    'random_proxies': False,
     'random_user_agents': True,
     'timezone': 'America/Mexico_City',
     'search_strings': {
@@ -37,7 +37,10 @@ SETTINGS = {
         # 'GI': s.GI,
         # 'CP': s.CP,
         # 'MM': s.MM,
-        # 'ORLY': s.ORLY,
+        #
+        # Cookies
+        #
+        'ORLY': s.ORLY,
         #
         # JavaScript
         #

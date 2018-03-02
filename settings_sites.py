@@ -609,9 +609,15 @@ ESND = {
     }
 }
 
+#
+# Cookies
+#
+
 ORLY = {
     'javascript': True,
     'base_url': 'https://www.oreillyauto.com',
+    'headless': False,
+    'cookies': [{'name': 'storeId', 'value': '3032'}],
     'item': {
         'fields': {
             'name': [
@@ -625,6 +631,15 @@ ORLY = {
             ],
             'site_id': [
                 '//*//dd[contains(@class, "lineNumber")]//text()'
+            ],
+            'price': [
+                '//*//strong[contains(@class, "price")]//text()'
+            ],
+            'stock': [
+                '//*//div[contains(@class, "avail_ship_title")]//text()'
+            ],
+            'message': [
+                '//*//strong[contains(@class, "page-not-found-text")]//text()'
             ]
         }
     }

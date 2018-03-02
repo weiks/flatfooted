@@ -74,9 +74,9 @@ class Scraper:
         """
         options = {
             'RANDOMIZE_DOWNLOAD_DELAY': True,
-            'AUTOTHROTTLE_TARGET_CONCURRENCY': 0.2,
+            'AUTOTHROTTLE_TARGET_CONCURRENCY': 0.1,
             'AUTOTHROTTLE_ENABLED': True,
-            'CONCURRENT_REQUESTS': 4,
+            'CONCURRENT_REQUESTS': 2,
             'CONCURRENT_REQUESTS_PER_DOMAIN': 1,
             'FEED_FORMAT': 'json',
             'FEED_URI': self._file_name(),
