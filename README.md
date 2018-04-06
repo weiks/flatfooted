@@ -99,25 +99,35 @@ Inside that file, we can use of the following specifications:
 
 ```
 # Every minute
-*/1 * * * * python3 -u /path/to/main.py |& tee "/path/to/outputs/log_$(date +\%Y-\%m-\%d).txt"
+*/1 * * * * bash /home/ubuntu/flatfooted/cron_execute.sh
 
 # Every hour (sharp)
-0 * * * * python3 -u /path/to/main.py |& tee "/path/to/outputs/log_$(date +\%Y-\%m-\%d).txt"
+0 * * * * bash /home/ubuntu/flatfooted/cron_execute.sh
 
 # Every day (midnight)
-0 0 * * * python3 -u /path/to/main.py |& tee "/path/to/outputs/log_$(date +\%Y-\%m-\%d).txt"
+0 0 * * * bash /home/ubuntu/flatfooted/cron_execute.sh
 
 # Every week (Sunday midnight)
-0 0 0 * * python3 -u /path/to/main.py |& tee "/path/to/outputs/log_$(date +\%Y-\%m-\%d).txt"
+0 0 0 * * bash /home/ubuntu/flatfooted/cron_execute.sh
 ```
 
-After saving the file, `cron` will start executing these jobs (look for the
-`log.txt` to verify the job ran when you expected it to). You can also see the
-list of current `cron` jobs with:
+After saving the file, `cron` will start executing these jobs. You can also see
+the list of current `cron` jobs with:
 
 ```
 $ sudo crontab -l
 ```
+
+The contents of the `cron_execute.sh` file are simple:
+
+```
+cd /home/ubuntu/flatfooted/
+python3 main.py |& tee "log_$(date +\%Y-\%m-\%d).txt"
+```
+
+If you try to run the Python script directly, you will encounter lots of
+problems (relative paths, environment packages, and so on), therefore I added an
+extra level of indirection with the `cron_execute.sh` file.
 
 ## Database into single CSV script
 
